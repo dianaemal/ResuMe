@@ -1,0 +1,40 @@
+
+.main_container{
+    width: 210mm;  /* A4 width */
+    height: 297mm; /* A4 height */
+    background: white;
+    padding: 20mm;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Light shadow for realism */
+    border-radius: 5px; /* Optional: Slightly rounded corners */
+    margin: auto;
+    font-size: 12pt;
+    font-family: Calibri;
+}
+h1{
+    font-size: 20pt !important;
+    text-align: center;
+    font-weight: bold !important;
+}
+h3{
+    font-size: 16pt !important;
+    margin-bottom: 0 !important;
+    font-weight: bold !important;
+}
+#info{
+    text-align: center;
+    
+}
+.float{
+    float: right;
+}
+.strong{
+    font-weight: bold;
+}
+.italic{
+    font-style: italic;
+}
+hr{
+    border: 1px solid #000000 !important; /* Pure black */
+    opacity: 0.7 !important; 
+    margin-top: 0 !important; 
+}
