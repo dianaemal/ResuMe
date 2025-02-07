@@ -1,6 +1,13 @@
 from rest_framework import serializers 
+from djoser.serializers import UserCreateSerializer
+from django.contrib.auth import get_user_model
 from .models import Resume, ContactInfo, WorkExperience, ExperienceDescription, Education, Languages,Summary,Skills
-
+User = get_user_model()
+class UserCreateSerializer(UserCreateSerializer):
+    class Meta:
+        model = User
+        fields=['id', 'email', 'name', 'password']
+        
 class ContactInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContactInfo

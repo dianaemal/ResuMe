@@ -8,8 +8,10 @@
     border-radius: 5px; /* Optional: Slightly rounded corners */
     margin: auto;
     font-size: 12pt;
-    font-family: Calibri;
+    font-family: Calibri !important;
+
 }
+   
 h1{
     font-size: 20pt !important;
     text-align: center;
@@ -38,3 +40,14 @@ hr{
     opacity: 0.7 !important; 
     margin-top: 0 !important; 
 }
+.infoBox{
+    position: relative;
+    
+}
+.infoBox:hover {
+    border: 2px solid #3b82f6;
+    border-radius: 0.5cm; /* Blue border on hover */
+    
+    transform: scale(1.02); /* Slight pop effect */
+  }
+  

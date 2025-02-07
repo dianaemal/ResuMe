@@ -8,6 +8,8 @@ function Resume(){
     const resumeId = location.state?.id || null;
     console.log(resumeId)
 
+    const[infoHover, setInfoHover] = useState(false)
+
     const [resumeData, setData] = useState(null);
     useEffect(()=>{
         if (!resumeId) return;
@@ -29,16 +31,22 @@ function Resume(){
     }
     return(
         <div class="main_container">
-            
+            <div class="infoBox"
+               
+            >
             <h1>{resumeData.contactInfo?.f_name} {resumeData.contactInfo?.l_name} </h1>
             
-            <p id="info">{resumeData.contactInfo.city}, {resumeData.contactInfo.province}, {resumeData.contactInfo.postal_code} 
+            <p  id="info">{resumeData.contactInfo.city}, {resumeData.contactInfo.province}, {resumeData.contactInfo.postal_code} 
                  | {resumeData.contactInfo.email} | {resumeData.contactInfo.phone_number}
             </p>
+            </div>
+            <div class="infoBox">
             <h3>Objective</h3>
             <hr></hr>
             <p>{resumeData.summary.summary}</p>
-            
+            </div>
+
+            <div class="infoBox">
             <h3>Education</h3>
             <hr></hr>
             <p>{resumeData.education.map((edu, index)=>(
@@ -52,6 +60,9 @@ function Resume(){
             
 
             ))}</p>
+            </div>
+
+            <div class="infoBox">
            
             <h3>Work Experience</h3>
             <hr></hr>
@@ -70,7 +81,8 @@ function Resume(){
                     </ul>
                 </p>
               ))}</p>
-             
+             </div>
+             <div class="infoBox">
               <h3>Skills</h3>
               <hr></hr>
               <p>
@@ -78,6 +90,7 @@ function Resume(){
                     <li key ={i}>{skill}</li>
                 ))}
               </p>
+              </div>
 
 
         </div>
