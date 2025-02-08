@@ -1,47 +1,53 @@
 import axiosInstance from "../axios";
 import react from 'react';
 import { useState } from "react";
+import {useNavigate,  Link } from "react-router-dom";
 
-const SignUpData = Object.freeze({
-    email: "",
-    username: "",
-    password: "",
-    re_password: ""
-})
-
-const [signupData, setData] = useState(SignUpData);
-
-const handleChange = (e) =>{
-    const {name, value} = e.target;
-    setData((prev)=>({
-        ...prev,
-        [name]: value.trim(),
-
-    }))
-}
-
-const handleSubmit = (e) =>{
-    e.preventDefault();
-    axiosInstance.post('users/',{
-        email: signupData.email,
-        username: signupData.username,
-        password: signupData.password,
-        re_password: signupData.re_password
-    })
-    .then((res) => {
-        if (res.ok){
-            
-        }
-        console.log(res.data)
-    })
-    
-
-}
 
 
 
 export default function SignUp(){
+    const navigate = useNavigate();
+
+    const SignUpData = Object.freeze({
+        email: "",
+        username: "",
+        password: "",
+        re_password: ""
+    })
+
+    const [signupData, setData] = useState(SignUpData);
+
+    const handleChange = (e) =>{
+        const {name, value} = e.target;
+        setData((prev)=>({
+            ...prev,
+            [name]: value.trim(),
+
+        }))
+    }
+
+    const handleSubmit = (e) =>{
+        e.preventDefault();
+        axiosInstance.post('users/',{
+            email: signupData.email,
+            username: signupData.username,
+            password: signupData.password,
+            re_password: signupData.re_password
+        })
+        .then((res) => {
+            if (res.ok){
+                navigate('/login')
+            }
+            console.log(res.data)
+        })
+        
+
+    }
+
+
     return(
+        <div>
         <form onSubmit={handleSubmit}>
             <label htmlFor="email">
                 Email:
@@ -98,5 +104,8 @@ export default function SignUp(){
             
             
         </form>
+        <Link to="/login"> Already have an account? Log In</Link>
+        </div>
+        
     )
 }

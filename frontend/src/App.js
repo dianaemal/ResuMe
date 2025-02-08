@@ -16,6 +16,8 @@ import WorkEdit from './pages/WorkEdit';
 import Skills from './pages/Skills';
 import Summary from './pages/Summary';
 import Resume from './pages/Resume';
+import SignUp from './pages/Register';
+import LogIn from './pages/Login';
 
 function App() {
   return (
@@ -39,6 +41,8 @@ function App() {
        <Route path="/skills" element={<Skills/>}/>
        <Route path="/summary" element={<Summary/>}/>
        <Route path="/resume" element={<Resume/>}/>
+       <Route path="/register" element={<SignUp/>}/>
+       <Route path="/login" element={<LogIn/>}/>
        
        {/* You can add more routes for other pages */}
      </Routes>
