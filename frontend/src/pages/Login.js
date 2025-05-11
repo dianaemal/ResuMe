@@ -1,14 +1,16 @@
 import axiosInstance from "../axios";
-import react from 'react';
+import react, { useContext } from 'react';
 import { useState } from "react";
 import {useNavigate,  Link } from "react-router-dom";
+import { AuthContext } from "../AuthContext";
 
 
 
 
 
 export default function LogIn(){
-    const navigate = useNavigate();
+    const navigate = useNavigate()
+    const { setAuthenticated } = useContext(AuthContext)
 
     const LogInData = Object.freeze({
         email: "",
@@ -29,20 +31,31 @@ export default function LogIn(){
 
     const handleSubmit = (e) =>{
         e.preventDefault();
+        console.log("handleSubmit triggered");  // ✅ Check 1
         axiosInstance.post('/jwt/create/',{
             email: loginData.email,
             password: loginData.password,
         })
         .then((res) => {
-            if (res.status === 201){
+            console.log("Request successful:", res);  // ✅ Check 2
+            if (res.status === 201 || res.status === 200 ){
             localStorage.setItem('access_token', res.data.access);
             localStorage.setItem('refresh_token', res.data.refresh);
             axiosInstance.defaults.headers['Authorization'] = 
-                'JWT ' + localStorage.getItem('access_token');
-                window.location.href = '/title';
+            'JWT ' + localStorage.getItem('access_token');
+            setAuthenticated(true)
+            navigate('/title');
+            
+            
+           
+
             }
-            console.log(res.data)
+            
         })
+        .catch((err) => {
+            console.error("Login failed", err);
+            // You can show an error message to the user here
+        });
         
 
     }

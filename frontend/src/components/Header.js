@@ -17,6 +17,7 @@ function MyNavbar() {
               <NavDropdown.Item href="#action/3.2">Contact</NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item href="#action/3.3">Support</NavDropdown.Item>
+              <NavDropdown.Item href="/logout">LogOut</NavDropdown.Item>
             </NavDropdown>
           </Nav>
         </Navbar.Collapse>

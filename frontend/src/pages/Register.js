@@ -35,8 +35,8 @@ export default function SignUp(){
             re_password: signupData.re_password
         })
         .then((res) => {
-            if (res.status === 201){
-                window.location.href = '/login';
+            if (res.status === 201 || res.data === 200){
+                navigate("/login")
             }
             console.log(res.data)
         })

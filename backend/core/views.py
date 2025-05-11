@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.http import Http404
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model  
 from .models import Resume, ContactInfo, WorkExperience, ExperienceDescription, Education, Languages,Summary,Skills
 from .serializers import ResumeSerializer, ContactInfoSerializer, Educationserializer, ExperienceDesSerializer, WorkExperienceSerializer, LanguagesSerializer, SkillsSerializer, SummarySerializer
 
@@ -20,6 +20,7 @@ class ResumeList(APIView):
         serializer = ResumeSerializer(data=request.data)
         print(request.data)
         if serializer.is_valid():
+            User = get_user_model()
             admin_user = User.objects.get(is_superuser=True)
             serializer.save(user=admin_user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)

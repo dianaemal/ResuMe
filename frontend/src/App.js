@@ -18,6 +18,8 @@ import Summary from './pages/Summary';
 import Resume from './pages/Resume';
 import SignUp from './pages/Register';
 import LogIn from './pages/Login';
+import ProtectedRoute from './ProtectedRout';
+import LogOut from './pages/Logout';
 
 function App() {
   return (
@@ -26,23 +28,25 @@ function App() {
       <Header/>
      <Routes>
        <Route path="/" element={<HomePage />} />
-       <Route path="/title" element={<Title/>}/>
-       <Route path="/title/:id" element={<Title/>}/>
-       <Route path="/contact-info" element ={<ContactInfo/>}/>
-       <Route path="/contact-info/:urlId" element={<ContactInfo />} />
-       <Route path="/educationForm" element={<Education/>}/>
-       <Route path="/education" element={<EducationView/>}/>
-       <Route path="/edit-education" element={<EducationEdit/>}/>
-       <Route path="/work-experience" element={<WorkView/>}/>
-       <Route path="/work-experienceForm" element={<Work/>}/>
-       <Route path="/work-description" element={<WorkDescription/>}/>
-       <Route path="/edit-description" element={<EditDescription/>}/>
-       <Route path="/edit-workExperience" element={<WorkEdit/>}/>
-       <Route path="/skills" element={<Skills/>}/>
-       <Route path="/summary" element={<Summary/>}/>
-       <Route path="/resume" element={<Resume/>}/>
        <Route path="/register" element={<SignUp/>}/>
        <Route path="/login" element={<LogIn/>}/>
+       <Route path="/title" element={<ProtectedRoute><Title/></ProtectedRoute>}/>
+       <Route path="/title/:id" element={<ProtectedRoute><Title/></ProtectedRoute>}/>
+       <Route path="/contact-info" element={<ProtectedRoute><ContactInfo /></ProtectedRoute>}/>
+       <Route path="/educationForm" element={<ProtectedRoute><Education/></ProtectedRoute>}/>
+       <Route path="/education" element={<ProtectedRoute><EducationView/></ProtectedRoute>}/>
+       <Route path="/edit-education" element={<ProtectedRoute><EducationEdit/></ProtectedRoute>}/>
+       <Route path="/work-experience" element={<ProtectedRoute><WorkView/></ProtectedRoute>}/>
+       <Route path="/work-experienceForm" element={<ProtectedRoute><Work/></ProtectedRoute>}/>
+       <Route path="/work-description" element={<ProtectedRoute><WorkDescription/></ProtectedRoute>}/>
+       <Route path="/edit-description" element={<ProtectedRoute><EditDescription/></ProtectedRoute>}/>
+       <Route path="/edit-workExperience" element={<ProtectedRoute><WorkEdit/></ProtectedRoute>}/>
+       <Route path="/skills" element={<ProtectedRoute><Skills/></ProtectedRoute>}/>
+       <Route path="/summary" element={<ProtectedRoute><Summary/></ProtectedRoute>}/>
+       <Route path="/resume" element={<ProtectedRoute><Resume/></ProtectedRoute>}/>
+       <Route path="/logout" element={<ProtectedRoute><LogOut/></ProtectedRoute>}/>
+       
+       
        
        {/* You can add more routes for other pages */}
      </Routes>
