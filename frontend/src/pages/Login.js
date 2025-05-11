@@ -34,12 +34,12 @@ export default function LogIn(){
             password: loginData.password,
         })
         .then((res) => {
-            if (res.ok){
+            if (res.status === 201){
             localStorage.setItem('access_token', res.data.access);
             localStorage.setItem('refresh_token', res.data.refresh);
             axiosInstance.defaults.headers['Authorization'] = 
                 'JWT ' + localStorage.getItem('access_token');
-                navigate('/title');
+                window.location.href = '/title';
             }
             console.log(res.data)
         })

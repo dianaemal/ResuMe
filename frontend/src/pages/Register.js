@@ -1,5 +1,4 @@
 import axiosInstance from "../axios";
-import react from 'react';
 import { useState } from "react";
 import {useNavigate,  Link } from "react-router-dom";
 
@@ -36,8 +35,8 @@ export default function SignUp(){
             re_password: signupData.re_password
         })
         .then((res) => {
-            if (res.ok){
-                navigate('/login')
+            if (res.status === 201){
+                window.location.href = '/login';
             }
             console.log(res.data)
         })
