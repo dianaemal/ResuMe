@@ -7,7 +7,7 @@ function HomePage() {
   const navigate = useNavigate();
 
   const handleClick = ()=>{
-    navigate('/title')
+    navigate('/dashboard')
 
   }
     

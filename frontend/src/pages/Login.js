@@ -3,6 +3,7 @@ import react, { useContext } from 'react';
 import { useState } from "react";
 import {useNavigate,  Link } from "react-router-dom";
 import { AuthContext } from "../AuthContext";
+import { jwtDecode }  from "jwt-decode";
 
 
 
@@ -32,7 +33,7 @@ export default function LogIn(){
     const handleSubmit = (e) =>{
         e.preventDefault();
         console.log("handleSubmit triggered");  // ✅ Check 1
-        axiosInstance.post('/jwt/create/',{
+        axiosInstance.post('/auth/jwt/create/',{
             email: loginData.email,
             password: loginData.password,
         })
@@ -44,7 +45,11 @@ export default function LogIn(){
             axiosInstance.defaults.headers['Authorization'] = 
             'JWT ' + localStorage.getItem('access_token');
             setAuthenticated(true)
-            navigate('/title');
+            const token = localStorage.getItem('access_token')
+            const decode = jwtDecode(token)
+            console.log(decode)
+            
+            navigate('/dashboard');
             
             
            

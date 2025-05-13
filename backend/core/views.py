@@ -4,29 +4,36 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.http import Http404
-from django.contrib.auth import get_user_model  
+from django.contrib.auth import get_user_model 
+from rest_framework.permissions import IsAuthenticated
 from .models import Resume, ContactInfo, WorkExperience, ExperienceDescription, Education, Languages,Summary,Skills
 from .serializers import ResumeSerializer, ContactInfoSerializer, Educationserializer, ExperienceDesSerializer, WorkExperienceSerializer, LanguagesSerializer, SkillsSerializer, SummarySerializer
 
 
 class ResumeList(APIView):
 
+    permission_classes = [IsAuthenticated]
+    
     def get(self, request):
+        print("Authorization header:", request.META.get('HTTP_AUTHORIZATION'))
         resumes = Resume.objects.all()
         serializer = ResumeSerializer(resumes, many=True)
         return Response(serializer.data)
     
     def post(self, request):
+        print("Auth:", request.auth)
+        print("User:", request.user)
         serializer = ResumeSerializer(data=request.data)
         print(request.data)
         if serializer.is_valid():
-            User = get_user_model()
-            admin_user = User.objects.get(is_superuser=True)
-            serializer.save(user=admin_user)
+            #User = get_user_model()
+           # admin_user = User.objects.get(is_superuser=True)
+            serializer.save(user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class ResumeDetails(APIView):
+    permission_classes = [IsAuthenticated]
     def get_obj(self, pk):
         try:
             return Resume.objects.get(id=pk)
@@ -53,6 +60,7 @@ class ResumeDetails(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class ContactDetails(APIView):
+    permission_classes = [IsAuthenticated]
     def get_obj(self, pk):
         try:
             return ContactInfo.objects.get(resume = pk)
@@ -90,6 +98,7 @@ class ContactDetails(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 class EducationDetails(APIView):
+    permission_classes = [IsAuthenticated]
     def get_obj(self, pk, E_id):
         try:
             return Education.objects.get(resume = pk, id = E_id)
@@ -144,6 +153,7 @@ class EducationDetails(APIView):
             return Response({"detail": "Education not found."}, status=status.HTTP_404_NOT_FOUND)
 
 class WorkDetails(APIView):
+    permission_classes = [IsAuthenticated]
     def get_obj(self, pk, W_id):
         try:
             work = WorkExperience.objects.get(resume = pk, id = W_id)
@@ -190,6 +200,7 @@ class WorkDetails(APIView):
             return Response({"detail": "Work experience not found."}, status=status.HTTP_404_NOT_FOUND)
         
 class DescriptionDetails(APIView):
+    permission_classes = [IsAuthenticated]
     def get_obj(self, W_id):
         try:
             description = ExperienceDescription.objects.get(work = W_id)
@@ -227,6 +238,7 @@ class DescriptionDetails(APIView):
     
 
 class SkillsDetails(APIView):
+    permission_classes = [IsAuthenticated]
     def get_obj(self, pk):
         try:
             return Skills.objects.get(resume=pk)
@@ -264,6 +276,7 @@ class SkillsDetails(APIView):
         
 
 class SummaryDetails(APIView):
+    permission_classes = [IsAuthenticated]
     def get_obj(self, pk):
         try:
             summary = Summary.objects.get(resume=pk)
@@ -304,6 +317,7 @@ class SummaryDetails(APIView):
             return Response({"detail": "Work experience not found."}, status=status.HTTP_404_NOT_FOUND)
 
 class AllResumeData(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self, request, pk):
 
         constactInfo = ContactInfo.objects.get(resume = pk)

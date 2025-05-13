@@ -1,6 +1,7 @@
 import React from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import axiosInstance from '../axios';
 function EducationView(){
     const location = useLocation();
     const resumeId = location.state?.id || null;
@@ -9,7 +10,17 @@ function EducationView(){
    
     useEffect(() =>{
         if(resumeId){
-            fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/education`)
+
+            axiosInstance.get(`/api/resumes/${resumeId}/education`)
+            .then((res)=>{
+                if (res.status === 200 || res.status === 201){
+                    if(res.data){
+                        setEducationList(res.data);
+                    }
+                }
+            })
+            .catch((err)=> console.error("Error fetching education data:", err));
+           /* fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/education`)
             .then((res)=>{
                 if(res.ok){
                     
@@ -23,7 +34,7 @@ function EducationView(){
                     setEducationList(data);
                 }
             })
-            .catch((err)=> console.error("Error fetching education data:", err));
+            .catch((err)=> console.error("Error fetching education data:", err));*/
         }
     }, [resumeId]);
     
@@ -33,14 +44,20 @@ function EducationView(){
         console.log(resumeId)
     }
     const handleDelete = (educationId) =>{
-        fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/education/${educationId}`, {
+        axiosInstance.delete(`/api/resumes/${resumeId}/education/${educationId}`)
+        .then((res)=>{
+            if (res.status === 200 || res.status === 201){
+                setEducationList((prev)=> prev.filter((edu)=> edu.id !== educationId));
+            }
+        })
+       /* fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/education/${educationId}`, {
             method: 'DELETE'
         })
         .then((res)=>{
             if (res.ok){
                 setEducationList((prev)=> prev.filter((edu)=> edu.id !== educationId));
             }
-        })
+        })*/
     }
 
     

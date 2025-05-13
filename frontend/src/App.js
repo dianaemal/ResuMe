@@ -20,6 +20,7 @@ import SignUp from './pages/Register';
 import LogIn from './pages/Login';
 import ProtectedRoute from './ProtectedRout';
 import LogOut from './pages/Logout';
+import Dashboard from './pages/Dashboard';
 
 function App() {
   return (
@@ -45,6 +46,7 @@ function App() {
        <Route path="/summary" element={<ProtectedRoute><Summary/></ProtectedRoute>}/>
        <Route path="/resume" element={<ProtectedRoute><Resume/></ProtectedRoute>}/>
        <Route path="/logout" element={<ProtectedRoute><LogOut/></ProtectedRoute>}/>
+       <Route path="/dashboard" element={<ProtectedRoute><Dashboard/></ProtectedRoute>}/>
        
        
        

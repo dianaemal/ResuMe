@@ -1,6 +1,7 @@
 import React from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import axiosInstance from '../axios';
 function EducationEdit(){
     const location = useLocation();
     const resumeId = location.state.id ;
@@ -22,7 +23,24 @@ function EducationEdit(){
 
 useEffect(() =>{
     if(resumeId){
-        fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/education/${educationId}`)
+        axiosInstance.get(`/api/resumes/${resumeId}/education/${educationId}`)
+        .then((res)=>{
+            if (res.status === 200 || res.status === 201){
+                const data = res.data
+                setEducation({
+                    school_name : data.school_name,
+                    location : data.location,
+                    degree : data.degree,
+                    study_feild: data.study_feild,
+                    start_month : data.start_month,
+                    start_year : data.start_year,
+                    graduation_month : data.graduation_month,
+                    graduation_year : data.graduation_year
+                })
+            }
+        })
+        .catch((err)=> console.error(err))
+        /*fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/education/${educationId}`)
         .then((res)=>{
             if(res.ok){
                
@@ -44,12 +62,17 @@ useEffect(() =>{
                     graduation_year : data.graduation_year
                 })
             }
-        })
+        })*/
     }
 }, [resumeId, educationId]);
 const handleSubmit = async () =>{
+
+    const response = await axiosInstance.put(`/api/resumes/${resumeId}/education/${educationId}`, education)
+    if (response.status === 200 || response.status === 201){
+        navigate('/education', {state: {id: resumeId}});
+    }
         
-    const response = await fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/education/${educationId}`, {
+    /*const response = await fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/education/${educationId}`, {
         method: "PUT",
         headers:{
             "Content-Type": "application/json"
@@ -58,7 +81,7 @@ const handleSubmit = async () =>{
     })
     if (response.ok){
         navigate('/education', {state: {id: resumeId}});
-    }
+    }*/
 }
 
 

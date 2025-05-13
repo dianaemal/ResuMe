@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseURL = "http://127.0.0.1:8000/auth";
+const baseURL = "http://127.0.0.1:8000";
 const axiosInstance = axios.create({
     baseURL: baseURL,
     timeout: 5000,
@@ -18,6 +18,7 @@ axiosInstance.interceptors.response.use(
 
     },
     function(error){
+        console.log('Interceptor caught:', error.response?.status);
         /* Axios will have the origional request in error.config object*/
         const origionalRequest = error.config
         /* To avoid infinite loop, we add a flag _retry to our object*/
@@ -26,16 +27,17 @@ axiosInstance.interceptors.response.use(
             origionalRequest._retry = true;
             const refreshToken = localStorage.getItem('refresh_token')
             if(refreshToken){
-                return axiosInstance.post('/jwt/refresh/',{
+                console.log('refreshing....')
+                return axiosInstance.post('/auth/jwt/refresh/',{
                     refresh: refreshToken
                 })
                 .then((res)=>{
-                    if (res.status === 201){
+                    if (res.status === 201 || res.status === 200){
                         localStorage.setItem('access_token',res.data.access)
                         axiosInstance.defaults.headers['Authorization'] =
-                        'JWT' + localStorage.getItem('access_token');
+                        'JWT ' + localStorage.getItem('access_token');
                         origionalRequest.headers['Authorization'] =
-                        'JWT' + localStorage.getItem('access_token');
+                        'JWT ' + localStorage.getItem('access_token');
                         return axiosInstance(origionalRequest)
 
                     }
@@ -52,6 +54,11 @@ axiosInstance.interceptors.response.use(
 
 
                 })
+            }
+            else {
+                // No refresh token available, redirect to login
+                console.error('No refresh token available');
+                window.location.href = '/login';
             }
 
         

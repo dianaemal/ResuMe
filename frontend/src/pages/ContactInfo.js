@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import {useLocation, useNavigate } from 'react-router-dom';
+import axiosInstance from '../axios';
 function ContactInfo (){
 
     const [contactInfo, setInfo] = useState({
@@ -36,7 +37,31 @@ function ContactInfo (){
     useEffect(()=>{
        
         if(resumeId){
-            fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/contact-info`)
+            axiosInstance.get(`/api/resumes/${resumeId}/contact-info`)
+            .then((response)=>{
+                if (response.status === 200 || response.status === 201){
+                    setContactExists(true);
+                    const data = response.data
+                    if (data){
+                        setInfo({
+                            f_name: data.f_name,
+                            l_name: data.l_name,
+                            phone_number: data.phone_number,
+                            email: data.email,
+                            city: data.city,
+                            province: data.province,
+                            postal_code: data.postal_code
+                        });
+                    }
+
+                }
+
+            })
+            .catch((error) => {
+                console.error("Failed to fetch contact info:", error);
+                setContactExists(false);
+            });
+            /*fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/contact-info`)
             .then((response) =>{
                 if (response.ok) {
                     setContactExists(true); // Mark that contact info exists
@@ -59,14 +84,21 @@ function ContactInfo (){
                     });
                 }
                
-            });
+            });*/
         }
        
     }, [resumeId])
    
     const handleSubmit = async () =>{
+
+        const response = contactExists? 
+        await axiosInstance.put(`/api/resumes/${resumeId}/contact-info`, contactInfo )
+        : await axiosInstance.post(`/api/resumes/${resumeId}/contact-info`, contactInfo)
+        if (response.status === 200 || response.status === 201){
+            navigate('/education', {state: {id: resumeId}});
+        }
        
-        const method = contactExists ? 'PUT' : 'POST';
+       /* const method = contactExists ? 'PUT' : 'POST';
         const response = await fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/contact-info`, {
             method,
             headers:{
@@ -80,7 +112,7 @@ function ContactInfo (){
      
         if(response.ok){
             navigate('/education', {state: {id: resumeId}});
-        }
+        }*/
     }
 
 
