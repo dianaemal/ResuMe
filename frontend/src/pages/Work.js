@@ -1,6 +1,7 @@
 import react from "react";
 import { useState, useEffect } from 'react';
 import { useLocation,useNavigate } from 'react-router-dom';
+import axiosInstance from "../axios";
 
 function Work(){
     const location = useLocation();
@@ -18,7 +19,16 @@ function Work(){
         }
     )
     const handleSubmit = async ()=>{
-        const response = await fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/work`, {
+        const response = await axiosInstance.post(`/api/resumes/${resumeId}/work`, workExperience)
+        if (response.status === 200 || response.status === 201){
+            const data = response.data
+            const workId = data.id;
+            console.log(response.data)
+            navigate('/work-description', {state: {id: resumeId, work: workId}})
+        }
+
+
+        /*const response = await fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/work`, {
             method: "POST",
             headers:{
                 "Content-Type": "application/json"
@@ -30,7 +40,7 @@ function Work(){
             const workId = data.id;
             navigate('/work-description', {state: {id: resumeId, work: workId}})
             
-        }
+        }*/
     }
     const navigate = useNavigate();
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];

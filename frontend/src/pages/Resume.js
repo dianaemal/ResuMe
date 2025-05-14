@@ -2,9 +2,11 @@ import react from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import './Resume.css'; 
+import axiosInstance from "../axios";
 
 function Resume(){
     const location = useLocation();
+    const navigate = useNavigate()
     const resumeId = location.state?.id || null;
     console.log(resumeId)
 
@@ -13,7 +15,13 @@ function Resume(){
     const [resumeData, setData] = useState(null);
     useEffect(()=>{
         if (!resumeId) return;
-            fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/all`)
+
+            axiosInstance.get(`/api/resumes/${resumeId}/all`)
+            .then((res)=>{
+                setData(res.data);
+            })
+            .catch((err)=> console.error("Error fetching education data:", err));
+            /*fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/all`)
             .then((res)=>{
                 return res.json();
 
@@ -22,7 +30,7 @@ function Resume(){
                 setData(data);
                 console.log(resumeData.contactInfo.f_name)
             })
-            .catch((err)=> console.error("Error fetching education data:", err));
+            .catch((err)=> console.error("Error fetching education data:", err));*/
     
 
     }, [resumeId])
@@ -31,20 +39,21 @@ function Resume(){
     }
     return(
         <div class="main_container">
-            <div class="infoBox"
+            <div onClick={()=>  navigate(`/contact-info/`, {state: {id: resumeId}}) } class="infoBox"
                
             >
             <h1>{resumeData.contactInfo?.f_name} {resumeData.contactInfo?.l_name} </h1>
             
-            <p  id="info">{resumeData.contactInfo.city}, {resumeData.contactInfo.province}, {resumeData.contactInfo.postal_code} 
-                 | {resumeData.contactInfo.email} | {resumeData.contactInfo.phone_number}
+            <p  id="info">{resumeData.contactInfo?.city}, {resumeData.contactInfo?.province}, {resumeData.contactInfo?.postal_code} 
+                 | {resumeData.contactInfo?.email} | {resumeData.contactInfo?.phone_number}
             </p>
             </div>
             <div class="infoBox">
+            
             <h3>Objective</h3>
             <hr></hr>
-            <p>{resumeData.summary.summary}</p>
-            </div>
+            <p>{resumeData.summary?.summary}</p>
+            </div> 
 
             <div class="infoBox">
             <h3>Education</h3>
@@ -66,7 +75,7 @@ function Resume(){
            
             <h3>Work Experience</h3>
             <hr></hr>
-            <p>{resumeData.workExperience.map((work, index)=>(
+            <div>{resumeData.workExperience.map((work, index)=>(
                 <p key = {index}>
                     
                     
@@ -75,18 +84,18 @@ function Resume(){
                     <span class="italic">{work.position}</span>
                     <span class="float italic" >{work.start_month}, {work.start_year} - {work.end_month}, {work.end_year}</span>
                     <ul>
-                        {work.description.description.split("\n").map((exp, index)=>(
+                        {work.description?.description.split("\n").map((exp, index)=>(
                             <li key={index}>{exp}</li>
                         ))}
                     </ul>
                 </p>
-              ))}</p>
+              ))}</div>
              </div>
              <div class="infoBox">
               <h3>Skills</h3>
               <hr></hr>
               <p>
-                {resumeData.skills.skills.split("\n").map((skill, i)=>(
+                {resumeData.skills?.skills.split("\n").map((skill, i)=>(
                     <li key ={i}>{skill}</li>
                 ))}
               </p>

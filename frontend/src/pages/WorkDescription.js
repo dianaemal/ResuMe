@@ -1,6 +1,7 @@
 import react from 'react';
 import {useState, useEffect} from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import axiosInstance from '../axios';
 
 function WorkDescription(){
     const location = useLocation();
@@ -11,7 +12,11 @@ function WorkDescription(){
     
 
     const handleSubmit = async()=>{
-        const response = await fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/work/${workId}/description`, {
+        const response = await axiosInstance.post(`/api/resumes/${resumeId}/work/${workId}/description`, { description: workDescription })
+        if (response.status === 200 || response.status === 201){
+            navigate(`/work-experience`, { state: { id: resumeId } });
+        }
+        /*const response = await fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/work/${workId}/description`, {
             method: "POST",
             headers:{
                 "Content-Type": "application/json"
@@ -21,7 +26,7 @@ function WorkDescription(){
         if(response.ok){
             
             navigate(`/work-experience`, { state: { id: resumeId } });
-        }
+        }*/
         
     }
     const navigate = useNavigate();

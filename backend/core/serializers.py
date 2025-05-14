@@ -68,7 +68,7 @@ class ResumeSerializer(serializers.ModelSerializer):
     #contactInfo = serializers.SerializerMethodField()
     class Meta:
         model = Resume
-        fields = ['title', 'id']
+        fields = ['title', 'id', 'user']
         #read_only_fields  = ['contactInfo']
 
     #def get_contactInfo(self, obj):

@@ -1,6 +1,7 @@
 import react from "react";
 import { useState, useEffect } from 'react';
 import { useLocation,useNavigate } from 'react-router-dom';
+import axiosInstance from "../axios";
 
 function WorkEdit(){
     const location = useLocation();
@@ -22,7 +23,27 @@ function WorkEdit(){
     )
     useEffect(()=>{
         if(resumeId){
-            fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/work/${workId}`)
+
+            axiosInstance(`/api/resumes/${resumeId}/work/${workId}`)
+            .then((res)=>{
+                if (res.status === 200 || res.status === 201){
+                    const data = res.data
+                    if (data){
+                        setWork({
+                            position: data.position,
+                            employer: data.employer,
+                            location: data.location,
+                            start_month: data.start_month,
+                            start_year: data.start_year,
+                            end_month: data.end_month,
+                            end_year: data.end_year,
+                            still_working: data.still_working
+                        })
+                    }
+                }
+            })
+
+            /*fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/work/${workId}`)
             .then((res)=>{
                 if (res.ok){
                     
@@ -43,14 +64,20 @@ function WorkEdit(){
                         still_working: data.still_working
                     })
                 }
-            })
+            })*/
         }
        
     }, [resumeId, workId])
 
     const handleSubmit = async ()=>{
-        console.log('hey')
-        const response = await fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/work/${workId}`, {
+        const response = await axiosInstance.put(`/api/resumes/${resumeId}/work/${workId}`, workExperience)
+        if (response.status === 200 || response.status === 201){
+            const data = response.data
+            const workId = data.id;
+            navigate('/edit-description', {state: {id: resumeId, work: workId}})
+        }
+
+        /*const response = await fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/work/${workId}`, {
             method: "PUT",
             headers:{
                 "Content-Type": "application/json"
@@ -63,7 +90,7 @@ function WorkEdit(){
             const workId = data.id;
             navigate('/edit-description', {state: {id: resumeId, work: workId}})
             
-        }
+        }*/
     }
     const navigate = useNavigate();
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];

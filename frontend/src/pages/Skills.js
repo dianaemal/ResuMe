@@ -1,6 +1,7 @@
 import react from "react"
 import { useState, useEffect } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
+import axiosInstance from "../axios";
 
 function Skills(){
     const location = useLocation();
@@ -10,7 +11,13 @@ function Skills(){
     const [skillsExit, setExist] = useState(false);
 
     const handleSubmit = async ()=>{
-        const response = await fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/skills`, {
+        console.log(skills);
+        const response = skillsExit? await axiosInstance.put(`/api/resumes/${resumeId}/skills`,{skills: skills} )
+        : await axiosInstance.post(`/api/resumes/${resumeId}/skills`, {skills: skills})
+        if (response.status === 201 || response.status === 200){
+            navigate('/summary', {state: {id:resumeId}})
+        }
+        /*const response = await fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/skills`, {
             method: skillsExit? 'PUT': 'POST',
             headers:{
                 "Content-Type": "application/json"
@@ -20,11 +27,29 @@ function Skills(){
         })
         if (response.ok){
             navigate('/summary', {state: {id:resumeId}})
-        }
+        }*/
     }
     useEffect(()=>{
         if (resumeId){
-            fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/skills`)
+
+            axiosInstance.get(`/api/resumes/${resumeId}/skills`)
+            .then((res)=>{
+                if(res.status === 200 || res.status === 201){
+                    if (res.data){
+                        setExist(true)
+                        setSkills(res.data.skills)
+                    }
+                    
+
+                }
+            })
+            .catch((error) =>{
+                setExist(false)
+                console.error('Error fetching resume:', error)
+            });
+
+
+           /* fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/skills`)
            .then((res)=>{
                 if (res.ok){
                     setExist(true);
@@ -38,7 +63,7 @@ function Skills(){
                     setSkills(data.skills)
                 }
             })
-            .catch((error) => console.error('Error fetching resume:', error));
+            .catch((error) => console.error('Error fetching resume:', error));*/
         }
     }, [resumeId])
 

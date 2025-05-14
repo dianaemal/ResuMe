@@ -21,7 +21,7 @@ class ResumeList(APIView):
         return Response(serializer.data)
     
     def post(self, request):
-        print("Auth:", request.auth)
+       
         print("User:", request.user)
         serializer = ResumeSerializer(data=request.data)
         print(request.data)
@@ -319,18 +319,30 @@ class SummaryDetails(APIView):
 class AllResumeData(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request, pk):
-
-        constactInfo = ContactInfo.objects.get(resume = pk)
+        try:
+            contactInfo = ContactInfo.objects.get(resume = pk)
+            contactSerializer = ContactInfoSerializer(contactInfo).data
+        except ContactInfo.DoesNotExist:
+            contactSerializer = None
+     
         workExperience = WorkExperience.objects.filter(resume = pk)
-        education = Education.objects.filter(resume = pk)
-        skills = Skills.objects.get(resume = pk)
-        summary = Summary.objects.get(resume = pk)
-
-        contactSerializer = ContactInfoSerializer(constactInfo).data
         workSerializer = WorkExperienceSerializer(workExperience, many=True).data
+
+        education = Education.objects.filter(resume = pk)
         educationSerializer = Educationserializer(education, many=True).data
-        skillsSerializer = SkillsSerializer(skills).data
-        summarySerializer = SummarySerializer(summary).data
+
+        try:
+            skills = Skills.objects.get(resume=pk)
+            skillsSerializer = SkillsSerializer(skills).data
+        except Skills.DoesNotExist:
+            skillsSerializer = None
+
+        try:
+            summary = Summary.objects.get(resume=pk)
+            summarySerializer = SummarySerializer(summary).data
+        except Summary.DoesNotExist:
+            summarySerializer = None
+            
 
         resume_data ={
             "contactInfo": contactSerializer,

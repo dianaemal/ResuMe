@@ -1,6 +1,7 @@
 import react from "react"
 import { useState, useEffect } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
+import axiosInstance from "../axios";
 
 function Summary(){
     const location = useLocation();
@@ -10,7 +11,12 @@ function Summary(){
     const [summaryExit, setExist] = useState(false);
 
     const handleSubmit = async ()=>{
-        const response = await fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/summary`, {
+        const response = summaryExit? await axiosInstance.put(`/api/resumes/${resumeId}/summary`, {summary: summary})
+        : await axiosInstance.post(`/api/resumes/${resumeId}/summary`, {summary: summary})
+        if (response.status === 201 || response.status === 200){
+            navigate('/resume', {state: {id:resumeId}})
+        }
+        /*const response = await fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/summary`, {
             method: summaryExit? 'PUT': 'POST',
             headers:{
                 "Content-Type": "application/json"
@@ -20,11 +26,27 @@ function Summary(){
         })
         if (response.ok){
             navigate('/resume', {state: {id:resumeId}})
-        }
+        }*/
     }
     useEffect(()=>{
         if (resumeId){
-            fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/summary`)
+
+            axiosInstance.get(`/api/resumes/${resumeId}/summary`)
+            .then((res)=>{
+                if(res.status === 200 || res.status === 201){
+                    if (res.data){
+                        setExist(true)
+                        setSummary(res.data.summary)
+                    }
+                    
+
+                }
+            })
+            .catch((error) =>{
+                setExist(false)
+                console.error('Error fetching resume:', error)
+            });
+            /*fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/summary`)
             .then((res)=>{
                 if (res.ok){
                     setExist(true);
@@ -37,7 +59,7 @@ function Summary(){
                     setSummary(data.summary)
                 }
             })
-            .catch((error) => console.error('Error fetching resume:', error));
+            .catch((error) => console.error('Error fetching resume:', error));*/
         }
     }, [resumeId])
 

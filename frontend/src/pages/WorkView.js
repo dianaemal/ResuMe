@@ -1,6 +1,7 @@
 import react from 'react';
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import axiosInstance from '../axios';
 
 
 function WorkView() {
@@ -9,7 +10,16 @@ function WorkView() {
     const [workExperiences, setWork] = useState([]);
     useEffect(()=>{
         if (resumeId){
-            fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/work`)
+
+            axiosInstance.get(`/api/resumes/${resumeId}/work`)
+            .then((res)=>{
+                if (res.status === 200 || res.status === 201){
+                    setWork(res.data)
+                }
+            })
+            .catch((err)=>console.error("Error fetching education data:", err)) 
+
+            /*fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/work`)
             .then((res)=>{
                 if (res.ok){
                     return res.json();
@@ -23,7 +33,7 @@ function WorkView() {
                     
                 }
             })
-            .catch((err)=> console.error("Error fetching education data:", err));
+            .catch((err)=> console.error("Error fetching education data:", err));*/
         }
     }, [resumeId]);
     console.log(workExperiences);
