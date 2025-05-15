@@ -4,6 +4,7 @@ import { useState } from "react";
 import {useNavigate,  Link } from "react-router-dom";
 import { AuthContext } from "../AuthContext";
 import { jwtDecode }  from "jwt-decode";
+import styles from "../CSS/Login.css"
 
 
 
@@ -66,11 +67,15 @@ export default function LogIn(){
     }
 
     return(
-        <div>
-        <form onSubmit={handleSubmit}>
+        <div className="background">
+        <div className="container1">
+          <h3>LOGIN</h3>
+        <form className="form"
+        onSubmit={handleSubmit}>
+            <div className="formRow">
             <label htmlFor="email">
-                Email:
-            </label>
+                Email
+            </label><br></br>
             <input 
              id="email"
             type="email"
@@ -80,30 +85,33 @@ export default function LogIn(){
             required
 
         
-            ></input>
+            ></input></div>
+            <div className="formRow">
              <label htmlFor="password">
-                Password:
-            </label>
+                Password
+            </label><br/>
             <input 
              id="password"
-            type="text"
+            type="password"
             name="password"
             minLength={8}
             onChange={handleChange}
             value={loginData.password}
             required
 
-            ></input>
+            ></input></div>
+            <Link className="text" to="">Forgot password?</Link>
             
 
-            <button type="sumbit">Log In</button>
+            <button className="button" type="sumbit">LOGIN</button>
 
             
             
-            
+            <div className="text">Don't have an account? <Link to="/register">Sign Up</Link></div>
         </form>
-        <Link to="/register">Don't have an account? Sign Up</Link>
-        <Link to="">Forgot password?</Link>
+        
+       
+        </div>
         </div>
     )
 }

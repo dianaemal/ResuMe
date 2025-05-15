@@ -31,10 +31,17 @@ export default function Dashboard(){
             <button onClick={()=> navigate('/title')}>Create a new resume</button>
             <div>{allResumes.map((resume, index)=>(
                 <div key={index}>{resume.title}
-                {resume.user === token.user_id && ( <button >Delete</button>)
-                    && (<button onClick={()=> navigate('/resume', {state: {id:resume.id}})}>View</button>)
-                }
-                {resume.user !== token.user_id && <button >hey</button>}
+                    {resume.user === decode.user_id && (
+             
+                   <>
+                    <button>Delete</button>
+                    <button onClick={() => navigate('/resume', { state: { id: resume.id } })}>
+                    View
+                    </button>
+                    </>
+                )}
+               
+                
                 </div>
                 
             ))}

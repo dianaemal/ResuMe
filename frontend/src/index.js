@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { AuthProvider } from './AuthContext';
+import '@fontsource/inter'; // Defaults to 400 weight
+
 
 
 

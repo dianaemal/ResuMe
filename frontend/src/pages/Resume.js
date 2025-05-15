@@ -1,7 +1,7 @@
 import react from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import './Resume.css'; 
+import '../CSS/Resume.css'; 
 import axiosInstance from "../axios";
 
 function Resume(){
