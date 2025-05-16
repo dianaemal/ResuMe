@@ -1,6 +1,7 @@
 import axiosInstance from "../axios";
 import { useState } from "react";
 import {useNavigate,  Link } from "react-router-dom";
+import styles from "../CSS/Login.css"
 
 
 
@@ -46,65 +47,77 @@ export default function SignUp(){
 
 
     return(
-        <div>
-        <form onSubmit={handleSubmit}>
-            <label htmlFor="email">
-                Email:
-            </label>
-            <input 
-             id="email"
-            type="email"
-            name="email"
-            value={signupData.email}
-            onChange={handleChange}
-            required
+        <div className="background">
+            <div className="container1"
+                style={{height: '550px'}}
+            >
+                <h3 className="title">SignUP</h3>
+                <form className="form"
+                 onSubmit={handleSubmit}>
+                    <div>
+                        <label htmlFor="email">
+                            Email
+                        </label><br/>
+                        <input 
+                            id="email"
+                            type="email"
+                            name="email"
+                            value={signupData.email}
+                            onChange={handleChange}
+                            required
+                        ></input></div>
+                    <div>
+                        <label htmlFor="name">
+                            User Name
+                        </label><br/>
+                        <input 
+                        id="name"
+                        type="text"
+                        name="username"
+                        value={signupData.username}
+                        onChange={handleChange}
+                        required
 
-            ></input>
-             <label htmlFor="name">
-                User Name: 
-            </label>
-            <input 
-             id="name"
-            type="text"
-            name="username"
-            value={signupData.username}
-            onChange={handleChange}
-            required
+                        ></input>
+                    </div>
+                    <div>
+                        <label htmlFor="password">
+                            Password
+                        </label><br/>
+                        <input 
+                        id="password"
+                        type="password"
+                        name="password"
+                        minLength={8}
+                        onChange={handleChange}
+                        value={signupData.password}
+                        required
 
-            ></input>
-             <label htmlFor="password">
-                Password:
-            </label>
-            <input 
-             id="password"
-            type="text"
-            name="password"
-            minLength={8}
-            onChange={handleChange}
-            value={signupData.password}
-            required
+                        ></input>
+                    </div>
+                    <div>
+                        <label htmlFor="re_pas">
+                            Confirm Password
+                        </label><br/>
+                        <input 
+                        id="re_pas"
+                        type="password"
+                        name="re_password"
+                        minLength={8}
+                        onChange={handleChange}
+                        required
+                        value={signupData.re_password}
+                        ></input>
+                    </div>
 
-            ></input>
-             <label htmlFor="re_pas">
-                Confirm Password:
-            </label>
-            <input 
-             id="re_pas"
-            type="text"
-            name="re_password"
-            minLength={8}
-            onChange={handleChange}
-            required
-            value={signupData.re_password}
-            ></input>
-
-            <button type="sumbit">SignUp</button>
+                <button className="button" type="sumbit">SignUp</button>
             
+                <div className="text">Have an account already? <Link to="/login">Login</Link></div>
             
-            
-        </form>
-        <Link to="/login"> Already have an account? Log In</Link>
+            </form>
+           
         </div>
+    </div>
         
     )
 }

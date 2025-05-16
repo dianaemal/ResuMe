@@ -1,35 +1,25 @@
 .background{
-   
     background-image: linear-gradient(to right, rgb(90, 6, 133), rgb(227, 151, 244), rgb(90, 6, 133));
     min-height: 100vh;
     display: 'flex';
     padding-top: 50px;
     
 }
-h3{
-  
+.title{
     padding-top: 20px;
     text-align: center;
 }
 .container1{
-   
     display: flex;
     flex-direction: column;
-   
     padding: 20px;
     margin: auto;
-   
     border-radius: 10px;
-  
     max-width: 400px;
     height: 500px;
     gap: 20px;
     background-color: rgb(240, 225, 241);
-    font-family: 'Inter', sans-serif;
-  
-    
-
-    
+    font-family: 'Inter', sans-serif;   
 }
 .form {
     display: flex;
@@ -43,18 +33,22 @@ input{
     all:unset;
     background-color: rgb(245, 249, 249);
     border-radius: 6px;
-    height: 40px;
-    width: 250px ;
+    height: 25px;
+    width: 220px ;  
+    border: 1px solid #ccc;
+    outline: none;
+    padding: 10px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 .button{
     all:unset;
     text-align: center;
     border-radius: 6px;
     color: white;
-   
     height: 40px;
     background-color: rgb(157, 71, 200);
     width: 250px ;
+    
 }
 .text{
     font-size: small;

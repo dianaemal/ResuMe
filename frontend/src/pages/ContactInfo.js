@@ -2,6 +2,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import {useLocation, useNavigate } from 'react-router-dom';
 import axiosInstance from '../axios';
+import "../CSS/ContactInfo.css"
 function ContactInfo (){
 
     const [contactInfo, setInfo] = useState({
@@ -121,70 +122,96 @@ function ContactInfo (){
     
 
     return(
-        <form  onSubmit={(e)=>{
-            e.preventDefault();
-           
-            handleSubmit();
-        }}>
-             <label htmlFor='firstName'>First Name</label>
-             <input type="text"
-             id = "firstName"
-             name= "f_name"
-             value={contactInfo.f_name}
-             onChange = {handleChange}
-             >
-             </input>
-             <label htmlFor='lastName'>Last Name</label>
-             <input type="text"
-             id = "lastName"
-             name= "l_name"
-             value={contactInfo.l_name}
-             onChange = {handleChange}
-             >
-             </input>
-             <label htmlFor='city'>City</label>
-             <input type="text"
-             id = "city"
-             name= "city"
-             value={contactInfo.city}
-             onChange = {handleChange}
-             >
-             </input>
-             <label htmlFor='province'>Province</label>
-             <input type="text"
-             id = "province"
-             name= "province"
-             value={contactInfo.province}
-             onChange = {handleChange}
-             >
-             </input>
-             <label htmlFor='postalCode'>Postal Code</label>
-             <input type="text"
-             id = "postalCode"
-             name= "postal_code"
-             value={contactInfo.postal_code}
-             onChange = {handleChange}
-             >
-             </input>
-             <label htmlFor='phone'>Phone Number</label>
-             <input type="tel"
-             id = "phone"
-             name= "phone_number"
-             value={contactInfo.phone_number}
-             onChange = {handleChange}
-             >
-             </input>
-             <label htmlFor='email'>Email</label>
-             <input type="email"
-             id = "email"
-             name= "email"
-             value={contactInfo.email}
-             onChange = {handleChange}
-             >
-             </input>
-             <button  type="submit">Next</button>
-             <button type="button" onClick={handleClick1}>Back</button>
-        </form>
+        <div className='container3'>
+            <h3 className='h3'>Write your Contact information!</h3>
+            <form className='form' onSubmit={(e)=>{
+                e.preventDefault();
+            
+                handleSubmit();
+            }}>
+                <div className='flexRow1'>
+                    <div>
+                        <label htmlFor='firstName'>First Name</label><br/>
+                        <input type="text"
+                        id = "firstName"
+                        name= "f_name"
+                        value={contactInfo.f_name}
+                        onChange = {handleChange}
+                        >
+                        </input>
+                    </div>
+                    <div>
+                        <label htmlFor='lastName'>Last Name</label><br/>
+                        <input type="text"
+                        id = "lastName"
+                        name= "l_name"
+                        value={contactInfo.l_name}
+                        onChange = {handleChange}
+                        >
+                        </input>
+                    </div>
+                </div>
+                <div className='flexRow'>
+                    <div>
+                        <label htmlFor='city'>City</label><br/>
+                        <input type="text"
+                        id = "city"
+                        name= "city"
+                        value={contactInfo.city}
+                        onChange = {handleChange}
+                        >
+                        </input>
+                    </div>
+                    <div>
+                        <label htmlFor='province'>Province</label><br/>
+                        <input type="text"
+                        id = "province"
+                        name= "province"
+                        value={contactInfo.province}
+                        onChange = {handleChange}
+                        >
+                        </input>
+                    </div>
+                    <div>
+                        <label htmlFor='postalCode'>Postal Code</label><br/>
+                        <input type="text"
+                        id = "postalCode"
+                        name= "postal_code"
+                        value={contactInfo.postal_code}
+                        onChange = {handleChange}
+                        >
+                        </input>
+                    </div>
+                </div>
+                <div className='flexRow1'>
+                    <div>
+                        <label htmlFor='phone'>Phone Number</label><br/>
+                        <input type="tel"
+                        id = "phone"
+                        name= "phone_number"
+                        value={contactInfo.phone_number}
+                        onChange = {handleChange}
+                        >
+                        </input>
+                    </div>
+                    <div>
+                        <label htmlFor='email'>Email</label><br/>
+                        <input type="email"
+                        id = "email"
+                        name= "email"
+                        value={contactInfo.email}
+                        onChange = {handleChange}
+                        >
+                        </input>
+                    </div>
+                </div>
+                <div className='buttonContainer'>
+                    <button className="button2" type="button" onClick={handleClick1}> &larr; <span>Back</span></button>
+                    <button  className="button2" type="submit"><span>Next </span>&rarr;</button>
+          
+                </div>
+            </form>
+        </div>
        
     )
 }

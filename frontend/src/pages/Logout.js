@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../AuthContext";
 import { useContext } from "react";
+import styles from "../CSS/Login.css"
 
 export default function LogOut(){
     const navigate = useNavigate()
@@ -14,10 +15,16 @@ export default function LogOut(){
     }
 
     return(
-        <div>
-        <h2>Logout Page</h2>
-        <p>Are you sure that you want to logout?</p>
-        <button onClick={handleClick}>Logout</button>
+        <div className="background">
+            <div className="container1"
+                 style={{height: '250px'}}
+            >
+                <div className="form">
+                <h3>LOGOUT</h3>
+                <div>Are you sure that you want to logout?</div>
+                <button className="button" onClick={handleClick}>LOGOUT</button>
+               </div>
+            </div>
         </div>
     )
 

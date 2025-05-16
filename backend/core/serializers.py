@@ -69,7 +69,7 @@ class ResumeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Resume
         fields = ['title', 'id', 'user']
-        #read_only_fields  = ['contactInfo']
+        read_only_fields = ['user']
 
     #def get_contactInfo(self, obj):
         #contact = ContactInfo.objects.filter(resume=obj)
