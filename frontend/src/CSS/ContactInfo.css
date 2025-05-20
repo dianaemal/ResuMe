@@ -1,10 +1,30 @@
-.container3{
+.gridContainer{
+    display: grid;
+    grid-template-columns: 1fr 1.8fr 1.5fr; /* three columns */
+    gap: 20px;
+    padding: 1rem;
+    height: 90vh;
+    overflow: hidden; /* or scroll */
    
-    padding: 29px;
+}
+.progression{
+  
+    background-color: rgb(94, 20, 132);
+    min-width: 200px;
+    max-width: 200px;
+    min-height: 100%;
+ 
+}
+.container3{
+    margin-top: 40px;
+    padding: 15px;
     background-color: rgb(240, 225, 241);
-    width: 700px;
-    margin: auto;
+    width: 100%;
+   
     font-family: 'Inter', sans-serif;
+    height: 40%;
+    border-radius: 15px;
+
    
 
 }
@@ -12,6 +32,7 @@
     padding-left: 29px;
 }
 .form{
+   
     display: flex;
     flex-direction: column;
     gap: 50px;
@@ -55,4 +76,23 @@
 span{
     text-decoration: underline;
    
+}
+.button3 :hover{
+    transform: scale(1.1);
+}
+.button2 :hover{
+    text-decoration: none;
+    
+}
+.button4{
+    background-color: rgb(94, 20, 132);
+    color: white;
+    width: 140px;
+    border: none;
+    border-radius: 6px;
+    height: 40px
+                    
+}
+.button4 :hover{
+    background-color: red;
 }

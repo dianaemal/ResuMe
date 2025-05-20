@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import {useLocation, useNavigate } from 'react-router-dom';
 import axiosInstance from '../axios';
 import "../CSS/ContactInfo.css"
+import ResumePreview from './ResumePreview';
 function ContactInfo (){
 
     const [contactInfo, setInfo] = useState({
@@ -122,6 +123,11 @@ function ContactInfo (){
     
 
     return(
+        <div className='gridContainer'>
+        <div className='progression'>
+            
+
+        </div>
         <div className='container3'>
             <h3 className='h3'>Write your Contact information!</h3>
             <form className='form' onSubmit={(e)=>{
@@ -212,6 +218,11 @@ function ContactInfo (){
                 </div>
             </form>
         </div>
+        <div className='resumePreview'>
+                <ResumePreview contactInfo={contactInfo}/>
+            </div>
+        </div>
+        
        
     )
 }

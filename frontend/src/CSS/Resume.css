@@ -1,13 +1,14 @@
 
 .main_container{
     width: 210mm;  /* A4 width */
-    height: 297mm; /* A4 height */
+    height: 297mm; 
     background: white;
     padding: 20mm;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Light shadow for realism */
     border-radius: 5px; /* Optional: Slightly rounded corners */
     margin: auto;
     font-size: 12pt;
+    margin-top: 20px;
     font-family: Calibri !important;
 
 }
@@ -47,7 +48,7 @@ hr{
 .infoBox:hover {
     border: 2px solid #3b82f6;
     border-radius: 0.5cm; /* Blue border on hover */
-    
     transform: scale(1.02); /* Slight pop effect */
+    
   }
   
