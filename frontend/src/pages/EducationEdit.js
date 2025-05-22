@@ -19,6 +19,7 @@ function EducationEdit(){
         graduation_year : ""
 
     })
+     const [otherDegree, setOtherDegree] = useState(false)
 
 
 useEffect(() =>{
@@ -37,6 +38,10 @@ useEffect(() =>{
                     graduation_month : data.graduation_month,
                     graduation_year : data.graduation_year
                 })
+                if (!degrees.includes(data.degree)){
+                    setOtherDegree(true)
+                }
+                
             }
         })
         .catch((err)=> console.error(err))
@@ -65,6 +70,9 @@ useEffect(() =>{
         })*/
     }
 }, [resumeId, educationId]);
+console.log(otherDegree)
+
+
 const handleSubmit = async () =>{
 
     const response = await axiosInstance.put(`/api/resumes/${resumeId}/education/${educationId}`, education)
@@ -87,11 +95,18 @@ const handleSubmit = async () =>{
 
 const handleChange = (e) =>{
     const {name, value} = e.target;
-    setEducation((prev) =>({
-        ...prev,
-        [name]: value
+        if (name === 'degree' && value === "  "){
+            setOtherDegree(true)
+        }
+        else if(degrees.includes(value)){
+            setOtherDegree(false)
+        }
+        setEducation((prev) =>({
+            ...prev,
+            [name]: value
 
-    }))
+        }))
+        console.log(value)
 }
 
 const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -119,92 +134,131 @@ const navigate = useNavigate();
 
 return(
     
-        <form onSubmit={(e) =>{
-            e.preventDefault();
-            handleSubmit();
-        }}>
-            <label htmlFor="school ">School Name</label>
-            <input type="text"
-                name='school_name' 
-                id="school"
-                value={education.school_name}
-                onChange={handleChange}
-    
-            /> 
-            <label htmlFor="location" >Location</label>
-            <input type="text"
-                name='location' 
-                id="location"
-                placeholder='Abbotsford, BC'
-                value={education.location}
-                onChange={handleChange}
-            /> 
-            <label htmlFor="degree" >Degree</label>
-            <select id="degree" name="degree" value={education.degree}  onChange={handleChange}>
-                <option value="">--Select--</option>
-                {degrees.map((degree, index) =>(
-                    <option key={index} value={degree}>{degree}</option>
+    <div className='gridContainer'>
+        <div className='progression'></div>
+        <div className='container3' style={{height: '100%', marginTop: '0'}}>
+            <h3 className='h3'>Write your Contact information!</h3>
+            <form onSubmit={(e) =>{
+                e.preventDefault();
+                handleSubmit();
+            }}>
+                <div className='flexRow1'>
+                    <div>
+                        <label htmlFor="school ">School Name</label><br/>
+                        <input type="text"
+                            name='school_name' 
+                            id="school"
+                            value={education.school_name}
+                            onChange={handleChange}
                     
-                ))}
-                <option value="  ">Enter another Degree</option>
-            </select>
-            {education.degree === "  " && (
-                <div>
-                    <label htmlFor="another">Enter another Degree</label>
-                    <input id="another"
-                        name="degree"
-                        value={education.degree}
-                        onChange={handleChange}
-                    />
+                        /> 
+                    </div>
+                    <div>
+                        <label htmlFor="location" >Location</label><br/>
+                        <input type="text"
+                            name='location' 
+                            id="location"
+                            placeholder='Abbotsford, BC'
+                            value={education.location}
+                            onChange={handleChange}
+                        /> 
+                    </div>
                 </div>
-                
-            )}
+                <div className='flexRow1'>
+                    <div >
+                        <div className="select-selected">
+                            <label htmlFor="degree" >Degree</label><br/>
+                            <select id="degree" name="degree" value={education.degree}  onChange={handleChange}>
+                                <option value="">{ otherDegree? 'Enter another Degree' : '__ Select__'}</option>
+                                {degrees.map((degree, index) =>(
+                                    <option key={index} value={degree}>{degree}</option>
+                                        
+                                ))}
+                                <option value="  ">Enter another Degree</option>
+                            </select>
+                        </div>
+                        {otherDegree && (
+                            <div style={{marginTop: '25px'}}>
+                                <label htmlFor="another">Enter another Degree</label><br/>
+                                <input id="another"
+                                    name="degree"
+                                    value={education.degree}
+                                    onChange={handleChange}
+                                    />
+                            </div>
+                                
+                                
+                            )}
+                        </div>
 
-            <label htmlFor="FOS">Feild of Study</label>
-            <input type="text"
-                name='study_feild' 
-                id="FOS"
-                placeholder='e.g. Computer Science'
-                value={education.study_feild}
-                onChange={handleChange}
-                disabled = {education.degree === 'High school diploma'}
-            /> 
-            <label htmlFor="s_month">Start Month</label>
-            <select id="s_month" value={education.start_month} name="start_month"  onChange={handleChange}> 
-                <option value="">--Select Month--</option>
-                {months.map((month, index) =>(
-                    <option key={index} value={month}> {month}</option>
-                ))};
-                
-            </select>
-            <label htmlFor="s_year"> Start Year</label>
-            <select id="s_year" value={education.start_year} name="start_year"  onChange={handleChange}>
-                <option value="">--Select Year--</option>
-                {years.map((year, index) =>( 
-                    <option key={index} value={year}>{year}</option>
-                ))}
-            </select>
-            <label htmlFor="g_month">Graduation Month</label>
-            <select id="g_month" value={education.graduation_month} name="graduation_month"  onChange={handleChange}>
-                <option value="">--Select Month--</option>
-                {months.map((month, index) =>(
-                    <option key={index} value={month}> {month}</option>
-                ))};
-                
-            </select>
-            <label htmlFor="g_year">Graduation Year</label>
-            <select id="g_year" value={education.graduation_year} name="graduation_year"  onChange={handleChange}>
-                <option value="">--Select Year--</option>
-                {years.map((year, index) =>(
+                        <div>
+
+                            <label htmlFor="FOS">Feild of Study</label><br/>
+                            <input type="text"
+                                name='study_feild' 
+                                id="FOS"
+                                placeholder='e.g. Computer Science'
+                                value={education.study_feild}
+                                onChange={handleChange}
+                                disabled = {education.degree === 'High school diploma'}
+                            /> 
+                        </div>
+                    </div>
+                    <div className='flexRow1'>
+                        <div className="select-selected">
+                            <label htmlFor="s_month">Start Month</label><br/>
+                            <select id="s_month" value={education.start_month} name="start_month"  onChange={handleChange}> 
+                                <option value="">--Select Month--</option>
+                                {months.map((month, index) =>(
+                                    <option key={index} value={month}> {month}</option>
+                                ))};
+                                
+                            </select>
+                        </div>
+                        <div className="select-selected">
+                            <label htmlFor="s_year"> Start Year</label><br/>
+                            <select id="s_year" value={education.start_year} name="start_year"  onChange={handleChange}>
+                                <option value="">--Select Year--</option>
+                                {years.map((year, index) =>( 
+                                    <option key={index} value={year}>{year}</option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+                    <div className='flexRow1'>
                     
-                    <option  key={index} value={year}>{year}</option>
-                ))}
-            </select>
+                        <div className="select-selected">
+                            <label htmlFor="g_month">Graduation Month</label><br/>
+                            <select id="g_month" value={education.graduation_month} name="graduation_month"  onChange={handleChange}>
+                                <option value="">--Select Month--</option>
+                                {months.map((month, index) =>(
+                                    <option key={index} value={month}> {month}</option>
+                                ))};
+                                
+                            </select>
+                        </div>
+                        <div className="select-selected">
+                            <label htmlFor="g_year">Graduation Year</label><br/>
+                            <select id="g_year" value={education.graduation_year} name="graduation_year"  onChange={handleChange}>
+                                <option value="">--Select Year--</option>
+                                {years.map((year, index) =>(
+                                    
+                                    <option  key={index} value={year}>{year}</option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
 
-           
-           
-            <button type="submit">Save</button>
-        </form>
+                
+                    <div className='buttonContainer'>
+
+                        <button className="button2" type="button"> &larr; <span>Back</span></button>
+                        <button  className="button2" type="submit"><span>Next </span>&rarr;</button>
+
+                    </div>
+                </form>
+            </div>
+        </div>
         
     
     

@@ -64,80 +64,130 @@ function Work(){
 
 
     return(
-        <form onSubmit={(e) =>{
-            e.preventDefault();
-            handleSubmit();
-        }}>
-            <label htmlFor="position">Position</label>
-            <input type="text"
-                id="position"
-                name="position"
-                value={workExperience.position}
-                onChange={handleChange}
-            ></input><br/>
-            <label htmlFor="employer">Employer</label>
-            <input type="text"
-                id="employer"
-                name="employer"
-                value={workExperience.employer}
-                onChange={handleChange}
-            ></input><br/>
-            <label htmlFor="location">Location</label>
-            <input type="text"
-                name="location"
-                id="location"
-                value={workExperience.location}
-                onChange={handleChange}
-            ></input><br/>
-            <label htmlFor="s_month">Start Month</label>
-            <select name="start_month" id="s_month" value={workExperience.start_month}  onChange={handleChange}>
-                <option value="">--Select--</option>
+        <div className="gridContainer">
+            <div className="progression">
 
-                {months.map((month, index)=>(
-                    <option key={index} value={month}>{month}</option>
-                ))}
-            </select><br/>
-            <label htmlFor="s_year">Start Year</label>
-            <select id="s_year" name="start_year" value={workExperience.start_year}  onChange={handleChange}>
-                <option value="">--Select--</option>
-                {years.map((year, index)=>(
-                    <option key={index} value={year}>{year}</option>
-                ))}
-            </select><br/>
+            </div>
+            <div className="container3" style={{height: '100%'}}>
+                <h3 className='h3'>Write your Contact information!</h3>
+                <form onSubmit={(e) =>{
+                    e.preventDefault();
+                
+                    handleSubmit();
+                }}>
+                    <div className="flexRow1">
+                        <div>
+                            <label htmlFor="position">Position</label><br/>
+                            <input type="text"
+                                id="position"
+                                name="position"
+                                value={workExperience.position}
+                                onChange={handleChange}
+                            ></input>
+                        </div>
+                        <div>
+                            <label htmlFor="employer">Employer</label><br/>
+                            <input type="text"
+                                id="employer"
+                                name="employer"
+                                value={workExperience.employer}
+                                onChange={handleChange}
+                            ></input>
+                        </div>
+                    </div>
+                    <div className="flexRow1">
+                        <div>
+                        <label htmlFor="location">Location</label><br/>
+                        <input 
+                        type="text"
+                            name="location"
+                            id="location"
+                            value={workExperience.location}
+                            onChange={handleChange}
+                        ></input>
+                    </div>
+                    </div>
+                    <div className="flexRow1">
+                        
+                        <div className="select-selected">
+                            <label htmlFor="s_month">Start Month</label><br/>
+                            <select  name="start_month" id="s_month" value={workExperience.start_month}  onChange={handleChange}>
+                                <option value="">--Select--</option>
 
-            <label htmlFor="e_month">End Month</label>
-            <select name="end_month" id="e_month" value={workExperience.end_month}
-                disabled = {workExperience.still_working}
-                onChange={handleChange}>
-                <option value="">--Select--</option>
+                                {months.map((month, index)=>(
+                                    <option key={index} value={month}>{month}</option>
+                                ))}
+                            </select>
+                        
+                        </div>
+                        <div className="select-selected">
+                       
+                            <label htmlFor="s_year">Start Year</label><br/>
+                            <select id="s_year" name="start_year" value={workExperience.start_year}  onChange={handleChange}>
+                                <option value="">--Select--</option>
+                                {years.map((year, index)=>(
+                                    <option key={index} value={year}>{year}</option>
+                                ))}
+                            </select>
+                        </div>
+                      
+                    </div>
+                    <div className="flexRow1">
+                        <div className="select-selected">
+                            <label htmlFor="e_month">End Month</label><br/>
+                            <select name="end_month" id="e_month" value={workExperience.end_month}
+                                disabled = {workExperience.still_working}
+                                onChange={handleChange}>
+                                <option value="">--Select--</option>
 
-                {months.map((month, index)=>(
-                    <option key={index} value={month}>{month}</option>
-                ))}
-            </select><br/>
-            <label htmlFor="e_year">End Year</label>
-            <select id="e_year" name="end_year" value={workExperience.end_year}
-                disabled = {workExperience.still_working} 
-                onChange={handleChange}
-            >
-                <option value="">--Select--</option>
-                {years.map((year, index)=>(
-                    <option key={index} value={year}>{year}</option>
-                ))}
-            </select><br/>
-            <input 
-            type="checkbox"
-            id="current"
-            name="still_working"
-            onChange={handleChange}
-            checked = {workExperience.still_working}
-            ></input>
-            <label htmlFor="current">I am currently working here.</label>
+                                {months.map((month, index)=>(
+                                    <option key={index} value={month}>{month}</option>
+                                ))}
+                            </select>
+                        </div>
+                      
+                        <div className="select-selected">
+                            <label htmlFor="e_year">End Year</label><br/>
+                            <select id="e_year" name="end_year" value={workExperience.end_year}
+                                disabled = {workExperience.still_working} 
+                                onChange={handleChange}
+                            >
+                                <option value="">--Select--</option>
+                                {years.map((year, index)=>(
+                                    <option key={index} value={year}>{year}</option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+                      <div >
+                        
+                            <input 
+                                type="checkbox"
+                                id="current"
+                                name="still_working"
+                                onChange={handleChange}
+                                checked = {workExperience.still_working}
+                            ></input>
+                            <label  htmlFor="current">I am currently working here.</label>
+                        </div>
+                      
+                    <div className='buttonContainer'>
 
-            <button>Next</button>
-        </form>
+                    <button className="button2" type="button"> &larr; <span>Back</span></button>
+                    <button  className="button2" type="submit"><span>Next </span>&rarr;</button>
+          
+                    </div>
+                </form>
+                
+            </div>
+            <div className='resumePreview'>
+                
+
+            </div>
+        </div>
 
     )
 
 }
+     
 export default Work;

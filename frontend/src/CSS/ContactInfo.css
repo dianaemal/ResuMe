@@ -68,6 +68,9 @@
 .flexRow1 input{
     width: 254px;
 }
+.flexRow1 select{
+    width: 254px;
+}
 .buttonContainer{
     display: flex;
     flex-direction: row;

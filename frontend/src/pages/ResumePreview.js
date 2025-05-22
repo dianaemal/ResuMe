@@ -4,7 +4,9 @@ import {useEffect, useState} from "react";
 
 export default function ResumePreview({contactInfo}){
     const resumeData = {
-        contactInfo
+        contactInfo,
+        
+
         
         
         

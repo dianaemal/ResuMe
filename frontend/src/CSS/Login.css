@@ -29,7 +29,7 @@
     align-items: center; /* centers entire form horizontally */
   }
 
-input{
+  input, select{
     all:unset;
     background-color: rgb(245, 249, 249);
     border-radius: 6px;
@@ -40,6 +40,38 @@ input{
     padding: 10px;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
+input[type="checkbox"]{
+   
+    all: revert;
+    height: 15px;
+    width: 15px;
+    margin-top: 25px;
+    margin-right: 10px;
+   
+
+    
+}
+.select-selected{
+    position: relative;
+}
+.select-selected::after {
+    content: "";
+    position: absolute;
+    top: 65%;
+    right: 12px;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid #000; /* The triangle */
+    pointer-events: none;
+  }
+  select:disabled {
+    background-color: rgb(227, 228, 228); /* Makes it look faded */
+    cursor: not-allowed;
+  }
+  
 .button{
     all:unset;
     text-align: center;
