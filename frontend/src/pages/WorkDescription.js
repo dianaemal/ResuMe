@@ -2,6 +2,8 @@ import react from 'react';
 import {useState, useEffect} from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axiosInstance from '../axios';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 function WorkDescription(){
     const location = useLocation();
@@ -41,14 +43,14 @@ function WorkDescription(){
             handleSubmit();
         }}>
             <label htmlFor="des">Write discription for your job:</label>
-            <textarea
-                name="description"
-                id="des"
+            <ReactQuill
+                
+                
                 value={workDescription}
-                onChange={(e) => setDescription(e.target.value)}
+                onChange={setDescription}
             >
 
-            </textarea>
+            </ReactQuill>
             <button type="submit">Next</button>
         </form>
     )

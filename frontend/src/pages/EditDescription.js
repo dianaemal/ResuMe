@@ -2,7 +2,8 @@ import react from 'react';
 import {useState, useEffect} from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axiosInstance from '../axios';
-
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 function EditDescription(){
     const location = useLocation();
     const resumeId = location.state?.id || null;
@@ -61,7 +62,18 @@ function EditDescription(){
     }
     const navigate = useNavigate();
 
-    
+    const modules = {
+        toolbar: [
+          ['bold', 'italic', 'underline'],
+          [{ list: 'ordered' }, { list: 'bullet' }],
+          ['undo', 'redo'],
+        ],
+        history: {
+          delay: 500,
+          maxStack: 100,
+          userOnly: true,
+        },
+      };
 
 
 
@@ -71,14 +83,15 @@ function EditDescription(){
             handleSubmit();
         }}>
             <label htmlFor="des">Write discription for your job:</label>
-            <textarea
+            <ReactQuill
                 name="description"
                 id="des"
                 value={workDescription}
-                onChange={(e) => setDescription(e.target.value)}
+                onChange={setDescription}
+                modules={modules}
             >
 
-            </textarea>
+            </ReactQuill>
             <button type="submit">Next</button>
         </form>
     )

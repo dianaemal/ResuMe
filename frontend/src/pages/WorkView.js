@@ -4,12 +4,23 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import axiosInstance from '../axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faEdit } from '@fortawesome/free-solid-svg-icons';
-
+import { ClipLoader } from 'react-spinners';
 
 function WorkView() {
     const location = useLocation();
     const resumeId = location.state?.id || null;
     const [workExperiences, setWork] = useState([]);
+    const [loading, setLoading] = useState(true)
+    useEffect(() => {
+        // Set a 3-second timer
+        
+        const timer = setTimeout(() => {
+          setLoading(false);
+        }, 600);
+    
+        // Cleanup
+        return () => clearTimeout(timer);
+      }, []);
     useEffect(()=>{
         if (resumeId){
 
@@ -17,9 +28,11 @@ function WorkView() {
             .then((res)=>{
                 if (res.status === 200 || res.status === 201){
                     setWork(res.data)
+                   
                 }
             })
             .catch((err)=>console.error("Error fetching education data:", err)) 
+        
 
             /*fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/work`)
             .then((res)=>{
@@ -38,18 +51,22 @@ function WorkView() {
             .catch((err)=> console.error("Error fetching education data:", err));*/
         }
     }, [resumeId]);
-    console.log(workExperiences);
+   
     const navigate = useNavigate();
-    return (
-        <div className='gridContainer'
-            style={
-                { gridTemplateColumns: '0.5fr 3fr',
-                    
-                
-                }
-        }
+   
+
+   
+   
+       
+   
     
-        >
+    return (
+        
+       <div className='gridContainer'
+            style={
+                { gridTemplateColumns: '0.5fr 3fr',}
+            }
+            >
             <div className='progression'></div>
             <div className='container3'
                 style={
@@ -61,23 +78,37 @@ function WorkView() {
                     }
                 }
             >
-             <h3>Experience Summary</h3>
-            <div>Enter your education experience so far, even if you are a current student or did not graduate.</div>
+                <h3>Experience Summary</h3>
 
-            {workExperiences.map((experience) => (
-                <div key={experience.id}
-                    style={
-                        {
-                            border: '3px solid rgb(94, 20, 132)',
-                            borderRadius: '10px',
-                            marginTop: "20px",
-                            padding: '25px',
-                            backgroundColor: '#f2ddf7'
-                            
-                        }
-                    }
+                <div>Enter your education experience so far, even if you are a current student or did not graduate.</div>
+                {loading ? (
+                <div
+                    style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    flexDirection: 'column',
+                    justifyItems: 'center',
+                    gap: '10px',
+                    marginTop: '20%'
+                    }}
                 >
-                    <div
+                    <ClipLoader color="rgb(94, 20, 132)" size={80} />
+                    <div style={{ color: 'rgb(94, 20, 132)', fontWeight: 'bold' }}>Loading...</div>
+                </div>
+                ) : (
+                 <>
+
+                {workExperiences.map((experience) => (
+                    <div key={experience.id}
+                        style={{
+                        border: '3px solid rgb(94, 20, 132)',
+                        borderRadius: '10px',
+                        marginTop: "20px",
+                        padding: '25px',
+                        backgroundColor: '#f2ddf7'
+                        }}
+                    >
+                       <div
                         style={{
                             display: 'flex',
 
@@ -95,9 +126,9 @@ function WorkView() {
                             <p>{experience.location} | {experience.start_month} {experience.start_year} - 
                             {experience.still_working ? "Current" : `${experience.end_month} ${experience.end_year}`}</p>
                             <div>
-                                {experience.description.description.split("\n").map((exp, index) => (
-                                    <li key={index}>{exp}</li>
-                                ))}
+                                {experience.description && (
+                                    <div dangerouslySetInnerHTML={{ __html: experience.description.description }}/>
+                                )}
                                 <div style={{marginTop: '1px',
                                            
                                            
@@ -113,7 +144,24 @@ function WorkView() {
                                             textAlign: 'left',
 
                                         }}
-                                    onClick={() => navigate("/edit-description", {state: {id: resumeId, work: experience.id}})} ><FontAwesomeIcon icon={faEdit}/><span style={{marginLeft: '5px'}}>Edit description</span></button>
+                                    onClick={()=>{
+                                        if(experience.description){
+                                            navigate("/edit-description", {
+                                                state: {
+                                                  id: resumeId,
+                                                  work: experience.id
+                                                  
+                                             }
+                                            })
+                                        }
+                                        else{
+                                            navigate('/work-description', {state: {id: resumeId, work: experience.id}})
+                                        }
+
+                                    }} 
+                                    
+                                    
+                                    ><FontAwesomeIcon icon={faEdit}/><span style={{marginLeft: '5px'}}>{experience.description? "Edit" : 'Add'} discription</span></button>
                                </div>
                             </div>
                         </div>
@@ -138,36 +186,37 @@ function WorkView() {
                 </div>
             
             ))}
-            <div
+                <div
                 style={{
                     border: '3px dashed rgb(94, 20, 132)',
                     marginTop: '20px',
                     padding: '10px',
                     textAlign: 'center',
-                    
                 }}
-            >
-            <button
-                className='button2'
-                style={{
-                   border: 'none',
-                   backgroundColor: 'white',
-                   color: 'rgb(94, 20, 132)',
-                   fontStyle: 'bold',
-                   width: '200px'
-                }} 
-            onClick={() => navigate("/Work-experienceForm", {state: {id : resumeId}})}>
-                    +<span>Add a work experience</span></button>
-            </div>
-                   
-     
-            <div className="buttonContainer" style={{marginTop: '20px',}}>
-                <button className="button4"  onClick={() =>  navigate('/education', {state: {id: resumeId}})}>Back</button>
-                <button style={{ marginLeft: 'auto',}} className="button4"
-                onClick={()=> navigate('/skills', {state: {id:resumeId}})}>Next</button>
-            </div>
-            </div>
+                >
+                    <button
+                        className='button2'
+                        style={{
+                        border: 'none',
+                        backgroundColor: 'white',
+                        color: 'rgb(94, 20, 132)',
+                        fontStyle: 'bold',
+                        width: '200px'
+                        }}
+                        onClick={() => navigate("/Work-experienceForm", { state: { id: resumeId } })}
+                    >
+                        +<span>Add a work experience</span>
+                    </button>
+                </div>
 
+                {/* Navigation buttons */}
+                <div className="buttonContainer" style={{ marginTop: '20px' }}>
+                    <button className="button4" onClick={() => navigate('/education', { state: { id: resumeId } })}>Back</button>
+                    <button style={{ marginLeft: 'auto' }} className="button4" onClick={() => navigate('/skills', { state: { id: resumeId } })}>Next</button>
+                </div>
+                </>
+                )}
+             </div>
         </div>
     )
 }
