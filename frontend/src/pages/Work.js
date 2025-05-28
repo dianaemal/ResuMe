@@ -2,7 +2,7 @@ import react from "react";
 import { useState, useEffect } from 'react';
 import { useLocation,useNavigate } from 'react-router-dom';
 import axiosInstance from "../axios";
-
+import ResumePreview from "./ResumePreview";
 function Work(){
     const location = useLocation();
     const resumeId = location.state?.id || null;
@@ -181,7 +181,7 @@ function Work(){
                 
             </div>
             <div className='resumePreview'>
-                
+                <ResumePreview prop={{...workExperience, identity: 'work', id:resumeId}} />
 
             </div>
         </div>

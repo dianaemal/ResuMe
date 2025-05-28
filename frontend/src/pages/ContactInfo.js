@@ -1,11 +1,15 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext} from 'react';
 import {useLocation, useNavigate } from 'react-router-dom';
 import axiosInstance from '../axios';
+import ResumePreview from './ResumePreview'
 import "../CSS/ContactInfo.css"
-import ResumePreview from './ResumePreview';
+
+import { ResumeContext } from '../ResumeContext';
+
 function ContactInfo (){
 
+    const {resume, setResume} = useContext(ResumeContext)
     const [contactInfo, setInfo] = useState({
         f_name: "",
         l_name: "",
@@ -16,7 +20,13 @@ function ContactInfo (){
         postal_code: ""
     });
     const [contactExists, setContactExists] = useState(false); 
-   
+    useEffect(() => {
+        setResume((prev)=>({
+            ...prev,
+            contactInfo: contactInfo
+        }))
+    }, [contactInfo]);
+    
    
     
     const location = useLocation();
@@ -63,6 +73,7 @@ function ContactInfo (){
                 console.error("Failed to fetch contact info:", error);
                 setContactExists(false);
             });
+            
             /*fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/contact-info`)
             .then((response) =>{
                 if (response.ok) {
@@ -219,7 +230,7 @@ function ContactInfo (){
             </form>
         </div>
         <div className='resumePreview'>
-                <ResumePreview contactInfo={contactInfo}/>
+        <ResumePreview prop={{...contactInfo, resume: resumeId}}/>
             </div>
         </div>
         

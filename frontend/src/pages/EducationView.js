@@ -1,6 +1,6 @@
 import React from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axiosInstance from '../axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faEdit } from '@fortawesome/free-solid-svg-icons';
@@ -10,6 +10,7 @@ function EducationView(){
     const location = useLocation();
     const resumeId = location.state?.id || null;
     const [educationList, setEducationList] = useState([]);
+
    
    
     useEffect(() =>{
@@ -45,7 +46,7 @@ function EducationView(){
             .catch((err)=> console.error("Error fetching education data:", err));*/
         
       
-    console.log(educationList)
+   
     const handleEdit = (educationId) =>{
         navigate('/edit-education', {state: {id: resumeId, E_id : educationId}});
         
@@ -53,10 +54,12 @@ function EducationView(){
     const handleDelete = (educationId) =>{
         axiosInstance.delete(`/api/resumes/${resumeId}/education/${educationId}`)
         .then((res)=>{
-            if (res.status === 200 || res.status === 201){
+            console.log(res.status)
+            if (res.status === 200 || res.status === 204){
                 setEducationList((prev)=> prev.filter((edu)=> edu.id !== educationId));
             }
         })
+      
        /* fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/education/${educationId}`, {
             method: 'DELETE'
         })
@@ -66,6 +69,7 @@ function EducationView(){
             }
         })*/
     }
+   
 
     
    
@@ -96,7 +100,7 @@ function EducationView(){
             <h3>Education Summary</h3>
             <div>Enter your education experience so far, even if you are a current student or did not graduate.</div>
 
-              {educationList.map((education) => (
+              {educationList && educationList.map((education) => (
                 <div 
                     style={
                         {
@@ -144,7 +148,8 @@ function EducationView(){
                                     
                                     
                                 }}
-                            onClick={() => handleDelete(education.id)}><FontAwesomeIcon icon={faTrash} /></button>
+                                onClick={()=> handleDelete(education.id)}
+                            ><FontAwesomeIcon icon={faTrash} /></button>
                         </div>
                     </div>
                 </div>

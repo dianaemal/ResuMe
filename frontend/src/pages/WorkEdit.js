@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useLocation,useNavigate } from 'react-router-dom';
 import axiosInstance from "../axios";
 import styles from "../CSS/Login.css"
-
+import ResumePreview from "./ResumePreview";
 function WorkEdit(){
     const location = useLocation();
     const resumeId = location.state?.id || null;
@@ -233,7 +233,7 @@ function WorkEdit(){
             </div>
             <div className='resumePreview'>
                 
-
+                <ResumePreview prop={{...workExperience, identity: 'work', workId:workId, id:resumeId}}/>
             </div>
         </div>
 

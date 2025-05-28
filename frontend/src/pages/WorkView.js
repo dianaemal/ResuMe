@@ -28,7 +28,11 @@ function WorkView() {
             .then((res)=>{
                 if (res.status === 200 || res.status === 201){
                     setWork(res.data)
+                    
                    
+                }
+                if (res.data.length === 0){
+                    setLoading(false)
                 }
             })
             .catch((err)=>console.error("Error fetching education data:", err)) 
@@ -161,7 +165,7 @@ function WorkView() {
                                     }} 
                                     
                                     
-                                    ><FontAwesomeIcon icon={faEdit}/><span style={{marginLeft: '5px'}}>{experience.description? "Edit" : 'Add'} discription</span></button>
+                                    ><FontAwesomeIcon icon={faEdit}/><span style={{marginLeft: '5px'}}>{experience.description.description !== null? "Edit" : 'Add'} discription</span></button>
                                </div>
                             </div>
                         </div>

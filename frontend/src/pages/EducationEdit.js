@@ -1,13 +1,16 @@
 import React from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import ResumePreview from './ResumePreview'
+import { useState, useEffect, useContext} from 'react';
 import axiosInstance from '../axios';
+import { ResumeContext } from '../ResumeContext';
+
 function EducationEdit(){
     const location = useLocation();
     const resumeId = location.state.id ;
     const educationId = location.state.E_id;
     //console.log(idObject)
-
+    const {resume, updateResume} = useContext(ResumeContext)
     const [education, setEducation] = useState({
         school_name : "",
         location : "",
@@ -70,6 +73,10 @@ useEffect(() =>{
         })*/
     }
 }, [resumeId, educationId]);
+
+useEffect(()=>{
+    
+},[education])
 console.log(otherDegree)
 
 
@@ -257,6 +264,9 @@ return(
 
                     </div>
                 </form>
+            </div>
+            <div>
+                <ResumePreview prop={{...education, eduId: educationId, identity: 'edu', id:resumeId}}/>
             </div>
         </div>
         

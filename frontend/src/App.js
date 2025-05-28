@@ -22,6 +22,7 @@ import ProtectedRoute from './ProtectedRout';
 import LogOut from './pages/Logout';
 import Dashboard from './pages/Dashboard';
 
+
 function App() {
   return (
 
@@ -35,7 +36,7 @@ function App() {
        <Route path="/title/:id" element={<ProtectedRoute><Title/></ProtectedRoute>}/>
        <Route path="/contact-info" element={<ProtectedRoute><ContactInfo /></ProtectedRoute>}/>
        <Route path="/educationForm" element={<ProtectedRoute><Education/></ProtectedRoute>}/>
-       <Route path="/education" element={<ProtectedRoute><EducationView/></ProtectedRoute>}/>
+       <Route path="/education" element={<ProtectedRoute><EducationView /></ProtectedRoute>}/>
        <Route path="/edit-education" element={<ProtectedRoute><EducationEdit/></ProtectedRoute>}/>
        <Route path="/work-experience" element={<ProtectedRoute><WorkView/></ProtectedRoute>}/>
        <Route path="/work-experienceForm" element={<ProtectedRoute><Work/></ProtectedRoute>}/>

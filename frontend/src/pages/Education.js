@@ -1,11 +1,15 @@
 import React from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { ResumeContext } from '../ResumeContext';
+import ResumePreview from './ResumePreview'
 import axiosInstance from '../axios';
+
 function Education(){
     const location = useLocation();
     const resumeId = location.state?.id || null;
     const [otherDegree, setOtherDegree] = useState(false)
+    const {resume} = useContext(ResumeContext)
     const [education, setEducation] = useState({
         school_name : "",
         location : "",
@@ -22,8 +26,10 @@ function Education(){
         
         const response = await axiosInstance.post(`/api/resumes/${resumeId}/education`, education)
         if (response.status === 200 || response.status === 201){
+            
             navigate('/education', {state: {id: resumeId}});
         }
+        
        /* const response = await fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/education`, {
             method: "POST",
             headers:{
@@ -52,6 +58,7 @@ function Education(){
         }))
     }
    
+   console.log(resume)
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     const years = []
     for (let i = 0; i < 46; i++){
@@ -200,6 +207,9 @@ function Education(){
 
                 </div>
             </form>
+        </div>
+        <div>
+            <ResumePreview prop={{...education, identity: 'edu', id:resumeId}}/>
         </div>
     </div>
     

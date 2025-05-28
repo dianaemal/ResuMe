@@ -3,14 +3,15 @@ import {useState, useEffect} from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axiosInstance from '../axios';
 import ReactQuill from 'react-quill';
+import ResumePreview from './ResumePreview';
 import 'react-quill/dist/quill.snow.css';
 function EditDescription(){
     const location = useLocation();
     const resumeId = location.state?.id || null;
     const workId = location.state?.work || null;
     
-    const [workDescription, setDescription] = useState("");
-
+    const [workDescription, setDescription] = useState(null);
+    console.log(workDescription)
     useEffect(()=>{
         if (resumeId && workId){
 
@@ -78,22 +79,42 @@ function EditDescription(){
 
 
     return (
-        <form onSubmit={(e)=>{
-            e.preventDefault();
-            handleSubmit();
-        }}>
-            <label htmlFor="des">Write discription for your job:</label>
-            <ReactQuill
-                name="description"
-                id="des"
-                value={workDescription}
-                onChange={setDescription}
-                modules={modules}
-            >
-
-            </ReactQuill>
-            <button type="submit">Next</button>
-        </form>
-    )
+       <div className='gridContainer'>
+                   <div className='progression'></div>
+               <div style={{width: '600px', }}>
+               <form onSubmit={(e)=>{
+                   e.preventDefault();
+                   handleSubmit();
+               }}>
+                   <h3 >Write discription for your job:</h3>
+                   <div style={{marginTop: '20px'}}>
+                   <ReactQuill className="my-editor"
+                       
+                       
+                       value={workDescription}
+                       onChange={(value)=> {
+                           if (value === '<p><br></p>'){
+                               setDescription('')
+                           }
+                           else{
+                               setDescription(value)
+                           }
+                       }}
+                           
+                           
+                   />
+                   </div>
+                   <div  style={{  position: 'relative', marginTop: '20px'}}>
+                   <button style={{right: '0', position: 'absolute'}} className='button4' type="submit">Next</button>
+                   </div>
+               </form>
+       
+               </div>
+               <div className='resumePreview'>
+                   <ResumePreview prop={{description: workDescription, identity: 'exp', workId: workId, id:resumeId}}/>
+               </div>
+               </div>
+           )
+       
 }
 export default EditDescription;
