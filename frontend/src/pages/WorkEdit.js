@@ -119,7 +119,7 @@ function WorkEdit(){
             <div className="progression">
 
             </div>
-            <div className="container3" style={{height: '100%'}}>
+            <div className="container3" style={{height: '100%',    padding: '20px'}}>
                 <h3 className='h3'>Write your Contact information!</h3>
                 <form onSubmit={(e) =>{
                     e.preventDefault();

@@ -14,11 +14,18 @@ export default function ResumeProvider({children}){
             workExperience: []
         }
     )
+    const [complete, setComplete] = useState({
+        contactInfo: false,
+        education: false,
+        workExperience: false,
+        skills: false,
+        summary: false
+    })
 
 
    
     return (
-        <ResumeContext.Provider value={{resume, setResume}}>
+        <ResumeContext.Provider value={{resume, setResume, complete, setComplete}}>
             {children}
         </ResumeContext.Provider>
     )

@@ -1,4 +1,16 @@
-
+.container_2{
+    color: red;
+    width: 210mm;  /* A4 width */
+    height: 297mm; 
+    background: white;
+    padding: 20mm;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Light shadow for realism */
+    border-radius: 5px; /* Optional: Slightly rounded corners */
+    margin: auto;
+    font-size: 12pt;
+    margin-top: 20px;
+    font-family: Calibri !important;
+}
 .main_container{
     width: 210mm;  /* A4 width */
     height: 297mm; 
@@ -13,17 +25,17 @@
 
 }
    
-h1{
+.main_container h1{
     font-size: 20pt !important;
     text-align: center;
     font-weight: bold !important;
 }
-h3{
+.main_container h3{
     font-size: 16pt !important;
     margin-bottom: 0 !important;
     font-weight: bold !important;
 }
-#info{
+.main_container #info{
     text-align: center;
     
 }
@@ -50,5 +62,41 @@ hr{
     border-radius: 0.5cm; /* Blue border on hover */
     transform: scale(1.02); /* Slight pop effect */
     
+  }
+
+  .template4 {
+    font-family: 'Helvetica Neue', sans-serif;
+    background: #fafafa;
+    padding: 20px 40px;
+    border-left: 6px solid #333;
+    color: #222;
+    width: 210mm;  /* A4 width */
+    height: 297mm; 
+    background: white;
+    padding: 20mm;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Light shadow for realism */
+    border-radius: 5px; /* Optional: Slightly rounded corners */
+    margin: auto;
+    font-size: 12pt;
+    margin-top: 20px;
+  }
+  
+  .template4 .infoBox {
+    margin: 20px 0;
+    padding: 15px;
+    border-left: 4px solid #666;
+  }
+  
+  .template4 h3 {
+    margin-bottom: 5px;
+    color: #111;
+  }
+  
+  .template4 .strong {
+    font-weight: 600;
+  }
+  
+  .template4 .italic {
+    font-style: italic;
   }
   

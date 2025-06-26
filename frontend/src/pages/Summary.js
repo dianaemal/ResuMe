@@ -1,13 +1,17 @@
 import react from "react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import axiosInstance from "../axios";
-
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import ResumePreview from "./ResumePreview";
+import { ResumeContext } from "../ResumeContext";
 function Summary(){
     const location = useLocation();
     const resumeId = location.state?.id || null;
     const navigate = useNavigate();
-    const [summary, setSummary] = useState("")
+    const {resume, setResume} = useContext(ResumeContext)
+    const [summary, setSummary] = useState(null)
     const [summaryExit, setExist] = useState(false);
 
     const handleSubmit = async ()=>{
@@ -62,25 +66,51 @@ function Summary(){
             .catch((error) => console.error('Error fetching resume:', error));*/
         }
     }, [resumeId])
+    useEffect(()=>{
+        setResume((prev)=>({
+            ...prev,
+            summary: {summary}
+    }))
 
+    },[summary])
 
 
     return (
+        <div className="gridContainer" style={{gap: '20px'}}>
+            <div className="progression"></div>
+        <div style={{width: '600px', }}>
         <form onSubmit={(e)=>{
             e.preventDefault();
             handleSubmit();
         }}>
-            <label htmlFor="summary">Write a Summary of your resume:</label>
-            <textarea 
-                id="summary"
-                name="summary"
+            <h3>Write a Summary of your resume:</h3>
+            <div style={{marginTop: '20px'}}>
+            <ReactQuill className="my-editor"
+               
                 value={summary}
-                onChange={(e)=> setSummary(e.target.value)}
-             ></textarea>
+                onChange={(value)=> {
+                    if (value === '<p><br></p>'){
+                        setSummary(null)
+                    }
+                    else{
+                        setSummary(value)
+                    }
+                }
+                }
+             />
+             </div>
 
-            <button type="submit" >Next</button>
-            <button onClick={ () => navigate("/skills", {state: {id:resumeId}})}>Back</button>
+            <div className="buttonContainer"  style={{ marginTop: '20px' }}>
+            <button className="button4" onClick={ () => navigate("/skills", {state: {id:resumeId}})}>Back</button>
+            <button style={{ marginLeft: 'auto',   }} className="button4"  type="submit" >Next</button>
+            
+            </div>
         </form>
+        </div>
+        <div className="resumePreview'">
+                <ResumePreview prop={{id:resumeId}}/>
+        </div>
+        </div>
     )
 }
 export default Summary;

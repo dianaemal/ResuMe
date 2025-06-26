@@ -15,7 +15,7 @@ class UserAccountManager(BaseUserManager):
         email = self.normalize_email(email)
         # we create a user instance using the model UserAccount:
         user = self.model(email=email, username=username)
-        # encrypts the password using Django’s hashing system because saving the actual one is unsafe:
+        # encrypts the password using Django's hashing system because saving the actual one is unsafe:
         user.set_password(password)
         user.save()
         return user
@@ -40,7 +40,7 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
     # defines other required fields line username:
     REQUIRED_FIELDS = ['username']
-    # links the custom manager to the model. Without this, Django won’t know how to create users:
+    # links the custom manager to the model. Without this, Django won't know how to create users:
     objects = UserAccountManager()
     def get_full_name(self):
         return (self.username)
@@ -51,8 +51,17 @@ class UserAccount(AbstractBaseUser, PermissionsMixin):
     
 
 class Resume(models.Model):
+    TEMPLATE_CHOICES = [
+        ('template1', 'Classic'),
+        ('template2', 'Modern'),
+        ('template3', 'Professional'),
+        ('template4', 'Creative'),
+        ('template5', 'Minimalist'),
+    ]
+    
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='resumes')
     title = models.CharField(max_length=100)
+    template = models.CharField(max_length=20, choices=TEMPLATE_CHOICES, default='template1')
     date_added = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True )
     def __str__(self):

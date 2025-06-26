@@ -4,6 +4,7 @@ import ResumePreview from './ResumePreview'
 import { useState, useEffect, useContext} from 'react';
 import axiosInstance from '../axios';
 import { ResumeContext } from '../ResumeContext';
+import SideBar from './SideBar';
 
 function EducationEdit(){
     const location = useLocation();
@@ -142,7 +143,7 @@ const navigate = useNavigate();
 return(
     
     <div className='gridContainer'>
-        <div className='progression'></div>
+        <div className='progression'><SideBar/></div>
         <div className='container3' style={{height: '100%', marginTop: '0'}}>
             <h3 className='h3'>Write your Contact information!</h3>
             <form onSubmit={(e) =>{

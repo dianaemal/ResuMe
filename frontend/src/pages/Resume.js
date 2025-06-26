@@ -11,6 +11,7 @@ function Resume(){
     console.log(resumeId)
 
     const[infoHover, setInfoHover] = useState(false)
+    const [temp, setTemp] = useState("1")
 
     const [resumeData, setData] = useState(null);
     useEffect(()=>{
@@ -32,14 +33,19 @@ function Resume(){
                 console.log(resumeData.contactInfo.f_name)
             })
             .catch((err)=> console.error("Error fetching education data:", err));*/
-    
+       
 
     }, [resumeId])
+    const handleClick = ()=>{
+        setTemp("2")
+    }
     if (!resumeData) {
         return <p>Loading resume...</p>;
     }
     return(
-        <div className="main_container">
+       < div>
+        <button onClick={handleClick}>Temp 2 </button>
+        <div className={temp === "2" ? 'template4' : 'main_container'}>
 
             {resumeData.contactInfo && 
                  <div onClick={()=>  navigate(`/contact-info/`, {state: {id: resumeId}}) } class="infoBox"
@@ -57,7 +63,7 @@ function Resume(){
             
                 <h3>Objective</h3>
                 <hr></hr>
-                <p>{resumeData.summary?.summary}</p>
+                <div dangerouslySetInnerHTML={{ __html: resumeData.summary?.summary}}/>
                 </div> 
     
             }
@@ -92,11 +98,7 @@ function Resume(){
                         
                         <span className="italic">{work.position}</span>
                         <span className="float italic" >{work.start_month}, {work.start_year} - {work.end_month}, {work.end_year}</span>
-                        <ul>
-                            {work.description?.description.split("\n").map((exp, index)=>(
-                                <li key={index}>{exp}</li>
-                            ))}
-                        </ul>
+                        <div dangerouslySetInnerHTML={{ __html: work.description?.description }}/>
                     </p>
                   ))}</div>
                  </div>
@@ -105,16 +107,13 @@ function Resume(){
                 <div className="infoBox">
                 <h3>Skills</h3>
                 <hr></hr>
-                <p>
-                  {resumeData.skills?.skills.split("\n").map((skill, i)=>(
-                      <li key ={i}>{skill}</li>
-                  ))}
-                </p>
+                <div dangerouslySetInnerHTML={{ __html: resumeData.skills?.skills}}/>
                 </div>
             }
              
 
 
+        </div>
         </div>
             
     )

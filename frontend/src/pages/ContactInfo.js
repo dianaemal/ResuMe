@@ -4,12 +4,13 @@ import {useLocation, useNavigate } from 'react-router-dom';
 import axiosInstance from '../axios';
 import ResumePreview from './ResumePreview'
 import "../CSS/ContactInfo.css"
+import SideBar from './SideBar';
 
 import { ResumeContext } from '../ResumeContext';
 
 function ContactInfo (){
 
-    const {resume, setResume} = useContext(ResumeContext)
+    const {resume, setResume, setComplete} = useContext(ResumeContext)
     const [contactInfo, setInfo] = useState({
         f_name: "",
         l_name: "",
@@ -27,10 +28,11 @@ function ContactInfo (){
         }))
     }, [contactInfo]);
     
-   
+ 
     
     const location = useLocation();
     const resumeId = location.state?.id || null;
+    console.log(resumeId)
 
     const navigate = useNavigate();
     const handleClick1 = () =>{
@@ -43,7 +45,7 @@ function ContactInfo (){
             [name]: value
 
         }))
-
+        
         
     }
     useEffect(()=>{
@@ -108,6 +110,8 @@ function ContactInfo (){
         await axiosInstance.put(`/api/resumes/${resumeId}/contact-info`, contactInfo )
         : await axiosInstance.post(`/api/resumes/${resumeId}/contact-info`, contactInfo)
         if (response.status === 200 || response.status === 201){
+           
+    
             navigate('/education', {state: {id: resumeId}});
         }
        
@@ -136,7 +140,7 @@ function ContactInfo (){
     return(
         <div className='gridContainer'>
         <div className='progression'>
-            
+            <SideBar />
 
         </div>
         <div className='container3'>
@@ -230,7 +234,7 @@ function ContactInfo (){
             </form>
         </div>
         <div className='resumePreview'>
-        <ResumePreview prop={{...contactInfo, resume: resumeId}}/>
+        <ResumePreview prop={{...contactInfo, id: resumeId}}/>
             </div>
         </div>
         

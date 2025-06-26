@@ -4,6 +4,7 @@ import { useState, useEffect, useContext } from 'react';
 import { ResumeContext } from '../ResumeContext';
 import ResumePreview from './ResumePreview'
 import axiosInstance from '../axios';
+import SideBar from './SideBar';
 
 function Education(){
     const location = useLocation();
@@ -85,7 +86,7 @@ function Education(){
     return(
         
         <div className='gridContainer'>
-        <div className='progression'></div>
+        <div className='progression'> <SideBar prop={{page: 'edu'}}/></div>
         <div className='container3' style={{height: '100%', marginTop: '0'}}>
             <h3 className='h3'>Write your Contact information!</h3>
             <form onSubmit={(e) =>{

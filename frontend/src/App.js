@@ -21,6 +21,7 @@ import LogIn from './pages/Login';
 import ProtectedRoute from './ProtectedRout';
 import LogOut from './pages/Logout';
 import Dashboard from './pages/Dashboard';
+import ResumePreview from './pages/ResumePreview';
 
 
 function App() {

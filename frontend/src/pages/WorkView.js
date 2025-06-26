@@ -1,16 +1,19 @@
-import react from 'react';
+import react, { useContext } from 'react';
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axiosInstance from '../axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { ClipLoader } from 'react-spinners';
+import SideBar from './SideBar';
+import { ResumeContext } from '../ResumeContext';
 
 function WorkView() {
     const location = useLocation();
     const resumeId = location.state?.id || null;
     const [workExperiences, setWork] = useState([]);
     const [loading, setLoading] = useState(true)
+     const {complete, setComplete} = useContext(ResumeContext)
     useEffect(() => {
         // Set a 3-second timer
         
@@ -59,7 +62,24 @@ function WorkView() {
     const navigate = useNavigate();
    
 
-   
+   useEffect(()=>{
+        if(workExperiences.length > 0){
+            setComplete((prev)=>{
+                if(!complete.workExperience){
+                    return {...prev, workExperience: true}
+                }
+                return prev
+            })
+        }
+        else{
+            setComplete((prev)=>{
+                if(complete.workExperience){
+                    return {...prev, workExperience: false}
+                }
+                return prev
+            })
+        }
+   }, [workExperiences])
    
        
    
@@ -71,7 +91,7 @@ function WorkView() {
                 { gridTemplateColumns: '0.5fr 3fr',}
             }
             >
-            <div className='progression'></div>
+            <div className='progression'> <SideBar/></div>
             <div className='container3'
                 style={
                     {  marginTop: '0',
@@ -165,7 +185,7 @@ function WorkView() {
                                     }} 
                                     
                                     
-                                    ><FontAwesomeIcon icon={faEdit}/><span style={{marginLeft: '5px'}}>{experience.description.description !== null? "Edit" : 'Add'} discription</span></button>
+                                    ><FontAwesomeIcon icon={faEdit}/><span style={{marginLeft: '5px'}}>{experience.description? "Edit" : 'Add'} discription</span></button>
                                </div>
                             </div>
                         </div>

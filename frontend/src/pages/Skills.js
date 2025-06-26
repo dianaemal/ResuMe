@@ -1,7 +1,12 @@
 import react from "react"
-import { useState, useEffect } from "react"
+import { useState, useEffect,useContext } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import axiosInstance from "../axios";
+import { ResumeContext } from "../ResumeContext";
+import ResumePreview from "./ResumePreview";
+import ReactQuill from "react-quill";
+import 'react-quill/dist/quill.snow.css';
+
 
 function Skills(){
     const location = useLocation();
@@ -9,7 +14,7 @@ function Skills(){
     const navigate = useNavigate();
     const [skills, setSkills] = useState("")
     const [skillsExit, setExist] = useState(false);
-
+    const {resume, setResume} = useContext(ResumeContext)
     const handleSubmit = async ()=>{
         console.log(skills);
         const response = skillsExit? await axiosInstance.put(`/api/resumes/${resumeId}/skills`,{skills: skills} )
@@ -66,25 +71,50 @@ function Skills(){
             .catch((error) => console.error('Error fetching resume:', error));*/
         }
     }, [resumeId])
-
+    useEffect(()=>{
+        setResume((prev)=>({
+            ...prev,
+            skills: {skills}
+        }))
+    }, [skills])
 
 
     return (
+        <div className="gridContainer" style={{gap: '40px'}}>
+            <div className="progression"></div>
+        <div style={{width: '600px', }}>
         <form onSubmit={(e)=>{
             e.preventDefault();
             handleSubmit();
         }}>
-            <label htmlFor="skills">Write your Skills:</label>
-            <textarea 
-                id="skills"
-                name="skills"
+            <h3>Write your Skills:</h3>
+            <div style={{marginTop: '20px'}}>
+            <ReactQuill 
+                className="my-editor"
                 value={skills}
-                onChange={(e)=> setSkills(e.target.value)}
-             ></textarea>
+                onChange={(value)=>{
+                    if (value === '<p><br></p>'){
+                        setSkills(null)
+                    }
+                    else{
+                        setSkills(value)
+                    }
+                }
+                } 
+             />
+             </div>
 
-            <button type="submit" >Next</button>
-            <button onClick={ () => navigate("/work-experience", {state: {id:resumeId}})}>Back</button>
+            <div className="buttonContainer"  style={{ marginTop: '20px' }}>
+            <button className="button4" onClick={ () => navigate("/work-experience", {state: {id:resumeId}})}>Back</button>
+            <button  style={{ marginLeft: 'auto',   }} className="button4"  type="submit" >Next</button>
+            
+            </div>
         </form>
+        </div>
+        <div className="resumePreview">
+            <ResumePreview prop={{id:resumeId}}/>
+        </div>
+        </div>
     )
 }
 export default Skills;
