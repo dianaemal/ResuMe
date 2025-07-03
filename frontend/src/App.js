@@ -1,4 +1,3 @@
-
 import './App.css';
 import Header from './components/Header';
 import HomePage from './components/Hompage';
@@ -22,6 +21,7 @@ import ProtectedRoute from './ProtectedRout';
 import LogOut from './pages/Logout';
 import Dashboard from './pages/Dashboard';
 import ResumePreview from './pages/ResumePreview';
+import TemplateSelector from './pages/TemplateSelector';
 
 
 function App() {
@@ -49,6 +49,7 @@ function App() {
        <Route path="/resume" element={<ProtectedRoute><Resume/></ProtectedRoute>}/>
        <Route path="/logout" element={<ProtectedRoute><LogOut/></ProtectedRoute>}/>
        <Route path="/dashboard" element={<ProtectedRoute><Dashboard/></ProtectedRoute>}/>
+       <Route path="/template-selector" element={<ProtectedRoute><TemplateSelector/></ProtectedRoute>}/>
        
        
        

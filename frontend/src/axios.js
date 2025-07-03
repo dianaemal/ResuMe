@@ -22,7 +22,7 @@ axiosInstance.interceptors.response.use(
         /* Axios will have the origional request in error.config object*/
         const origionalRequest = error.config
         /* To avoid infinite loop, we add a flag _retry to our object*/
-        if (!origionalRequest._retry && error.response.status === 401) {
+        if (!origionalRequest._retry && error.response?.status === 401) {
             /* If we get a 401 error, we will try to refresh the token*/
             origionalRequest._retry = true;
             const refreshToken = localStorage.getItem('refresh_token')

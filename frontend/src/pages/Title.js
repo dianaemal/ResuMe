@@ -2,8 +2,9 @@ import React from "react";
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
 import axiosInstance from "../axios";
+import '../CSS/Title.css';
+
 function Title(){
-   
     const location = useLocation();
     const resumeId = location.state?.id || null;
     
@@ -19,7 +20,7 @@ function Title(){
     const [validation, setvalidation] = useState(false);
     //const [flag, setFlag] = useState(false);
     
-   
+    const navigate = useNavigate();
     
     useEffect(() => {
         if(resumeId){
@@ -41,7 +42,6 @@ function Title(){
     }, [resumeId]);  // The effect runs when `resumeTitle` changes
     
     const creatTitle = async () => {
-
         const api = resumeId ? `/api/resumes/${resumeId}` : `/api/resumes/`
         try{
             const response = resumeId ?  await axiosInstance.put(api, {title: resumeTitle})
@@ -50,91 +50,51 @@ function Title(){
             const data = response.data
             console.log("Created resume:", data); // check structure
 
-            navigate(`/contact-info/`, {state: {id: data.id}});
+            // Redirect to template selector for new resumes, or contact-info for existing ones
+            if (resumeId) {
+                navigate(`/template-selector/`, {state: {id: data.id}});
+            } else {
+                navigate(`/template-selector/`, {state: {id: data.id}});
+            }
             console.log(data.id)
         }
         catch(error){
             console.error('Error creating/updating resume:', error);
-
         }
-
-       /* const method = resumeId ? 'PUT' : 'POST'
-        const api = resumeId ? `http://127.0.0.1:8000/api/resumes/${resumeId}` : `http://127.0.0.1:8000/api/resumes/`;
-
-        const response = await fetch(api, {
-            method,
-            headers:{
-                "Content-Type": "application/json",
-                "Authorization": `JWT ${accessToken}`,
-            },
-            body: JSON.stringify({
-                title: resumeTitle
-            })
-
-
-        })
-        if(response.ok){
-            
-            const data = await response.json();
-           
-            
-            navigate(`/contact-info/`, {state: {id: data.id}});
-            console.log(data.id)
-            
-           
-           
-        }*/
-       
-  
-    
-}
-
-   
-    
-    const navigate = useNavigate();
-    
-   // const handleClick = () =>{
-        
-       // if(!resumeTitle){
-          //  setError("Please provide a title.");
-           // setvalidation(false)
-       // }
-       // else{
-        //    setError("");
-           
-      //  }
-   // }
-    
+    }
 
     return(
-
-        <form onSubmit={(e) => {
-            e.preventDefault();
-            if (!resumeTitle.trim()) {
-                setError("Please provide a title.");
-                setvalidation(false);
-                return;
-            }
-            setError("");
-            //setFlag(true);
-            //console.log(flag);
-            
-            creatTitle();
-         
-        }}>
-            <label htmlFor="title" >Title of resume:</label>
-            <input id="title" type="text"
-                name="title"
-                value={resumeTitle}
-                onChange= {(e) => setTitle(e.target.value)}
-                onMouseDown={() => setvalidation(true)}
-                
-            
-            ></input>
-           
-            <button  type="submit">Next</button>
-            {!validation && errorMsg && <span>{errorMsg}</span>}
-        </form>
+        <div className="title-card-container">
+            <div className="title-card">
+                <h1 className="title-header">Name Your Resume</h1>
+                <p className="title-subtext">Give your resume a clear, professional title. This helps you organize and find it later.</p>
+                <form className="title-form" onSubmit={(e) => {
+                    e.preventDefault();
+                    if (!resumeTitle.trim()) {
+                        setError("Please provide a title.");
+                        setvalidation(false);
+                        return;
+                    }
+                    setError("");
+                    //setFlag(true);
+                    //console.log(flag);
+                    
+                    creatTitle();
+                }}>
+                    <label htmlFor="title" className="title-label">Resume Title</label>
+                    <input id="title" type="text"
+                        name="title"
+                        className="title-input"
+                        placeholder="e.g. Software Engineer Resume"
+                        value={resumeTitle}
+                        onChange= {(e) => setTitle(e.target.value)}
+                        onMouseDown={() => setvalidation(true)}
+                    />
+                    {!validation && errorMsg && <span className="title-error">{errorMsg}</span>}
+                    <button className="title-next-btn" type="submit">Next</button>
+                </form>
+            </div>
+        </div>
     )
 }
 export default Title;

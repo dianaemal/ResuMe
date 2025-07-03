@@ -320,10 +320,13 @@ class AllResumeData(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request, pk):
         try:
+            resume = Resume.objects.get(id=pk)
             contactInfo = ContactInfo.objects.get(resume = pk)
             contactSerializer = ContactInfoSerializer(contactInfo).data
         except ContactInfo.DoesNotExist:
             contactSerializer = None
+        except Resume.DoesNotExist:
+            return Response({"error": "Resume not found"}, status=status.HTTP_404_NOT_FOUND)
      
         workExperience = WorkExperience.objects.filter(resume = pk)
         workSerializer = WorkExperienceSerializer(workExperience, many=True).data
@@ -349,7 +352,8 @@ class AllResumeData(APIView):
             "workExperience": workSerializer,
             "education": educationSerializer,
             "skills": skillsSerializer,
-            "summary": summarySerializer
+            "summary": summarySerializer,
+            "template": resume.template
         }
         return Response(resume_data)
 

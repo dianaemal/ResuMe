@@ -11,6 +11,389 @@
     margin-top: 20px;
     font-family: Calibri !important;
 }
+
+/* Template 1 - Classic */
+.template1 {
+    display: flex;
+    flex-direction: row;
+    width: 210mm;
+    height: 297mm;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0,0,0,0.08);
+    border-radius: 8px;
+    margin: auto;
+    font-size: 12pt;
+    margin-top: 20px;
+    font-family: 'Segoe UI', 'Inter', Arial, sans-serif;
+    overflow: hidden;
+}
+
+.template1-sidebar {
+    width: 32%;
+    background: #f7f4ef;
+    padding: 32px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    border-right: 2px solid #ececec;
+}
+
+.template1-sidebar-section {
+    margin-bottom: 24px;
+}
+
+.template1-sidebar-section h2 {
+    font-size: 1.1rem;
+    color: #b08d57;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.template1-profile {
+    font-size: 1.05rem;
+    color: #444;
+    margin-bottom: 12px;
+    line-height: 1.6;
+}
+
+.template1-contact {
+    font-size: 0.98rem;
+    color: #555;
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+.template1-skill-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.template1-skill-bar {
+    background: #ececec;
+    border-radius: 8px;
+    overflow: hidden;
+    height: 8px;
+    margin-top: 2px;
+}
+
+.template1-skill-bar-inner {
+    background: #b08d57;
+    height: 100%;
+    border-radius: 8px;
+}
+
+.template1-main {
+    width: 68%;
+    padding: 36px 36px 36px 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.template1-main h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 2px;
+    letter-spacing: 1px;
+}
+
+.template1-main .template1-title {
+    font-size: 1.1rem;
+    color: #b08d57;
+    font-weight: 600;
+    margin-bottom: 18px;
+    letter-spacing: 1px;
+}
+
+.template1-section {
+    margin-bottom: 18px;
+}
+
+.template1-section h3 {
+    font-size: 1.1rem;
+    color: #b08d57;
+    font-weight: 700;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.template1-section .template1-job-title {
+    font-weight: 600;
+    color: #333;
+    font-size: 1.05rem;
+}
+
+.template1-section .template1-job-meta {
+    font-size: 0.98rem;
+    color: #888;
+    margin-bottom: 2px;
+}
+
+.template1-section .template1-job-desc {
+    font-size: 0.98rem;
+    color: #444;
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+.template1-education {
+    margin-top: 10px;
+}
+
+@media (max-width: 900px) {
+    .template1 {
+        flex-direction: column;
+        width: 100vw;
+        height: auto;
+    }
+    .template1-sidebar, .template1-main {
+        width: 100%;
+        padding: 24px 10px;
+    }
+}
+
+/* Template 2 - Modern */
+.template2 {
+    width: 210mm;
+    height: 297mm;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20mm;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    margin: auto;
+    font-size: 12pt;
+    margin-top: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #2c3e50;
+    position: relative;
+}
+
+.template2::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: white;
+    border-radius: 10px;
+    z-index: -1;
+}
+
+.template2 h1 {
+    font-size: 28pt !important;
+    text-align: center;
+    font-weight: 300 !important;
+    color: #667eea;
+    margin-bottom: 15px;
+    letter-spacing: 2px;
+}
+
+.template2 h3 {
+    font-size: 18pt !important;
+    margin-bottom: 10px !important;
+    font-weight: 600 !important;
+    color: #667eea;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.template2 #info {
+    text-align: center;
+    color: #7f8c8d;
+    font-size: 12pt;
+    margin-bottom: 25px;
+    font-weight: 300;
+}
+
+.template2 .infoBox {
+    margin: 20px 0;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 5px solid #667eea;
+}
+
+.template2 .infoBox:hover {
+    background: #e9ecef;
+    transform: translateX(5px);
+    transition: all 0.3s ease;
+}
+
+/* Template 3 - Professional */
+.template3 {
+    width: 210mm;
+    height: 297mm;
+    background: white;
+    padding: 20mm;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
+    border-radius: 0;
+    margin: auto;
+    font-size: 12pt;
+    margin-top: 20px;
+    font-family: 'Arial', sans-serif;
+    color: #2c3e50;
+    border: 2px solid #34495e;
+}
+
+.template3 h1 {
+    font-size: 26pt !important;
+    text-align: left;
+    font-weight: bold !important;
+    color: #34495e;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.template3 h3 {
+    font-size: 16pt !important;
+    margin-bottom: 10px !important;
+    font-weight: bold !important;
+    color: #34495e;
+    text-transform: uppercase;
+    border-bottom: 2px solid #34495e;
+    padding-bottom: 5px;
+}
+
+.template3 #info {
+    text-align: left;
+    color: #7f8c8d;
+    font-size: 11pt;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+.template3 .infoBox {
+    margin: 15px 0;
+    padding: 12px;
+    border: 1px solid #bdc3c7;
+}
+
+.template3 .infoBox:hover {
+    border: 2px solid #34495e;
+    background: #f8f9fa;
+}
+
+/* Template 4 - Creative (existing) */
+.template4 {
+    font-family: 'Helvetica Neue', sans-serif;
+    background: #fafafa;
+    padding: 20px 40px;
+    border-left: 6px solid #333;
+    color: #222;
+    width: 210mm;  /* A4 width */
+    height: 297mm; 
+    background: white;
+    padding: 20mm;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Light shadow for realism */
+    border-radius: 5px; /* Optional: Slightly rounded corners */
+    margin: auto;
+    font-size: 12pt;
+    margin-top: 20px;
+}
+
+.template4 h1 {
+    font-size: 22pt !important;
+    text-align: left;
+    font-weight: 300 !important;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.template4 h3 {
+    font-size: 16pt !important;
+    margin-bottom: 5px !important;
+    font-weight: 600 !important;
+    color: #333;
+}
+
+.template4 #info {
+    text-align: left;
+    color: #666;
+    font-size: 11pt;
+    margin-bottom: 20px;
+}
+
+.template4 .infoBox {
+    margin: 20px 0;
+    padding: 15px;
+    border-left: 4px solid #666;
+    background: #f9f9f9;
+}
+
+.template4 .infoBox:hover {
+    border-left: 4px solid #333;
+    background: #f0f0f0;
+}
+
+/* Template 5 - Minimalist */
+.template5 {
+    width: 210mm;
+    height: 297mm;
+    background: white;
+    padding: 25mm;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    border-radius: 0;
+    margin: auto;
+    font-size: 11pt;
+    margin-top: 20px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #1a1a1a;
+    line-height: 1.6;
+}
+
+.template5 h1 {
+    font-size: 20pt !important;
+    text-align: left;
+    font-weight: 400 !important;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+}
+
+.template5 h3 {
+    font-size: 14pt !important;
+    margin-bottom: 8px !important;
+    font-weight: 500 !important;
+    color: #1a1a1a;
+    text-transform: none;
+    letter-spacing: -0.3px;
+}
+
+.template5 #info {
+    text-align: left;
+    color: #666;
+    font-size: 10pt;
+    margin-bottom: 25px;
+    font-weight: 400;
+}
+
+.template5 .infoBox {
+    margin: 20px 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+}
+
+.template5 .infoBox:hover {
+    background: transparent;
+    transform: none;
+}
+
+.template5 hr {
+    border: none;
+    height: 1px;
+    background: #e0e0e0;
+    margin: 15px 0;
+}
+
+/* Common styles for all templates */
 .main_container{
     width: 210mm;  /* A4 width */
     height: 297mm; 
@@ -64,39 +447,101 @@ hr{
     
   }
 
-  .template4 {
-    font-family: 'Helvetica Neue', sans-serif;
-    background: #fafafa;
-    padding: 20px 40px;
-    border-left: 6px solid #333;
-    color: #222;
-    width: 210mm;  /* A4 width */
-    height: 297mm; 
-    background: white;
-    padding: 20mm;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Light shadow for realism */
-    border-radius: 5px; /* Optional: Slightly rounded corners */
-    margin: auto;
-    font-size: 12pt;
-    margin-top: 20px;
-  }
-  
-  .template4 .infoBox {
-    margin: 20px 0;
-    padding: 15px;
-    border-left: 4px solid #666;
-  }
-  
-  .template4 h3 {
-    margin-bottom: 5px;
-    color: #111;
-  }
-  
-  .template4 .strong {
+/* Template-specific hr styles */
+.template1 hr {
+    border: 1px solid #3498db !important;
+    opacity: 0.8 !important;
+}
+
+.template2 hr {
+    border: 1px solid #667eea !important;
+    opacity: 0.6 !important;
+}
+
+.template3 hr {
+    border: 1px solid #34495e !important;
+    opacity: 0.8 !important;
+}
+
+.template4 hr {
+    border: 1px solid #666 !important;
+    opacity: 0.7 !important;
+}
+
+.template5 hr {
+    border: none !important;
+    height: 1px !important;
+    background: #e0e0e0 !important;
+    opacity: 1 !important;
+}
+
+/* Template-specific strong and italic styles */
+.template1 .strong {
     font-weight: 600;
-  }
-  
-  .template4 .italic {
+    color: #2c3e50;
+}
+
+.template2 .strong {
+    font-weight: 600;
+    color: #667eea;
+}
+
+.template3 .strong {
+    font-weight: bold;
+    color: #34495e;
+}
+
+.template4 .strong {
+    font-weight: 600;
+    color: #333;
+}
+
+.template5 .strong {
+    font-weight: 500;
+    color: #1a1a1a;
+}
+
+.template1 .italic {
     font-style: italic;
+    color: #7f8c8d;
+}
+
+.template2 .italic {
+    font-style: italic;
+    color: #7f8c8d;
+}
+
+.template3 .italic {
+    font-style: italic;
+    color: #7f8c8d;
+}
+
+.template4 .italic {
+    font-style: italic;
+    color: #666;
+}
+
+.template5 .italic {
+    font-style: italic;
+    color: #666;
+}
+
+@media print {
+  .resume-template {
+    width: 8.5in !important;
+    min-height: 11in !important;
+    max-height: 11in !important;
+    height: 11in !important;
+    box-sizing: border-box;
+    page-break-after: always;
+    overflow: hidden !important;
+    margin: 0 auto !important;
+    background: #fff !important;
+    border: 1px solid #e5e7eb !important;
+    box-shadow: none !important;
   }
+  body {
+    background: #fff !important;
+  }
+}
   

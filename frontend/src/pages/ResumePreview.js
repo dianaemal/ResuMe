@@ -1,14 +1,13 @@
-
 import {useEffect, useState, useContext} from "react";
 import axiosInstance from "../axios";
 import { ResumeContext } from '../ResumeContext';
+import ResumeTemplateRenderer from './ResumeTemplateRenderer';
 
 
 export default function ResumePreview({prop}){
  
 
   const {resume, setResume, setComplete} = useContext(ResumeContext)
-  const [temp, setTemp] = useState("1")
   const resumeId = prop.id
 
      useEffect(() => {
@@ -88,104 +87,27 @@ export default function ResumePreview({prop}){
           
       }
   }
-  
 
-    
-     return(
-      <div
+    // Get the template class based on resume data
+    const getTemplateClass = () => {
+      if (resume && resume.template) {
+        return resume.template;
+      }
+      return 'template1'; // Default template
+    };
 
-      
-       style={{
-          transform: 'scale(0.5)',      // Shrink it down to 30%
-          transformOrigin: 'top left',// So it scales from top-left
-          width: 'fit-content',
-          height: '100%',
-          
-          
-        }}> 
-       
-      
-      <div className="template4 ">
-         
-      
-       
-          <div>
-         
-          
-        {resume.contactInfo && 
-        <div>
-          <h1>{resume.contactInfo?.f_name} {resume.contactInfo?.l_name} </h1>
-          
-          <p  id="info">{resume.contactInfo?.city}, {resume.contactInfo?.province}, {resume.contactInfo?.postal_code} 
-               | {resume.contactInfo?.email} | {resume.contactInfo?.phone_number}
-          </p>
-          </div>
-        }
-          </div>
-          {resume.summary &&
-            <div class="infoBox">
-          
-            <h3>Objective</h3>
-            <hr></hr>
-            <div dangerouslySetInnerHTML={{ __html: resume.summary?.summary}}/>
-            </div> 
-          }
-      
-        
-
-          
-          {resume.education && 
-            <div class="infoBox">
-            <h3>Education</h3>
-            <hr></hr>
-            <p>{educationList.map((edu, index)=>(
-                <p key = {index}>
-                    
-                    
-                    <span class="strong">{edu.school_name} </span> <span  class="float strong">{edu.location}</span><br></br>
-                    <span class="italic">{edu.degree} in {edu.study_feild} </span>
-                    <span class="float italic">{edu.start_month}, {edu.start_year} - {edu.graduation_month}, {edu.graduation_year}</span>
-                </p>
-            
-
-            ))}</p>
-            </div>
-          }
-         
-          
-          {resume.workExperience &&
-            <div class="infoBox">
-         
-            <h3>Work Experience</h3>
-            <hr></hr>
-            <div>{workList.map((work, index)=>(
-                <p key = {index}>
-                    
-                    
-                    <span class="strong">{work.employer}</span> <span class="float strong">{work.location}</span><br></br>
-                    
-                    <span class="italic">{work.position}</span>
-                    <span class="float italic" >{work.start_month}, {work.start_year} - {work.end_month}, {work.end_year}</span>
-                    <div dangerouslySetInnerHTML={{ __html: work.description?.description }}/>
-                </p>
-              ))}</div>
-             </div>
-          }
-          {resume.skills!== null && 
-            <div class="infoBox">
-            <h3>Skills</h3>
-            <hr></hr>
-            
-            <div dangerouslySetInnerHTML={{ __html: resume.skills?.skills}}/>
-            
-            </div>
-
-          }
-          
-           
-
+    const template = getTemplateClass();
+    // Use shared renderer for all templates
+    return (
+      <div style={{ width: '600px', height: '90%',  padding: '12px', borderRadius: '10px' }}>
+        <div style={{ transform: 'scale(0.5)', transformOrigin: 'top left', width: '600px', minHeight: '850px' }}>
+          <ResumeTemplateRenderer
+            resume={resume}
+            template={resume.template}
+            workList={workList}
+            educationList={educationList}
+          />
+        </div>
       </div>
-      </div>
-          
-  )
+    );
 }

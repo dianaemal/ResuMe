@@ -1,0 +1,146 @@
+============================
+Resume Builder Project: Change Summary
+============================
+
+This document details all the changes made to the Resume Builder project to support multiple resume templates, modern UI, and improved user experience.
+
+---
+
+1. BACKEND CHANGES
+------------------
+
+A. Models
+---------
+- **Resume Model** (`backend/core/models.py`):
+  - Added a `template` field to the `Resume` model with 5 choices: Classic, Modern, Professional, Creative, Minimalist.
+  - Updated model to store the user's selected template for each resume.
+
+B. Serializers
+--------------
+- **ResumeSerializer** (`backend/core/serializers.py`):
+  - Added the `template` field to the serializer to allow reading and updating the template from the frontend.
+
+C. Views
+--------
+- **AllResumeData API** (`backend/core/views.py`):
+  - Modified the response to include the `template` field so the frontend can render the correct template for each resume.
+
+D. Migrations
+-------------
+- Created and applied a migration to add the `template` field to the database.
+
+
+2. FRONTEND CHANGES
+-------------------
+
+A. Template System
+------------------
+- **CSS Templates** (`frontend/src/CSS/Resume.css`):
+  - Added 5 distinct CSS classes for resume templates: `.template1` to `.template5`.
+  - Each template has unique fonts, colors, and layout styles.
+
+- **ResumePreview.js**:
+  - Dynamically applies the correct template class based on the resume's `template` field from the backend.
+  - No longer hardcodes a single template.
+
+- **Resume.js**:
+  - Fetches and applies the selected template for each resume.
+  - Added a dropdown and button to allow users to quickly switch templates.
+
+B. Template Selector
+--------------------
+- **TemplateSelector.js**:
+  - New component for choosing a resume template.
+  - Fetches the current template from the backend and allows the user to select and save a new one.
+  - Handles loading and error states gracefully.
+
+- **TemplateSelector.css**:
+  - Modern, responsive styles for the template selection UI.
+  - Includes card previews, hover effects, and beautiful buttons.
+
+C. Dashboard Redesign
+---------------------
+- **Dashboard.js**:
+  - Completely redesigned with a modern, card-based layout.
+  - Shows statistics, template badges, and action buttons with icons.
+  - Responsive and visually consistent with the rest of the app.
+
+- **Dashboard.css**:
+  - New CSS file for the dashboard, using gradients, cards, and modern typography.
+  - Includes loading spinner, empty state, and responsive design.
+
+D. Title Component Redesign
+---------------------------
+- **Title.js**:
+  - Refactored to use a card-based layout with a gradient header and modern input/button styles.
+  - Improved error handling and user guidance.
+
+- **Title.css**:
+  - New CSS file for the Title component, matching the app's modern look.
+  - Responsive and visually appealing.
+
+E. General Improvements
+-----------------------
+- **axios.js**:
+  - Improved error handling in the interceptor to avoid crashes on network errors.
+
+- **App.js**:
+  - Added a route for the new TemplateSelector component.
+
+F. Bug Fixes & Quality
+----------------------
+- Added missing dependencies and improved useEffect hooks for reliability.
+- Added debug logging to help with troubleshooting.
+- Cleaned up unused variables and improved code readability.
+
+
+3. USER EXPERIENCE FLOW
+-----------------------
+- When creating a new resume, the user is prompted to name it (Title component).
+- After naming, the user is redirected to the Template Selector to choose a design.
+- The selected template is saved in the backend and used for all previews and the final resume.
+- The Dashboard provides a modern overview of all resumes, with template badges and quick actions.
+- Users can change templates at any time from the resume view or dashboard.
+
+
+4. DESIGN SYSTEM
+----------------
+- Consistent use of gradients, card layouts, and modern fonts (Inter, Segoe UI, etc.).
+- Buttons and inputs are large, accessible, and visually appealing.
+- All components are responsive and mobile-friendly.
+- Color palette: purple gradients, blue accents, clean whites, and subtle grays.
+
+
+5. FILES ADDED
+--------------
+- `frontend/src/pages/TemplateSelector.js`
+- `frontend/src/CSS/TemplateSelector.css`
+- `frontend/src/CSS/Dashboard.css`
+- `frontend/src/CSS/Title.css`
+- `CHANGES_SUMMARY.txt` (this file)
+
+
+6. FILES MODIFIED
+-----------------
+- `backend/core/models.py`
+- `backend/core/serializers.py`
+- `backend/core/views.py`
+- `frontend/src/CSS/Resume.css`
+- `frontend/src/pages/ResumePreview.js`
+- `frontend/src/pages/Resume.js`
+- `frontend/src/pages/Dashboard.js`
+- `frontend/src/pages/Title.js`
+- `frontend/src/App.js`
+- `frontend/src/axios.js`
+
+
+7. HOW TO USE
+-------------
+- Start the backend server: `python3 manage.py runserver` (in backend directory)
+- Start the frontend: `npm start` (in frontend directory)
+- Create a new resume: You will be guided through naming and template selection.
+- Enjoy a modern, beautiful, and fully functional resume builder!
+
+---
+
+**All changes are designed to provide a seamless, professional, and visually appealing user experience.** 

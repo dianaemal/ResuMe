@@ -29,7 +29,7 @@ export default function SignUp(){
 
     const handleSubmit = (e) =>{
         e.preventDefault();
-        axiosInstance.post('users/',{
+        axiosInstance.post('auth/users/',{
             email: signupData.email,
             username: signupData.username,
             password: signupData.password,

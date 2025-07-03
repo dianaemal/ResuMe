@@ -141,13 +141,11 @@ function ContactInfo (){
         <div className='gridContainer'>
         <div className='progression'>
             <SideBar />
-
         </div>
         <div className='container3'>
             <h3 className='h3'>Write your Contact information!</h3>
             <form className='form' onSubmit={(e)=>{
                 e.preventDefault();
-            
                 handleSubmit();
             }}>
                 <div className='flexRow1'>
@@ -229,13 +227,12 @@ function ContactInfo (){
                 <div className='buttonContainer'>
                     <button className="button2" type="button" onClick={handleClick1}> &larr; <span>Back</span></button>
                     <button  className="button2" type="submit"><span>Next </span>&rarr;</button>
-          
                 </div>
             </form>
         </div>
-        <div className='resumePreview'>
-        <ResumePreview prop={{...contactInfo, id: resumeId}}/>
-            </div>
+        <div className='container4'>
+            <ResumePreview prop={{...contactInfo, id: resumeId}}/>
+        </div>
         </div>
         
        
