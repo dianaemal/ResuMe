@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPhone, faEnvelope, faGraduationCap, faBriefcase, faLightbulb, faIdBadge } from '@fortawesome/free-solid-svg-icons';
 import ProgressBar from "@ramonak/react-progress-bar";
 import { ResumeContext } from "../ResumeContext";
-import "../CSS/ContactInfo.css"
+import "../CSS/FormStyles.css"
 import { Link } from "react-router-dom";
 
 export default function SideBar({prop}){

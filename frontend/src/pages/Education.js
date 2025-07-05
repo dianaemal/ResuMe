@@ -5,6 +5,7 @@ import { ResumeContext } from '../ResumeContext';
 import ResumePreview from './ResumePreview'
 import axiosInstance from '../axios';
 import SideBar from './SideBar';
+import "../CSS/FormStyles.css";
 
 function Education(){
     const location = useLocation();
@@ -88,8 +89,9 @@ function Education(){
         <div className='gridContainer'>
         <div className='progression'> <SideBar prop={{page: 'edu'}}/></div>
         <div className='container3' style={{height: '100%', marginTop: '0'}}>
-            <h3 className='h3'>Write your Contact information!</h3>
-            <form onSubmit={(e) =>{
+            <h3 className='h3'>Education Information</h3>
+            <p className='contact-description'>Tell us about your educational background. Include your degree, field of study, and graduation details to showcase your academic achievements.</p>
+            <form className="form" onSubmit={(e) =>{
             e.preventDefault();
             handleSubmit();
         }}>
@@ -202,14 +204,12 @@ function Education(){
 
             
                 <div className='buttonContainer'>
-
-                    <button className="button2" type="button"> &larr; <span>Back</span></button>
+                    <button className="button2" type="button" onClick={() => navigate('/education', {state: {id: resumeId}})}> &larr; <span>Back</span></button>
                     <button  className="button2" type="submit"><span>Next </span>&rarr;</button>
-
                 </div>
             </form>
         </div>
-        <div>
+        <div className='container4' style={{marginTop: "0", background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"}}>
             <ResumePreview prop={{...education, identity: 'edu', id:resumeId}}/>
         </div>
     </div>

@@ -3,6 +3,78 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import axiosInstance from '../axios';
 import '../CSS/TemplateSelector.css';
 
+function TemplatePreview({ id }) {
+    // Larger, more accurate preview for each template
+    if (id === 'template1') {
+        // Sidebar
+        return (
+            <div className="preview-sidebar">
+                <div className="sidebar-left">
+                    <div className="sidebar-block sidebar-contact"></div>
+                    <div className="sidebar-block sidebar-edu"></div>
+                    <div className="sidebar-block sidebar-skills"></div>
+                </div>
+                <div className="sidebar-main">
+                    <div className="sidebar-header">John Doe</div>
+                    <div className="sidebar-title">Software Engineer</div>
+                    <div className="sidebar-section sidebar-exp"></div>
+                    <div className="sidebar-section sidebar-exp2"></div>
+                </div>
+            </div>
+        );
+    } else if (id === 'template2') {
+        // Timeline
+        return (
+            <div className="preview-timeline">
+                <div className="timeline-sidebar">
+                    <div className="timeline-dot"></div>
+                    <div className="timeline-dot timeline-dot2"></div>
+                </div>
+                <div className="timeline-main">
+                    <div className="timeline-header">John Doe</div>
+                    <div className="timeline-title">Software Engineer</div>
+                    <div className="timeline-section timeline-exp"></div>
+                    <div className="timeline-section timeline-exp2"></div>
+                </div>
+            </div>
+        );
+    } else if (id === 'template3') {
+        // Modern Sidebar
+        return (
+            <div className="preview-modern-sidebar">
+                <div className="modern-sidebar-left"></div>
+                <div className="modern-sidebar-main">
+                    <div className="modern-sidebar-header">John Doe</div>
+                    <div className="modern-sidebar-title">Software Engineer</div>
+                    <div className="modern-sidebar-section modern-exp"></div>
+                    <div className="modern-sidebar-section modern-exp2"></div>
+                </div>
+            </div>
+        );
+    } else if (id === 'template4') {
+        // Modern Single Column
+        return (
+            <div className="preview-single-column">
+                <div className="single-header">John Doe</div>
+                <div className="single-title">Software Engineer</div>
+                <div className="single-section single-exp"></div>
+                <div className="single-section single-exp2"></div>
+            </div>
+        );
+    } else if (id === 'template5') {
+        // Modern Elegant
+        return (
+            <div className="preview-elegant">
+                <div className="elegant-header">John Doe</div>
+                <div className="elegant-title">Software Engineer</div>
+                <div className="elegant-section elegant-exp"></div>
+                <div className="elegant-section elegant-exp2"></div>
+            </div>
+        );
+    }
+    return null;
+}
+
 function TemplateSelector() {
     const location = useLocation();
     const navigate = useNavigate();
@@ -38,33 +110,33 @@ function TemplateSelector() {
     const templates = [
         {
             id: 'template1',
-            name: 'Classic',
-            description: 'Traditional and professional design with clean lines',
-            preview: 'Classic serif fonts with blue accents'
+            name: 'Sidebar',
+            description: 'Two-column layout with a left sidebar for contact, education, and skills.',
+            preview: 'Two-column with bold left sidebar for contact and skills.'
         },
         {
             id: 'template2',
-            name: 'Modern',
-            description: 'Contemporary design with gradient backgrounds',
-            preview: 'Sleek sans-serif with purple gradient'
+            name: 'Timeline',
+            description: 'Timeline style with a colored sidebar and clear sectioning.',
+            preview: 'Timeline layout with colored sidebar and clear sectioning.'
         },
         {
             id: 'template3',
-            name: 'Professional',
-            description: 'Corporate style with bold typography',
-            preview: 'Strong Arial fonts with dark borders'
+            name: 'Modern Sidebar',
+            description: 'Modern two-column layout with blue accents and clean lines.',
+            preview: 'Modern two-column with blue sidebar and clean lines.'
         },
         {
             id: 'template4',
-            name: 'Creative',
-            description: 'Unique design with left border accents',
-            preview: 'Helvetica with creative spacing'
+            name: 'Modern Single Column',
+            description: 'Clean, modern, single-column layout with all sections stacked.',
+            preview: 'Single-column, modern, all sections stacked vertically.'
         },
         {
             id: 'template5',
-            name: 'Minimalist',
-            description: 'Clean and simple with maximum readability',
-            preview: 'Inter font with minimal styling'
+            name: 'Modern Elegant',
+            description: 'Elegant, single-column with a colored header and gradient accent.',
+            preview: 'Elegant single-column with colored header and gradient accent.'
         }
     ];
 
@@ -120,14 +192,7 @@ function TemplateSelector() {
                         onClick={() => handleTemplateSelect(template.id)}
                     >
                         <div className={`template-preview ${template.id}`}>
-                            <div className="preview-header">
-                                <h3>John Doe</h3>
-                                <p>Software Engineer</p>
-                            </div>
-                            <div className="preview-section">
-                                <h4>Experience</h4>
-                                <p>Senior Developer at Tech Corp</p>
-                            </div>
+                            <TemplatePreview id={template.id} />
                         </div>
                         <div className="template-info">
                             <h3>{template.name}</h3>

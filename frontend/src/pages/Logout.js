@@ -16,14 +16,12 @@ export default function LogOut(){
 
     return(
         <div className="background">
-            <div className="container1"
-                 style={{height: '250px'}}
-            >
-                <div className="form">
-                <h3>LOGOUT</h3>
-                <div>Are you sure that you want to logout?</div>
-                <button className="button" onClick={handleClick}>LOGOUT</button>
-               </div>
+            <div className="login-card" style={{height: 'auto', maxWidth: '350px'}}>
+                <form className="login-form">
+                    <h3 className="login-header">LOGOUT</h3>
+                    <div>Are you sure that you want to logout?</div>
+                    <button className="login-btn" onClick={handleClick}>LOGOUT</button>
+                </form>
             </div>
         </div>
     )

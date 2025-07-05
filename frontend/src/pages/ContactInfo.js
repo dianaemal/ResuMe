@@ -3,7 +3,7 @@ import { useState, useEffect, useContext} from 'react';
 import {useLocation, useNavigate } from 'react-router-dom';
 import axiosInstance from '../axios';
 import ResumePreview from './ResumePreview'
-import "../CSS/ContactInfo.css"
+import "../CSS/FormStyles.css"
 import SideBar from './SideBar';
 
 import { ResumeContext } from '../ResumeContext';
@@ -35,8 +35,8 @@ function ContactInfo (){
     console.log(resumeId)
 
     const navigate = useNavigate();
-    const handleClick1 = () =>{
-        navigate(`/title/`, {state: {id: resumeId}});
+    const handleClick = () =>{
+        navigate(`/title`, {state: {id: resumeId}});
     }
     const handleChange = (e) =>{
         const {name, value} = e.target;
@@ -143,7 +143,8 @@ function ContactInfo (){
             <SideBar />
         </div>
         <div className='container3'>
-            <h3 className='h3'>Write your Contact information!</h3>
+            <h3 className='h3'>Personal Contact Information</h3>
+            <p className='contact-description'>Let's start by gathering your basic contact details. This information will appear at the top of your resume and help potential employers reach you.</p>
             <form className='form' onSubmit={(e)=>{
                 e.preventDefault();
                 handleSubmit();
@@ -225,14 +226,14 @@ function ContactInfo (){
                     </div>
                 </div>
                 <div className='buttonContainer'>
-                    <button className="button2" type="button" onClick={handleClick1}> &larr; <span>Back</span></button>
+                    <button className="button2" type="button" onClick={handleClick}> &larr; <span>Back</span></button>
                     <button  className="button2" type="submit"><span>Next </span>&rarr;</button>
                 </div>
             </form>
         </div>
-        <div className='container4'>
-            <ResumePreview prop={{...contactInfo, id: resumeId}}/>
-        </div>
+        <div className='container4' style={{marginTop: "0", background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"}}>
+        <ResumePreview prop={{...contactInfo, id: resumeId}}/>
+            </div>
         </div>
         
        

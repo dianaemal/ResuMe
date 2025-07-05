@@ -33,13 +33,13 @@ export default function LogIn(){
 
     const handleSubmit = (e) =>{
         e.preventDefault();
-        console.log("handleSubmit triggered");  // ✅ Check 1
+
         axiosInstance.post('/auth/jwt/create/',{
             email: loginData.email,
             password: loginData.password,
         })
         .then((res) => {
-            console.log("Request successful:", res);  // ✅ Check 2
+            
             if (res.status === 201 || res.status === 200 ){
             localStorage.setItem('access_token', res.data.access);
             localStorage.setItem('refresh_token', res.data.refresh);
@@ -68,14 +68,14 @@ export default function LogIn(){
 
     return(
         <div className="background">
-            <div className="container1">
-                <h3 className="title">LOGIN</h3>
-                <form className="form"
+            <div className="login-card">
+                <h3 className="login-header">LOGIN</h3>
+                <form className="login-form"
                     onSubmit={handleSubmit}>
                     <div>
-                        <label htmlFor="email">
+                        <label className="login-label" htmlFor="email">
                             Email
-                        </label><br></br>
+                        </label>
                         <input 
                         id="email"
                         type="email"
@@ -83,12 +83,11 @@ export default function LogIn(){
                         value={loginData.email}
                         onChange={handleChange}
                         required
-
-        
+                        className="login-input"
                     ></input>
                 </div>
                 <div>
-                    <label htmlFor="password">
+                    <label className="login-label" htmlFor="password">
                         Password
                     </label><br/>
                     <input 
@@ -99,20 +98,13 @@ export default function LogIn(){
                     onChange={handleChange}
                     value={loginData.password}
                     required
-
+                    className="login-input"
                     ></input>
                 </div>
                     <Link className="text" to="">Forgot password?</Link>
-            
-
-                    <button className="button" type="sumbit">LOGIN</button>
-
-            
-            
+                    <button className="login-btn" type="submit">LOGIN</button>
                     <div className="text">Don't have an account? <Link to="/register">Sign Up</Link></div>
                 </form>
-        
-       
             </div>
         </div>
     )

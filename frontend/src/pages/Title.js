@@ -2,7 +2,7 @@ import React from "react";
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
 import axiosInstance from "../axios";
-import '../CSS/Title.css';
+import '../CSS/FormStyles.css';
 
 function Title(){
     const location = useLocation();
@@ -64,11 +64,12 @@ function Title(){
     }
 
     return(
-        <div className="title-card-container">
-            <div className="title-card">
-                <h1 className="title-header">Name Your Resume</h1>
-                <p className="title-subtext">Give your resume a clear, professional title. This helps you organize and find it later.</p>
-                <form className="title-form" onSubmit={(e) => {
+        <div className="gridContainer">
+            <div className="progression"></div>
+            <div className="container3">
+                <h3 className="h3">Name Your Resume</h3>
+                <p className="contact-description">Give your resume a clear, professional title. This helps you organize and find it later.</p>
+                <form className="form" onSubmit={(e) => {
                     e.preventDefault();
                     if (!resumeTitle.trim()) {
                         setError("Please provide a title.");
@@ -81,18 +82,26 @@ function Title(){
                     
                     creatTitle();
                 }}>
-                    <label htmlFor="title" className="title-label">Resume Title</label>
-                    <input id="title" type="text"
-                        name="title"
-                        className="title-input"
-                        placeholder="e.g. Software Engineer Resume"
-                        value={resumeTitle}
-                        onChange= {(e) => setTitle(e.target.value)}
-                        onMouseDown={() => setvalidation(true)}
-                    />
-                    {!validation && errorMsg && <span className="title-error">{errorMsg}</span>}
-                    <button className="title-next-btn" type="submit">Next</button>
+                    <div className="flexRow1">
+                        <div>
+                            <label htmlFor="title">Resume Title</label><br/>
+                            <input id="title" type="text"
+                                name="title"
+                                placeholder="e.g. Software Engineer Resume"
+                                value={resumeTitle}
+                                onChange= {(e) => setTitle(e.target.value)}
+                                onMouseDown={() => setvalidation(true)}
+                            />
+                        </div>
+                    </div>
+                    {!validation && errorMsg && <span style={{color: 'red', fontSize: '0.9rem'}}>{errorMsg}</span>}
+                    <div className="buttonContainer">
+                        <div></div>
+                        <button className="button2" type="submit"><span>Next</span></button>
+                    </div>
                 </form>
+            </div>
+            <div className="container4" style={{marginTop: "0", background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"}}>
             </div>
         </div>
     )

@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import axiosInstance from '../axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faEdit } from '@fortawesome/free-solid-svg-icons';
-import "../CSS/ContactInfo.css"
+import "../CSS/FormStyles.css"
 import SideBar from './SideBar';
 import { ResumeContext } from "../ResumeContext";
 function EducationView(){
@@ -105,12 +105,7 @@ function EducationView(){
     const navigate = useNavigate();
    
     return (
-        <div className='gridContainer'
-            style={
-                { gridTemplateColumns: '0.5fr 3fr',
-                   
-                }
-            }
+        <div className='gridContainer education-view-grid'
         
         >
           <div className='progression'> <SideBar /></div>
@@ -124,14 +119,15 @@ function EducationView(){
             }
           
           >
-            <h3>Education Summary</h3>
-            <div>Enter your education experience so far, even if you are a current student or did not graduate.</div>
+            <h3 className='h3' style={{textAlign: 'left'}}>Education Summary</h3>
+            <div className='contact-description' style={{textAlign: 'left', marginLeft: '0', maxWidth: '100%'}}>Enter your education experience so far, even if you are a current student or did not graduate.</div>
 
               {educationList && educationList.map((education) => (
                 <div 
+                    className="education-card"
                     style={
                         {
-                            border: '3px solid rgb(94, 20, 132)',
+                            border: '3px solid  #667eea  ',
                             borderRadius: '10px',
                             marginTop: "20px",
                             padding: '25px',
@@ -164,19 +160,12 @@ function EducationView(){
                         <div style={{marginLeft: "auto",
                            
                         }}>
-                            <button className='button3' style={{border: 'none',
-                                backgroundColor: '#f2ddf7',
-                                marginRight: '10px'
-                            }}
-                            onClick={() => handleEdit(education.id)}><FontAwesomeIcon icon={faEdit}/></button>
-                            <button  className='button3'
-                                style={{border: 'none',
-                                    backgroundColor: '#f2ddf7',
-                                    
-                                    
-                                }}
-                                onClick={()=> handleDelete(education.id)}
-                            ><FontAwesomeIcon icon={faTrash} /></button>
+                              <button className='edit-button'
+                             onClick={() => handleEdit(education.id)}><FontAwesomeIcon icon={faEdit}/></button>
+                             <button  className='delete-button'
+                                 
+                                 onClick={()=> handleDelete(education.id)}
+                             ><FontAwesomeIcon icon={faTrash} /></button>
                         </div>
                     </div>
                 </div>
@@ -188,33 +177,28 @@ function EducationView(){
               
             <div 
                 style={{
-                    border: '3px dashed rgb(94, 20, 132)',
+                    border: '3px dashed  #764ba2 ',
                     marginTop: '20px',
                     padding: '10px',
                     textAlign: 'center',
                     
                 }}
             >
-            <button className='button2'
-                style={{
-                   border: 'none',
-                   backgroundColor: 'white',
-                   color: 'rgb(94, 20, 132)',
-                   fontStyle: 'bold',
-                   width: '200px'
-                }} 
-                onClick={() => navigate('/educationForm', { state: { id: resumeId } })}>
-             +<span> Add Education</span>
-            </button>
+                    <button className='button-underline'
+                 
+                 onClick={() => navigate('/educationForm', { state: { id: resumeId } })}>
+              + <span className='button-underline-span'>Add Education</span>
+              </button>
             </div>
             <div className="buttonContainer" style={{marginTop: '20px',}}>
-            <button className="button4"  onClick={() => navigate('/contact-info/', { state: { id: resumeId } })} >
-              Back
-            </button>
-            <button style={{ marginLeft: 'auto',}} className="button4" onClick={() => navigate('/work-experience', { state: { id: resumeId } })}  
-            >
-              Next
-            </button>
+                         <button className="button2" 
+             onClick={() => navigate('/contact-info', { state: { id: resumeId } })} >
+              <span>&larr; Back</span>
+              </button>
+             <button  className="button2" onClick={() => navigate('/work-experience', { state: { id: resumeId } })}  
+             >
+              <span>Next</span> &rarr;
+              </button>
             </div>
           </div>
         </div>

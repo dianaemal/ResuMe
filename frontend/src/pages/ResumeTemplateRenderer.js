@@ -5,16 +5,7 @@ import TemplateTimeline from './templates/TemplateTimeline';
 import TemplateModernSidebar from './templates/TemplateModernSidebar';
 import ResumeModernElegant from './templates/TemplateModernSingleColumn';
 import TemplateModernElegant from './templates/TemplateModernElegant';
-// Scaffolded components for other templates
-function TemplateBoxed({ resume, workList, educationList }) {
-  return <div style={{ padding: 40, background: '#fff', borderRadius: 8, color: '#888' }}>Boxed template coming soon!</div>;
-}
-function TemplateClassic({ resume, workList, educationList }) {
-  return <div style={{ padding: 40, background: '#fff', borderRadius: 8, color: '#888' }}>Classic template coming soon!</div>;
-}
-function TemplateMinimalist({ resume, workList, educationList }) {
-  return <div style={{ padding: 40, background: '#fff', borderRadius: 8, color: '#888' }}>Minimalist template coming soon!</div>;
-}
+
 
 export default function ResumeTemplateRenderer({ resume, template, workList, educationList, forwardedRef }) {
   switch (template) {

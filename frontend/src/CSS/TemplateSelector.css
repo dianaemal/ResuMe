@@ -51,7 +51,7 @@
 .template-card.selected {
     border-color: #667eea;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    transition: background 0.3s, border-color 0.3s;
 }
 
 .template-card.selected::before {
@@ -71,151 +71,100 @@
     font-size: 16px;
 }
 
-.template-preview {
-    height: 200px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 15px;
-    margin-bottom: 15px;
-    background: white;
-    position: relative;
-    overflow: hidden;
-}
-
-.template-preview.template1 {
-    font-family: 'Times New Roman', serif;
-    color: #333;
-}
-
-.template-preview.template1 .preview-header h3 {
-    font-size: 18px;
-    text-align: center;
-    color: #2c3e50;
-    border-bottom: 3px solid #3498db;
-    padding-bottom: 5px;
-    margin-bottom: 8px;
-}
-
-.template-preview.template1 .preview-section h4 {
-    font-size: 14px;
-    color: #2c3e50;
-    border-left: 4px solid #3498db;
-    padding-left: 8px;
-    margin-bottom: 5px;
-}
-
-.template-preview.template2 {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-}
-
-.template-preview.template2 .preview-header h3 {
-    font-size: 20px;
-    text-align: center;
-    font-weight: 300;
-    letter-spacing: 1px;
-    margin-bottom: 8px;
-}
-
-.template-preview.template2 .preview-section h4 {
-    font-size: 14px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 5px;
-}
-
-.template-preview.template3 {
-    font-family: 'Arial', sans-serif;
-    color: #2c3e50;
-    border: 2px solid #34495e;
-}
-
-.template-preview.template3 .preview-header h3 {
-    font-size: 18px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 8px;
-}
-
-.template-preview.template3 .preview-section h4 {
-    font-size: 14px;
-    text-transform: uppercase;
-    border-bottom: 2px solid #34495e;
-    padding-bottom: 3px;
-    margin-bottom: 5px;
-}
-
-.template-preview.template4 {
-    font-family: 'Helvetica Neue', sans-serif;
-    background: #f9f9f9;
-    border-left: 4px solid #666;
-}
-
-.template-preview.template4 .preview-header h3 {
-    font-size: 18px;
-    font-weight: 300;
-    margin-bottom: 8px;
-}
-
-.template-preview.template4 .preview-section h4 {
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 5px;
-}
-
+/* Remove old unused preview styles */
+.template-preview.template1,
+.template-preview.template2,
+.template-preview.template3,
+.template-preview.template4,
 .template-preview.template5 {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    color: #1a1a1a;
-    line-height: 1.6;
+  all: unset;
 }
 
-.template-preview.template5 .preview-header h3 {
-    font-size: 16px;
-    font-weight: 400;
-    margin-bottom: 8px;
-    letter-spacing: -0.3px;
+/* Modern, consistent preview area */
+.template-preview {
+  width: 100%;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(102,126,234,0.07);
+  transition: box-shadow 0.2s, background 0.2s;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  position: relative;
 }
 
-.template-preview.template5 .preview-section h4 {
-    font-size: 12px;
-    font-weight: 500;
-    margin-bottom: 5px;
-    letter-spacing: -0.2px;
+.template-card.selected .template-preview {
+  background: #fff;
+  box-shadow: 0 4px 16px rgba(102,126,234,0.13);
 }
 
-.preview-header p {
-    font-size: 12px;
-    color: #666;
-    margin: 0;
+/* Make all preview containers fill the preview area */
+.preview-sidebar,
+.preview-timeline,
+.preview-modern-sidebar,
+.preview-single-column,
+.preview-elegant {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  box-sizing: border-box;
 }
 
-.preview-section p {
-    font-size: 11px;
-    color: #666;
-    margin: 0;
+/* Adjust preview content for better centering and spacing */
+.preview-sidebar .sidebar-main,
+.preview-timeline .timeline-main,
+.preview-modern-sidebar .modern-sidebar-main,
+.preview-single-column,
+.preview-elegant {
+  justify-content: center;
 }
 
-.template-info h3 {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: inherit;
+/* Remove hardcoded font-family from preview containers unless intentional */
+.preview-sidebar,
+.preview-timeline,
+.preview-modern-sidebar,
+.preview-single-column,
+.preview-elegant {
+  font-family: inherit;
 }
 
-.template-info p {
-    font-size: 0.9rem;
-    color: inherit;
-    opacity: 0.8;
-    margin-bottom: 8px;
-    line-height: 1.4;
+/* Responsive: make previews scale on small screens */
+@media (max-width: 600px) {
+  .template-preview {
+    height: 90px;
+    min-height: 70px;
+  }
+  .preview-sidebar,
+  .preview-timeline,
+  .preview-modern-sidebar,
+  .preview-single-column,
+  .preview-elegant {
+    height: 90px;
+  }
 }
 
-.preview-text {
-    font-size: 0.8rem;
-    color: inherit;
-    opacity: 0.7;
-    font-style: italic;
+/* Keep the rest of the preview block styles as previously defined for each template */
+
+.template-info h3, .template-info p, .template-info .preview-text {
+    color: #222 !important;
+    transition: color 0.2s;
+}
+
+.preview-sidebar, .preview-timeline, .preview-modern-sidebar, .preview-single-column, .preview-elegant {
+    color: #222;
+}
+
+/* Ensure preview header/title text is always visible */
+.sidebar-header, .sidebar-title, .timeline-header, .timeline-title, .modern-sidebar-header, .modern-sidebar-title, .single-header, .single-title, .elegant-header, .elegant-title {
+    color: #222 !important;
+}
+
+/* If you want the selected card to have a slightly different text color, use a subtle shade, not white */
+.template-card.selected .template-info h3, .template-card.selected .template-info p, .template-card.selected .template-info .preview-text {
+    color: #222 !important;
 }
 
 .template-actions {
@@ -289,4 +238,230 @@
         width: 100%;
         max-width: 300px;
     }
-} 
+}
+
+/* Template Previews for Selector - Larger and More Accurate */
+.preview-sidebar {
+    display: flex;
+    width: 95%;
+    height: 120px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(102,126,234,0.07);
+}
+.sidebar-left {
+    width: 38px;
+    background: #f3e8ff;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    padding: 8px 0;
+}
+.sidebar-block {
+    height: 18px;
+    border-radius: 4px;
+    margin: 2px 6px;
+}
+.sidebar-contact { background: #a78bfa; }
+.sidebar-edu { background: #fbbf24; }
+.sidebar-skills { background: #60a5fa; }
+.sidebar-main {
+    flex: 1;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 4px;
+}
+.sidebar-header {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #494F4F;
+    margin-bottom: 2px;
+}
+.sidebar-title {
+    font-size: 0.9rem;
+    color: #667eea;
+    margin-bottom: 2px;
+}
+.sidebar-section {
+    height: 14px;
+    background: #e0e7ef;
+    border-radius: 3px;
+    margin-bottom: 3px;
+}
+.sidebar-exp { width: 80%; }
+.sidebar-exp2 { width: 60%; }
+
+.preview-timeline {
+    display: flex;
+    width: 95%;
+    height: 120px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(102,126,234,0.07);
+}
+.timeline-sidebar {
+    width: 22px;
+    background: linear-gradient(180deg, #f472b6 0%, #fbbf24 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+}
+.timeline-dot {
+    width: 10px;
+    height: 10px;
+    background: #fff;
+    border: 2px solid #f472b6;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+.timeline-dot2 {
+    border-color: #fbbf24;
+    margin-bottom: 0;
+}
+.timeline-main {
+    flex: 1;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 4px;
+}
+.timeline-header {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 2px;
+}
+.timeline-title {
+    font-size: 0.9rem;
+    color: #f472b6;
+    margin-bottom: 2px;
+}
+.timeline-section {
+    height: 14px;
+    background: #e0e7ef;
+    border-radius: 3px;
+    margin-bottom: 3px;
+}
+.timeline-exp { width: 80%; }
+.timeline-exp2 { width: 60%; }
+
+.preview-modern-sidebar {
+    display: flex;
+    width: 95%;
+    height: 120px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(102,126,234,0.07);
+}
+.modern-sidebar-left {
+    width: 22px;
+    background: #667eea;
+}
+.modern-sidebar-main {
+    flex: 1;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 4px;
+}
+.modern-sidebar-header {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1c1c84;
+    margin-bottom: 2px;
+}
+.modern-sidebar-title {
+    font-size: 0.9rem;
+    color: #667eea;
+    margin-bottom: 2px;
+}
+.modern-sidebar-section {
+    height: 14px;
+    background: #e0e7ef;
+    border-radius: 3px;
+    margin-bottom: 3px;
+}
+.modern-exp { width: 80%; }
+.modern-exp2 { width: 60%; }
+
+.preview-single-column {
+    width: 95%;
+    height: 120px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(102,126,234,0.07);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 14px 16px;
+    gap: 4px;
+}
+.single-header {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #222;
+}
+.single-title {
+    font-size: 0.9rem;
+    color: #555;
+}
+.single-section {
+    height: 14px;
+    background: #e0e7ef;
+    border-radius: 3px;
+    margin-bottom: 3px;
+}
+.single-exp { width: 80%; }
+.single-exp2 { width: 60%; }
+
+.preview-elegant {
+    width: 95%;
+    height: 120px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(102,126,234,0.07);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0;
+    overflow: hidden;
+}
+.elegant-header {
+    width: 100%;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 10px 16px 4px 16px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+.elegant-title {
+    font-size: 0.9rem;
+    color: #3b82f6;
+    padding: 4px 16px 0 16px;
+}
+.elegant-section {
+    height: 14px;
+    background: #e0e7ef;
+    border-radius: 3px;
+    margin-bottom: 3px;
+    padding: 0 16px;
+}
+.elegant-exp { width: 80%; }
+.elegant-exp2 { width: 60%; } 

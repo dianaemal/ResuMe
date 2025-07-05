@@ -72,9 +72,11 @@ export default function ResumePreview({prop}){
           const index = workList.findIndex((work)=> work.id === prop.workId)
           if (index !== -1){
             workList[index] = prop
+            
           }
           else{
             workList.push(prop)
+            
           }
       }
       else if (prop.identity === 'exp'){

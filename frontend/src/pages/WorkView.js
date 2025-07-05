@@ -7,6 +7,7 @@ import { faTrash, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { ClipLoader } from 'react-spinners';
 import SideBar from './SideBar';
 import { ResumeContext } from '../ResumeContext';
+import '../CSS/FormStyles.css';
 
 function WorkView() {
     const location = useLocation();
@@ -86,10 +87,7 @@ function WorkView() {
     
     return (
         
-       <div className='gridContainer'
-            style={
-                { gridTemplateColumns: '0.5fr 3fr',}
-            }
+       <div className='gridContainer work-view-grid'
             >
             <div className='progression'> <SideBar/></div>
             <div className='container3'
@@ -102,9 +100,9 @@ function WorkView() {
                     }
                 }
             >
-                <h3>Experience Summary</h3>
+                <h3 className='h3' style={{textAlign: 'left'}}>Experience Summary</h3>
 
-                <div>Enter your education experience so far, even if you are a current student or did not graduate.</div>
+                <div className='contact-description' style={{textAlign: 'left', marginLeft: '0', maxWidth: '100%'}}>Start with your most recent experience and work your way back to your first job.</div>
                 {loading ? (
                 <div
                     style={{
@@ -116,20 +114,21 @@ function WorkView() {
                     marginTop: '20%'
                     }}
                 >
-                    <ClipLoader color="rgb(94, 20, 132)" size={80} />
-                    <div style={{ color: 'rgb(94, 20, 132)', fontWeight: 'bold' }}>Loading...</div>
+                    <ClipLoader color="#667eea" size={80} />
+                    <div style={{ color: '#667eea', fontWeight: 'bold' }}>Loading...</div>
                 </div>
                 ) : (
                  <>
 
                 {workExperiences.map((experience) => (
                     <div key={experience.id}
+                        className="work-card"
                         style={{
-                        border: '3px solid rgb(94, 20, 132)',
+                        border: '3px solid #667eea',
                         borderRadius: '10px',
                         marginTop: "20px",
                         padding: '25px',
-                        backgroundColor: '#f2ddf7'
+                        
                         }}
                     >
                        <div
@@ -158,16 +157,12 @@ function WorkView() {
                                            
                                 }}>
                                     <button
-                                        className='button2'
+                                        className='button-underline'
                                         style={{
-                                            border: 'none',
-                                            backgroundColor: 'none',
-                                            color: 'rgb(94, 20, 132)',
-                                            fontStyle: 'bold',
-                                            width: '200px',
-                                            textAlign: 'left',
-
+                                        
+                                            fontSize: '1rem',
                                         }}
+                                        
                                     onClick={()=>{
                                         if(experience.description){
                                             navigate("/edit-description", {
@@ -185,7 +180,7 @@ function WorkView() {
                                     }} 
                                     
                                     
-                                    ><FontAwesomeIcon icon={faEdit}/><span style={{marginLeft: '5px'}}>{experience.description? "Edit" : 'Add'} discription</span></button>
+                                    ><FontAwesomeIcon icon={faEdit}/><span className='button-underline-span' style={{marginLeft: '5px'}}>{experience.description? "Edit" : 'Add'} description</span></button>
                                </div>
                             </div>
                         </div>
@@ -193,18 +188,9 @@ function WorkView() {
 
                            
                         }}>
-                            <button className='button3' style={{border: 'none',
-                                backgroundColor: '#f2ddf7',
-                                marginRight: '10px'}} onClick={()=> navigate("/edit-workExperience", {state: {id: resumeId, work: experience.id}})}><FontAwesomeIcon icon={faEdit}/></button>
+                            <button className='edit-button' onClick={()=> navigate("/edit-workExperience", {state: {id: resumeId, work: experience.id}})}><FontAwesomeIcon icon={faEdit}/></button>
                             
-                            <button className='button3'
-                                style={{border: 'none',
-                                    backgroundColor: '#f2ddf7',
-                                    
-                                    
-                                }}
-                            
-                            ><FontAwesomeIcon icon={faTrash}/></button>
+                            <button className='delete-button'><FontAwesomeIcon icon={faTrash}/></button>
                         </div>
                     </div>
                 </div>
@@ -212,31 +198,33 @@ function WorkView() {
             ))}
                 <div
                 style={{
-                    border: '3px dashed rgb(94, 20, 132)',
+                    border: '3px dashed #764ba2',
                     marginTop: '20px',
                     padding: '10px',
                     textAlign: 'center',
                 }}
                 >
                     <button
-                        className='button2'
+                        className='button-underline'
                         style={{
-                        border: 'none',
-                        backgroundColor: 'white',
-                        color: 'rgb(94, 20, 132)',
-                        fontStyle: 'bold',
-                        width: '200px'
+                            width: '300px',
+                            fontSize: '1.1rem',
                         }}
+                        
                         onClick={() => navigate("/Work-experienceForm", { state: { id: resumeId } })}
                     >
-                        +<span>Add a work experience</span>
+                        +<span className='button-underline-span'>Add a work experience</span>
                     </button>
                 </div>
 
                 {/* Navigation buttons */}
                 <div className="buttonContainer" style={{ marginTop: '20px' }}>
-                    <button className="button4" onClick={() => navigate('/education', { state: { id: resumeId } })}>Back</button>
-                    <button style={{ marginLeft: 'auto' }} className="button4" onClick={() => navigate('/skills', { state: { id: resumeId } })}>Next</button>
+                    <button className="button2" onClick={() => navigate('/education', { state: { id: resumeId } })}>
+                        <span>&larr; Back</span>
+                    </button>
+                    <button className="button2" onClick={() => navigate('/skills', { state: { id: resumeId } })}>
+                        <span>Next</span> &rarr;
+                    </button>
                 </div>
                 </>
                 )}

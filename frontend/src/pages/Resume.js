@@ -161,11 +161,11 @@ function Resume(){
                     fontSize: '14px'
                 }}
             >
-                <option value="template1">Sidebar/Two-Column</option>
-                <option value="template2">Modern Timeline</option>
-                <option value="template3">Boxed Sections</option>
-                <option value="template4">Classic Professional</option>
-                <option value="template5">Minimalist</option>
+                <option value="template1">Sidebar</option>
+                <option value="template2">Timeline</option>
+                <option value="template3">Modern Sidebar</option>
+                <option value="template4">Modern Single Column</option>
+                <option value="template5">Modern Elegant</option>
             </select>
         </div>
         <div style={{ display: 'flex', justifyContent: 'center' }}>

@@ -2,8 +2,9 @@ import react from "react";
 import { useState, useEffect } from 'react';
 import { useLocation,useNavigate } from 'react-router-dom';
 import axiosInstance from "../axios";
-import styles from "../CSS/Login.css"
 import ResumePreview from "./ResumePreview";
+import "../CSS/FormStyles.css";
+import SideBar from './SideBar';
 function WorkEdit(){
     const location = useLocation();
     const resumeId = location.state?.id || null;
@@ -19,7 +20,8 @@ function WorkEdit(){
             start_year: "",
             end_month: "",
             end_year: "",
-            still_working: false
+            still_working: false,
+            description: ""
         }
     )
     useEffect(()=>{
@@ -38,7 +40,8 @@ function WorkEdit(){
                             start_year: data.start_year,
                             end_month: data.end_month,
                             end_year: data.end_year,
-                            still_working: data.still_working
+                            still_working: data.still_working,
+                            description: data.description || ""
                         })
                     }
                 }
@@ -117,11 +120,12 @@ function WorkEdit(){
     return(
         <div className="gridContainer">
             <div className="progression">
-
+                <SideBar prop={{page: 'work'}}/>
             </div>
-            <div className="container3" style={{height: '100%',    padding: '20px'}}>
-                <h3 className='h3'>Write your Contact information!</h3>
-                <form onSubmit={(e) =>{
+            <div className="container3" style={{height: '100%'}}>
+                <h3 className='h3'>Edit Work Experience</h3>
+                <p className="contact-description">Update your work experience details including position, employer, and employment dates.</p>
+                <form className="form" onSubmit={(e) =>{
                     e.preventDefault();
                 
                     handleSubmit();
@@ -223,16 +227,13 @@ function WorkEdit(){
                         </div>
                       
                     <div className='buttonContainer'>
-
-                    <button className="button2" type="button"> &larr; <span>Back</span></button>
-                    <button  className="button2" type="submit"><span>Next </span>&rarr;</button>
-          
+                        <button className="button2" type="button" onClick={() => navigate('/work', {state: {id: resumeId}})}> &larr; <span>Back</span></button>
+                        <button  className="button2" type="submit"><span>Next</span> &rarr;</button>
                     </div>
                 </form>
                 
             </div>
-            <div className='resumePreview'>
-                
+            <div className="container4" style={{marginTop: "0", background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"}}>
                 <ResumePreview prop={{...workExperience, identity: 'work', workId:workId, id:resumeId}}/>
             </div>
         </div>

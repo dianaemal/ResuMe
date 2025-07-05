@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import { useLocation,useNavigate } from 'react-router-dom';
 import axiosInstance from "../axios";
 import ResumePreview from "./ResumePreview";
+import "../CSS/FormStyles.css";
+import SideBar from './SideBar';
 function Work(){
     const location = useLocation();
     const resumeId = location.state?.id || null;
@@ -15,7 +17,8 @@ function Work(){
             start_year: "",
             end_month: "",
             end_year: "",
-            still_working: false
+            still_working: false,
+            description: ""
         }
     )
     const handleSubmit = async ()=>{
@@ -66,11 +69,12 @@ function Work(){
     return(
         <div className="gridContainer">
             <div className="progression">
-
+                <SideBar prop={{page: 'work'}}/>
             </div>
             <div className="container3" style={{height: '100%'}}>
-                <h3 className='h3'>Write your Contact information!</h3>
-                <form onSubmit={(e) =>{
+                <h3 className='h3'>Work Experience</h3>
+                <p className='contact-description'>Tell us about your work experience. Include your job title, employer, and employment dates to showcase your professional background.</p>
+                <form className="form" onSubmit={(e) =>{
                     e.preventDefault();
                 
                     handleSubmit();
@@ -172,17 +176,14 @@ function Work(){
                         </div>
                       
                     <div className='buttonContainer'>
-
-                    <button className="button2" type="button"> &larr; <span>Back</span></button>
-                    <button  className="button2" type="submit"><span>Next </span>&rarr;</button>
-          
+                        <button className="button2" type="button" onClick={() => navigate('/education', {state: {id: resumeId}})}> &larr; <span>Back</span></button>
+                        <button  className="button2" type="submit"><span>Next </span>&rarr;</button>
                     </div>
                 </form>
                 
             </div>
-            <div className='resumePreview'>
+            <div className='container4' style={{marginTop: "0", background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"}}>
                 <ResumePreview prop={{...workExperience, identity: 'work', id:resumeId}} />
-
             </div>
         </div>
 

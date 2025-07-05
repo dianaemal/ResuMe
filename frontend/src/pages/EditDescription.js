@@ -5,6 +5,8 @@ import axiosInstance from '../axios';
 import ReactQuill from 'react-quill';
 import ResumePreview from './ResumePreview';
 import 'react-quill/dist/quill.snow.css';
+import "../CSS/FormStyles.css";
+import SideBar from './SideBar';
 function EditDescription(){
     const location = useLocation();
     const resumeId = location.state?.id || null;
@@ -80,13 +82,16 @@ function EditDescription(){
 
     return (
        <div className='gridContainer'>
-                   <div className='progression'></div>
-               <div style={{width: '600px', }}>
-               <form onSubmit={(e)=>{
+                   <div className='progression'>
+                       <SideBar prop={{page: 'work'}}/>
+                   </div>
+               <div className='container3'>
+               <h3 className="h3">Edit Job Description</h3>
+               <p className="contact-description">Update your job description with your responsibilities, achievements, and key contributions in this role.</p>
+               <form className="form" onSubmit={(e)=>{
                    e.preventDefault();
                    handleSubmit();
                }}>
-                   <h3 >Write discription for your job:</h3>
                    <div style={{marginTop: '20px'}}>
                    <ReactQuill className="my-editor"
                        
@@ -104,13 +109,14 @@ function EditDescription(){
                            
                    />
                    </div>
-                   <div  style={{  position: 'relative', marginTop: '20px'}}>
-                   <button style={{right: '0', position: 'absolute'}} className='button4' type="submit">Next</button>
+                   <div className="buttonContainer">
+                       <div></div>
+                       <button className="button2" type="submit"><span>Save</span> &rarr;</button>
                    </div>
                </form>
        
                </div>
-               <div className='resumePreview'>
+               <div className="container4" style={{marginTop: "0", background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"}}>
                    <ResumePreview prop={{description: workDescription, identity: 'exp', workId: workId, id:resumeId}}/>
                </div>
                </div>

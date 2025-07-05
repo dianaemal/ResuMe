@@ -48,14 +48,12 @@ export default function SignUp(){
 
     return(
         <div className="background">
-            <div className="container1"
-                style={{height: '550px'}}
-            >
-                <h3 className="title">SignUP</h3>
-                <form className="form"
+            <div className="login-card" style={{height: 'auto'}}>
+                <h3 className="login-header">Sign Up</h3>
+                <form className="login-form"
                  onSubmit={handleSubmit}>
                     <div>
-                        <label htmlFor="email">
+                        <label className="login-label" htmlFor="email">
                             Email
                         </label><br/>
                         <input 
@@ -65,9 +63,10 @@ export default function SignUp(){
                             value={signupData.email}
                             onChange={handleChange}
                             required
+                            className="login-input"
                         ></input></div>
                     <div>
-                        <label htmlFor="name">
+                        <label className="login-label" htmlFor="name">
                             User Name
                         </label><br/>
                         <input 
@@ -77,11 +76,11 @@ export default function SignUp(){
                         value={signupData.username}
                         onChange={handleChange}
                         required
-
+                        className="login-input"
                         ></input>
                     </div>
                     <div>
-                        <label htmlFor="password">
+                        <label className="login-label" htmlFor="password">
                             Password
                         </label><br/>
                         <input 
@@ -92,11 +91,11 @@ export default function SignUp(){
                         onChange={handleChange}
                         value={signupData.password}
                         required
-
+                        className="login-input"
                         ></input>
                     </div>
                     <div>
-                        <label htmlFor="re_pas">
+                        <label className="login-label" htmlFor="re_pas">
                             Confirm Password
                         </label><br/>
                         <input 
@@ -107,13 +106,12 @@ export default function SignUp(){
                         onChange={handleChange}
                         required
                         value={signupData.re_password}
+                        className="login-input"
                         ></input>
                     </div>
 
-                <button className="button" type="sumbit">SignUp</button>
-            
+                <button className="login-btn" type="submit">Sign Up</button>
                 <div className="text">Have an account already? <Link to="/login">Login</Link></div>
-            
             </form>
            
         </div>

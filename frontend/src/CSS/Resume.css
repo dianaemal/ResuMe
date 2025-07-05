@@ -525,7 +525,7 @@ hr{
     font-style: italic;
     color: #666;
 }
-
+  
 @media print {
   .resume-template {
     width: 8.5in !important;

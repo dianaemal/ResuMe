@@ -6,6 +6,8 @@ import { ResumeContext } from "../ResumeContext";
 import ResumePreview from "./ResumePreview";
 import ReactQuill from "react-quill";
 import 'react-quill/dist/quill.snow.css';
+import "../CSS/FormStyles.css";
+import SideBar from './SideBar';
 
 
 function Skills(){
@@ -80,14 +82,17 @@ function Skills(){
 
 
     return (
-        <div className="gridContainer" style={{gap: '40px'}}>
-            <div className="progression"></div>
-        <div style={{width: '600px', }}>
-        <form onSubmit={(e)=>{
-            e.preventDefault();
-            handleSubmit();
-        }}>
-            <h3>Write your Skills:</h3>
+        <div className="gridContainer">
+            <div className="progression">
+                <SideBar prop={{page: 'skills'}}/>
+            </div>
+            <div className="container3">
+                <h3 className="h3">Skills & Expertise</h3>
+                <p className="contact-description">List your key skills and areas of expertise. Include both technical and soft skills that are relevant to your target position.</p>
+                <form className="form" onSubmit={(e)=>{
+                    e.preventDefault();
+                    handleSubmit();
+                }}>
             <div style={{marginTop: '20px'}}>
             <ReactQuill 
                 className="my-editor"
@@ -104,16 +109,15 @@ function Skills(){
              />
              </div>
 
-            <div className="buttonContainer"  style={{ marginTop: '20px' }}>
-            <button className="button4" onClick={ () => navigate("/work-experience", {state: {id:resumeId}})}>Back</button>
-            <button  style={{ marginLeft: 'auto',   }} className="button4"  type="submit" >Next</button>
-            
+            <div className="buttonContainer">
+                <button className="button2" type="button" onClick={ () => navigate("/work", {state: {id:resumeId}})}> &larr; <span>Back</span></button>
+                <button className="button2" type="submit"><span>Next</span> &rarr;</button>
             </div>
         </form>
-        </div>
-        <div className="resumePreview">
-            <ResumePreview prop={{id:resumeId}}/>
-        </div>
+            </div>
+            <div className="container4" style={{marginTop: "0", background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"}}>
+                <ResumePreview prop={{id:resumeId}}/>
+            </div>
         </div>
     )
 }
