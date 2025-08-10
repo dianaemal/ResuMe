@@ -12,7 +12,8 @@ urlpatterns = [
     path('api/resumes/<int:pk>/work/<int:W_id>/description', views.DescriptionDetails.as_view()),
     path('api/resumes/<int:pk>/skills', views.SkillsDetails.as_view()),
     path('api/resumes/<int:pk>/summary', views.SummaryDetails.as_view()),
-    path('api/resumes/<int:pk>/all', views.AllResumeData.as_view())
+    path('api/resumes/<int:pk>/all', views.AllResumeData.as_view()),
+    path('api/resumes/chat/', views.ChatWithGPT.as_view())
 
     
     

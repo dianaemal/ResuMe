@@ -5,20 +5,23 @@ import axiosInstance from '../axios';
 import ResumePreview from './ResumePreview'
 import "../CSS/FormStyles.css"
 import SideBar from './SideBar';
+import Footer from '../components/Footer';
 
 import { ResumeContext } from '../ResumeContext';
 
 function ContactInfo (){
 
     const {resume, setResume, setComplete} = useContext(ResumeContext)
+    const [error, setError] = useState({})
+   
     const [contactInfo, setInfo] = useState({
-        f_name: "",
-        l_name: "",
-        phone_number: "",
-        email: "",
-        city: "",
-        province: "",
-        postal_code: ""
+        f_name: null,
+        l_name: null,
+        phone_number: null,
+        email: null,
+        city: null,
+        province: null,
+        postal_code: null
     });
     const [contactExists, setContactExists] = useState(false); 
     useEffect(() => {
@@ -39,7 +42,14 @@ function ContactInfo (){
         navigate(`/title`, {state: {id: resumeId}});
     }
     const handleChange = (e) =>{
+        
         const {name, value} = e.target;
+        if (name === "f_name" || name === "l_name" || name === "email"){
+            setError((prev)=>({
+                ...prev,
+                [name]: false
+            }))
+        }
         setInfo((prev)=>({
             ...prev,
             [name]: value
@@ -103,8 +113,34 @@ function ContactInfo (){
         }
        
     }, [resumeId])
+    console.log(error)
    
     const handleSubmit = async () =>{
+        
+        const newerror = {}
+        let isNull = false
+        for (const key in contactInfo){
+            
+            if ((key === "f_name" || key === "l_name" || key === "email") && !contactInfo[key] ){
+                isNull = true
+                newerror[key] = true
+            }
+            
+        }
+      
+       
+        if (isNull){
+            setError((prev)=>({
+                ...prev,
+                ...newerror
+            }))
+            return
+        }
+
+       // if (!contactInfo.f_name || !contactInfo.l_name || !contactInfo.email){
+          //  setMessage("Required Feild")
+          //  return
+       // }
 
         const response = contactExists? 
         await axiosInstance.put(`/api/resumes/${resumeId}/contact-info`, contactInfo )
@@ -138,7 +174,8 @@ function ContactInfo (){
     
 
     return(
-        <div className='gridContainer'>
+        <>
+        <div className='gridContainer' style={{height: '80vh'}}>
         <div className='progression'>
             <SideBar />
         </div>
@@ -151,24 +188,28 @@ function ContactInfo (){
             }}>
                 <div className='flexRow1'>
                     <div>
-                        <label htmlFor='firstName'>First Name</label><br/>
+                        <label htmlFor='firstName'>First Name*</label><br/>
                         <input type="text"
+                        style={{border: error.f_name && "2px solid red"}}
                         id = "firstName"
                         name= "f_name"
                         value={contactInfo.f_name}
                         onChange = {handleChange}
                         >
                         </input>
+                        {error.f_name && <span style={{color: "red", fontSize: '13px'}}>Required Felid</span>}
                     </div>
                     <div>
-                        <label htmlFor='lastName'>Last Name</label><br/>
+                        <label htmlFor='lastName'>Last Name*</label><br/>
                         <input type="text"
                         id = "lastName"
+                        style={{border: error.l_name && "2px solid red"}}
                         name= "l_name"
                         value={contactInfo.l_name}
                         onChange = {handleChange}
                         >
                         </input>
+                        {error.l_name && <span style={{color: "red", fontSize: '13px'}}>Required Felid</span>}
                     </div>
                 </div>
                 <div className='flexRow'>
@@ -215,14 +256,17 @@ function ContactInfo (){
                         </input>
                     </div>
                     <div>
-                        <label htmlFor='email'>Email</label><br/>
+                        <label htmlFor='email'>Email*</label><br/>
                         <input type="email"
                         id = "email"
+                        style={{border: error.email && "2px solid red"}}
                         name= "email"
                         value={contactInfo.email}
                         onChange = {handleChange}
                         >
                         </input>
+                        {error.email && <span style={{color: "red", fontSize: '13px'}}>Required Felid</span>}
+                       
                     </div>
                 </div>
                 <div className='buttonContainer'>
@@ -230,11 +274,14 @@ function ContactInfo (){
                     <button  className="button2" type="submit"><span>Next </span>&rarr;</button>
                 </div>
             </form>
+            <Footer></Footer>
         </div>
-        <div className='container4' style={{marginTop: "0", background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"}}>
-        <ResumePreview prop={{...contactInfo, id: resumeId}}/>
+        <div className='container4' style={{height: '580x'}} onClick={()=> navigate('/resume', {state: {id: resumeId}})}>
+        <ResumePreview prop={{...contactInfo, id: resumeId}} />
             </div>
         </div>
+
+        </>
         
        
     )

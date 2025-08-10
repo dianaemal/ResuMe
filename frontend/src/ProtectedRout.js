@@ -4,7 +4,7 @@ import { AuthContext } from "./AuthContext";
 
 function ProtectedRoute({children}){
     const {isAuthenticated} = useContext(AuthContext)
-
+   
     return isAuthenticated? children : <Navigate to="/login"></Navigate>
 
 

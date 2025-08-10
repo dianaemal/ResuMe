@@ -35,13 +35,15 @@ export default function ResumePreview({prop}){
         for (const key in resume)
           if (resume[key] !== null && (!Array.isArray(resume[key]) || resume[key].length > 0)){
               console.log(key)
-              setComplete((prev)=>({
+              setComplete((prev)=>(
+                {
                 ...prev,
                 [key]: true
               }))
           }
           else{
-            setComplete((prev)=>({
+            setComplete((prev)=>(
+              {
               ...prev,
               [key]: false
             }))
@@ -101,7 +103,7 @@ export default function ResumePreview({prop}){
     const template = getTemplateClass();
     // Use shared renderer for all templates
     return (
-      <div style={{ width: '600px', height: '90%',  padding: '12px', borderRadius: '10px' }}>
+      <div style={{ width: '600px', height: '90%', padding: '12px', borderRadius: '10px', background: '#fff' }}>
         <div style={{ transform: 'scale(0.5)', transformOrigin: 'top left', width: '600px', minHeight: '850px' }}>
           <ResumeTemplateRenderer
             resume={resume}

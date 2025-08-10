@@ -22,6 +22,20 @@ export default function TemplateModernElegant({ resume, workList, educationList,
     }
   }
 
+  // Check if we have any contact info to display
+  const hasContactInfo = resume.contactInfo && (
+    resume.contactInfo.phone_number || 
+    resume.contactInfo.email || 
+    resume.contactInfo.city || 
+    resume.contactInfo.province
+  );
+
+  // Check if we have name to display
+  const hasName = resume.contactInfo && (
+    resume.contactInfo.f_name || 
+    resume.contactInfo.l_name
+  );
+
   return (
     <div className="resume-template" ref={forwardedRef} style={{
       width: '8.5in',
@@ -31,109 +45,122 @@ export default function TemplateModernElegant({ resume, workList, educationList,
       color: '#1a1a1a',
       fontSize: '14px',
       lineHeight: '1.45',
-      border: '1px solid #e5e7eb',
+      border: '2px solid #e5e7eb',
       boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
       overflow: 'hidden'
     }}>
-      {/* Header */}
-      <div style={{
-        backgroundColor: '#1e293b',
-        color: '#f8fafc',
-        padding: '40px 45px',
-        position: 'relative',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-      }}>
+      {/* Header - only show if we have name or contact info */}
+      {(hasName || hasContactInfo) && (
         <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          height: '4px',
-          background: 'linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899)',
-        }} />
+          backgroundColor: '#1e293b',
+          color: '#f8fafc',
+          padding: '40px 45px',
+          position: 'relative',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}>
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '4px',
+            background: 'linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899)',
+          }} />
 
-        {/* Name */}
-        <div>
-          <h1 style={{
-            fontSize: '28px',
-            fontWeight: '700',
-            margin: '0 0 8px 0',
-            letterSpacing: '-0.5px',
-            color: '#ffffff',
-          }}>
-            {resume.contactInfo?.f_name || 'First'} {resume.contactInfo?.l_name || 'Last'}
-          </h1>
-        </div>
-
-        {/* Contact Info */}
-        <div style={{ fontSize: '13px', lineHeight: '1.8', minWidth: '240px'}}>
-          {[
-            { icon: '✉️', value: resume.contactInfo?.email || 'email@example.com' },
-            { icon: '📞', value: resume.contactInfo?.phone_number || '+1 (555) 123-4567' },
-            { icon: '📍', value: `${resume.contactInfo?.city || 'City'}, ${resume.contactInfo?.province || 'State'}` }
-          ].map((item, idx) => (
-            <div key={idx} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-              <span style={{ width: '20px', marginRight: '6px', color: '#94a3b8', textAlign: 'center', textDecoration: 'none' }}>{item.icon}</span>
-              <span style={{ flex: 1, textAlign: 'left',textDecoration: 'none' }}>{item.value}</span>
+          {/* Name - only show if we have a name */}
+          {hasName && (
+            <div>
+              <h1 style={{
+                fontSize: '28px',
+                fontWeight: '700',
+                margin: '0 0 8px 0',
+                letterSpacing: '-0.5px',
+                color: '#ffffff',
+              }}>
+                {[resume.contactInfo.f_name, resume.contactInfo.l_name].filter(Boolean).join(' ')}
+              </h1>
             </div>
-          ))}
+          )}
+
+          {/* Contact Info - only show if we have contact info */}
+          {hasContactInfo && (
+            <div style={{ fontSize: '13px', lineHeight: '1.8', minWidth: '240px'}}>
+              {[
+                { icon: '✉️', value: resume.contactInfo.email },
+                { icon: '📞', value: resume.contactInfo.phone_number },
+                { icon: '📍', value: [resume.contactInfo.city, resume.contactInfo.province].filter(Boolean).join(', ') }
+              ].filter(item => item.value).map((item, idx) => (
+                <div key={idx} style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                  <span style={{ width: '20px', marginRight: '6px', color: '#94a3b8', textAlign: 'center', textDecoration: 'none' }}>{item.icon}</span>
+                  <span style={{ flex: 1, textAlign: 'left',textDecoration: 'none' }}>{item.value}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-      </div>
+      )}
 
       {/* Main Content */}
       <div style={{ padding: '40px 45px', backgroundColor: '#ffffff' }}>
 
-        {/* Summary */}
+        {/* Summary - only show if we have summary */}
         {resume.summary?.summary && (
-          <div style={{ marginBottom: '30px' }}>
+          <div id="summary" style={{ marginBottom: '30px' }}>
             <h2 style={sectionTitle}>Professional Summary</h2>
-            <div style={sectionText} dangerouslySetInnerHTML={{ __html: resume.summary.summary }} />
+            <div className="no-list-indent" style={sectionText} dangerouslySetInnerHTML={{ __html: resume.summary.summary }} />
           </div>
         )}
 
-        {/* Work Experience */}
-        <div style={{ marginBottom: '30px' }}>
-          <h2 style={sectionTitle}>Professional Experience</h2>
-          {workList.map((job, idx) => (
-            <div key={idx} style={{ marginBottom: '15px' }}>
-              <div style={lineBetween}>
-                <strong style={leftSide}>{job.position}</strong>
-                <span style={rightSide}>
-                  {job.start_month} {job.start_year} - {job.end_month} {job.end_year || (job.is_current ? 'Present' : '')}
-                </span>
+        {/* Work Experience - only show if we have work experience */}
+        {workList && workList.length > 0 && (
+          <div id="experience" style={{ marginBottom: '30px' }}>
+            <h2 style={sectionTitle}>Professional Experience</h2>
+            {workList.map((job, idx) => (
+              <div key={idx} style={{ marginBottom: '15px' }}>
+                <div style={lineBetween}>
+                  <strong style={leftSide}>{job.position}</strong>
+                  <span style={rightSide}>
+                    {job.start_month} {job.start_year} - {job.end_month} {job.end_year || (job.is_current ? 'Present' : '')}
+                  </span>
+                </div>
+                <div style={lineBetween}>
+                  <span style={{ ...leftSide, color: '#3b82f6', fontWeight: '500' }}>{job.employer}</span>
+                  {job.location && <span style={rightSide}>{job.location}</span>}
+                </div>
+                {job.description?.description && (
+                  <div className="no-list-indent" style={sectionText} dangerouslySetInnerHTML={{ __html: job.description.description }} />
+                )}
               </div>
-              <div style={lineBetween}>
-                <span style={{ ...leftSide, color: '#3b82f6', fontWeight: '500' }}>{job.employer}</span>
-                <span style={rightSide}>{job.location}</span>
-              </div>
-              <div style={sectionText} dangerouslySetInnerHTML={{ __html: job.description?.description || '' }} />
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
-        {/* Education */}
-        <div style={{ marginBottom: '30px' }}>
-          <h2 style={sectionTitle}>Education</h2>
-          {educationList.map((edu, idx) => (
-            <div key={idx} style={{ marginBottom: '15px' }}>
-              <div style={lineBetween}>
-                <strong style={leftSide}>{edu.degree}</strong>
-                <span style={rightSide}>{edu.start_year} - {edu.graduation_year}</span>
+        {/* Education - only show if we have education data */}
+        {educationList && educationList.length > 0 && (
+          <div style={{ marginBottom: '30px' }}>
+            <h2 style={sectionTitle}>Education</h2>
+            {educationList.map((edu, idx) => (
+              <div key={idx} style={{ marginBottom: '15px' }}>
+                <div style={lineBetween}>
+                  <strong style={leftSide}>{edu.degree}</strong>
+                  <span style={rightSide}>{edu.start_year} - {edu.graduation_year}</span>
+                </div>
+                <div style={lineBetween}>
+                  <span style={{ ...leftSide, color: '#3b82f6', fontWeight: '500' }}>{edu.school_name}</span>
+                  {edu.location && <span style={rightSide}>{edu.location}</span>}
+                </div>
               </div>
-              <div style={lineBetween}>
-                <span style={{ ...leftSide, color: '#3b82f6', fontWeight: '500' }}>{edu.school_name}</span>
-                <span style={rightSide}>{edu.location && `${edu.location}`}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-         {/* Skills */}
+            ))}
+          </div>
+        )}
+
+         {/* Skills - only show if we have skills */}
          {resume.skills?.skills && (
           <div style={{ marginBottom: '30px' }}>
             <h2 style={sectionTitle}>Skills</h2>
-            <div style={{ fontSize: '14px' }}>{renderSkills(resume.skills.skills)}</div>
+            <div className="no-list-indent" style={{ fontSize: '14px' }}>{renderSkills(resume.skills.skills)}</div>
           </div>
         )}
       </div>

@@ -1,12 +1,10 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../AuthContext";
-import { useContext } from "react";
 import styles from "../CSS/Login.css"
 
 export default function LogOut(){
     const navigate = useNavigate()
-    const {setAuthenticated} = useContext(AuthContext)
+   
 
     const handleClick = () =>{
         localStorage.removeItem('access_token')

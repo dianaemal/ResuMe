@@ -1,6 +1,6 @@
 import React from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useContext } from 'react';
 import { ResumeContext } from '../ResumeContext';
 import ResumePreview from './ResumePreview'
 import axiosInstance from '../axios';
@@ -11,20 +11,33 @@ function Education(){
     const location = useLocation();
     const resumeId = location.state?.id || null;
     const [otherDegree, setOtherDegree] = useState(false)
+    const [degreeError, setDegreeError] = useState(false)
     const {resume} = useContext(ResumeContext)
     const [education, setEducation] = useState({
-        school_name : "",
-        location : "",
-        degree : "",
-        study_feild: "",
-        start_month : "",
-        start_year : "",
-        graduation_month : "",
-        graduation_year : ""
+        school_name : null,
+        location : null,
+        degree : null,
+        study_feild: null,
+        start_month : null,
+        start_year : null,
+        graduation_month : null,
+        graduation_year : null
 
     })
    
     const handleSubmit = async () =>{
+
+       
+        // Validate degree input
+        if (otherDegree && (!education.degree || education.degree.trim() === '')) {
+            setDegreeError(true)
+            return
+        }
+
+        if (Object.values(education).every(value => value === null)){
+            navigate('/education', {state: {id: resumeId}});
+            return
+        }
         
         const response = await axiosInstance.post(`/api/resumes/${resumeId}/education`, education)
         if (response.status === 200 || response.status === 201){
@@ -47,20 +60,50 @@ function Education(){
 
     const handleChange = (e) =>{
         const {name, value} = e.target;
-        if (name === 'degree' && value === "  "){
-            setOtherDegree(true)
+        
+        // Clear error when user starts typing
+        if (name === 'degree') {
+            setDegreeError(false)
         }
-        else if(degrees.includes(value)){
-            setOtherDegree(false)
+        
+        // Handle degree selection logic
+        if (name === 'degree') {
+            if (value === 'custom') {
+                setOtherDegree(true)
+                setEducation(prev => ({ ...prev, degree: '' }))
+                return
+            }
+
+        else if (value === 'High school diploma'){
+            setEducation((prev)=>({
+                ...prev,
+                degree: value,
+                study_feild: null
+            }))
+                
         }
+
+              
+             else if (degrees.includes(value)) {
+                setOtherDegree(false)
+                setEducation(prev => ({ ...prev, degree: value }))
+                return
+                
+            }
+            
+        }
+        
+        // Handle empty values
+        const finalValue = value === '' ? null : value
+        
         setEducation((prev) =>({
             ...prev,
-            [name]: value
-
+            [name]: finalValue
         }))
+        
     }
    
-   console.log(resume)
+   
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     const years = []
     for (let i = 0; i < 46; i++){
@@ -88,7 +131,7 @@ function Education(){
         
         <div className='gridContainer'>
         <div className='progression'> <SideBar prop={{page: 'edu'}}/></div>
-        <div className='container3' style={{height: '100%', marginTop: '0'}}>
+        <div className='container3' >
             <h3 className='h3'>Education Information</h3>
             <p className='contact-description'>Tell us about your educational background. Include your degree, field of study, and graduation details to showcase your academic achievements.</p>
             <form className="form" onSubmit={(e) =>{
@@ -121,27 +164,37 @@ function Education(){
                 <div >
                     <div className="select-selected">
                         <label htmlFor="degree" >Degree</label><br/>
-                        <select id="degree" name="degree" value={education.degree}  onChange={handleChange}>
-                            <option value="">{ otherDegree? 'Enter another Degree' : '__ Select__'}</option>
+                        <select 
+                            id="degree" 
+                            name="degree" 
+                            value={otherDegree ? 'custom' : (education.degree || '')}  
+                            onChange={handleChange}
+                        >
+                            <option value="">--Select a Degree--</option>
                             {degrees.map((degree, index) =>(
                                 <option key={index} value={degree}>{degree}</option>
-                                    
                             ))}
-                            <option value="  ">Enter another Degree</option>
+                            <option value="custom">Enter another Degree</option>
                         </select>
                     </div>
                     {otherDegree && (
                         <div style={{marginTop: '25px'}}>
-                            <label htmlFor="another">Enter another Degree</label><br/>
-                            <input id="another"
+                            <label htmlFor="customDegree">Enter another Degree</label><br/>
+                            <input 
+                                id="customDegree"
                                 name="degree"
-                                value={education.degree}
+                                placeholder="e.g. Bachelor of Engineering"
+                                style={{border: degreeError ? "2px solid red" : undefined}}
+                                value={education.degree || ''}
                                 onChange={handleChange}
-                                />
+                            />
+                            {degreeError && (
+                                <span style={{color: 'red', fontSize: '13px', display: 'block', marginTop: '5px'}}>
+                                    Please enter a degree
+                                </span>
+                            )}
                         </div>
-                            
-                            
-                        )}
+                    )}
                     </div>
 
                     <div>
@@ -209,7 +262,7 @@ function Education(){
                 </div>
             </form>
         </div>
-        <div className='container4' style={{marginTop: "0", background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"}}>
+        <div className='container4' >
             <ResumePreview prop={{...education, identity: 'edu', id:resumeId}}/>
         </div>
     </div>

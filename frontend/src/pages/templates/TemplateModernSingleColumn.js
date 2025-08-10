@@ -1,6 +1,20 @@
 import React from 'react';
 
 export default function ResumeModernElegant({ resume, workList, educationList, forwardedRef }) {
+  // Check if we have any contact info to display
+  const hasContactInfo = resume.contactInfo && (
+    resume.contactInfo.phone_number || 
+    resume.contactInfo.email || 
+    resume.contactInfo.city || 
+    resume.contactInfo.province
+  );
+
+  // Check if we have name to display
+  const hasName = resume.contactInfo && (
+    resume.contactInfo.f_name || 
+    resume.contactInfo.l_name
+  );
+
   return (
     <div className="resume-template" ref={forwardedRef} style={{
       width: '8.5in',
@@ -11,88 +25,109 @@ export default function ResumeModernElegant({ resume, workList, educationList, f
       color: '#222',
       fontSize: '15px',
       lineHeight: '1.45',
-      border: '1px solid #ddd'
+      border: '2px solid #ddd',
+      overflow: 'hidden'
     }}>
-      {/* Header */}
-      <header style={{ textAlign: 'center', marginBottom: '35px' }}>
-        <h1 style={{
-          fontSize: '34px',
-          fontWeight: 'bold',
-          margin: 0,
-          letterSpacing: '1px'
-        }}>
-          {resume.contactInfo?.f_name || 'First'} {resume.contactInfo?.l_name || 'Last'}
-        </h1>
-       
-        <div style={{
-          marginTop: '10px',
-          display: 'flex',
-          justifyContent: 'center',
-          gap: '16px',
-          flexWrap: 'wrap',
-          fontSize: '14px',
-          color: '#444',
-          
-        }}>
-          {resume.contactInfo?.phone_number || '1.123.1234.123'} • {resume.contactInfo?.email || 'email@email.com'} • {resume.contactInfo?.city || 'City'}, {resume.contactInfo?.province || 'State'}
+      {/* Header - only show if we have name or contact info */}
+      {(hasName || hasContactInfo) && (
+        <header style={{ textAlign: 'center', marginBottom: '35px' }}>
+          {/* Name - only show if we have a name */}
+          {hasName && (
+            <h1 style={{
+              fontSize: '34px',
+              fontWeight: 'bold',
+              margin: 0,
+              letterSpacing: '1px'
+            }}>
+              {[resume.contactInfo.f_name, resume.contactInfo.l_name].filter(Boolean).join(' ')}
+            </h1>
+          )}
          
-        </div>
-      </header>
+          {/* Contact info - only show if we have contact info */}
+          {hasContactInfo && (
+            <div style={{
+              marginTop: '10px',
+              display: 'flex',
+              justifyContent: 'center',
+              gap: '16px',
+              flexWrap: 'wrap',
+              fontSize: '14px',
+              color: '#444',
+            }}>
+              {[
+                resume.contactInfo.phone_number,
+                resume.contactInfo.email,
+                [resume.contactInfo.city, resume.contactInfo.province].filter(Boolean).join(', ')
+              ].filter(Boolean).join(' • ')}
+            </div>
+          )}
+        </header>
+      )}
 
-      {/* Professional Profile */}
+      {/* Professional Profile - only show if we have summary */}
       {resume.summary?.summary && (
-        <Section title="SUMMARY">
-          <div dangerouslySetInnerHTML={{ __html: resume.summary.summary }} />
+        <Section title="SUMMARY" id="summary">
+          <div className="no-list-indent" dangerouslySetInnerHTML={{ __html: resume.summary.summary }} />
         </Section>
       )}
 
-      {/* Work Experience */}
-      <Section title="WORK EXPERIENCE">
-        {workList.map((job, idx) => (
-          <div key={idx} style={{ marginBottom: '14px' }}>
-            <div style={{ fontWeight: 'bold' }}>
-              {job.position}
-              <span style={{ float: 'right',fontSize: '14px', textDecoration: 'none'}}>
-               {job.location || ''}
-              </span>
+      {/* Work Experience - only show if we have work experience */}
+      {workList && workList.length > 0 && (
+        <Section title="WORK EXPERIENCE" id="experience">
+          {workList.map((job, idx) => (
+            <div key={idx} style={{ marginBottom: '14px' }}>
+              <div style={{ fontWeight: 'bold' }}>
+                {job.position}
+                {job.location && (
+                  <span style={{ float: 'right',fontSize: '14px', textDecoration: 'none'}}>
+                   {job.location}
+                  </span>
+                )}
+              </div>
+              <div style={{ fontSize: '14px', color: '#666', fontStyle: 'italic' }}>
+                {job.employer}
+                <span style={{ float: 'right',  color: '#555', fontSize: '14px', textDecoration: 'none'}}>
+                  {job.start_month}, {job.start_year} - {job.end_month}, {job.end_year || (job.is_current ? 'Present' : '')}
+                </span>
+              </div>
+              {job.description?.description && (
+                <div style={{ paddingLeft: '14px', marginTop: '4px' }}>
+                  <div className="no-list-indent" dangerouslySetInnerHTML={{ __html: job.description.description }} />
+                </div>
+              )}
             </div>
-            <div style={{ fontSize: '14px', color: '#666', fontStyle: 'italic' }}>
-              {job.employer}
-              <span style={{ float: 'right',  color: '#555', fontSize: '14px', textDecoration: 'none'}}>
-                {job.start_month}, {job.start_year} - {job.end_month}, {job.end_year || (job.is_current ? 'Present' : '')}
-              </span>
-            </div>
-            <div style={{ paddingLeft: '14px', marginTop: '4px' }}>
-              <div dangerouslySetInnerHTML={{ __html: job.description?.description || '' }} />
-            </div>
-          </div>
-        ))}
-      </Section>
+          ))}
+        </Section>
+      )}
 
-      {/* Education */}
-      <Section title="EDUCATION">
-        {educationList.map((edu, idx) => (
-          <div key={idx} style={{ marginBottom: '14px' }}>
-            <div style={{ fontWeight: 'bold' }}>
-              {edu.degree}
-              <span style={{ float: 'right', fontSize: '14px', textDecoration: 'none' }}>
-                {edu.location || ''}
-              </span>
+      {/* Education - only show if we have education data */}
+      {educationList && educationList.length > 0 && (
+        <Section title="EDUCATION" id="education">
+          {educationList.map((edu, idx) => (
+            <div key={idx} style={{ marginBottom: '14px' }}>
+              <div style={{ fontWeight: 'bold' }}>
+                {edu.degree}
+                {edu.location && (
+                  <span style={{ float: 'right', fontSize: '14px', textDecoration: 'none' }}>
+                    {edu.location}
+                  </span>
+                )}
+              </div>
+              <div style={{ fontSize: '14px', color: '#666', fontStyle: 'italic' }}>
+                {edu.school_name}
+                <span style={{ float: 'right', color: '#555', fontSize: '14px', textDecoration: 'none' }}>
+                  {edu.start_year} - {edu.graduation_year}
+                </span>
+              </div>
             </div>
-            <div style={{ fontSize: '14px', color: '#666', fontStyle: 'italic' }}>
-              {edu.school_name}
-              <span style={{ float: 'right', color: '#555', fontSize: '14px', textDecoration: 'none' }}>
-                {edu.start_year} - {edu.graduation_year}
-              </span>
-            </div>
-          </div>
-        ))}
-      </Section>
+          ))}
+        </Section>
+      )}
 
-      {/* Skills */}
+      {/* Skills - only show if we have skills */}
       {resume.skills?.skills && (
-        <Section title="KEY SKILLS">
-          {renderSkills(resume.skills.skills)}
+        <Section title="KEY SKILLS" id="skills">
+          <div className="no-list-indent">{renderSkills(resume.skills.skills)}</div>
         </Section>
       )}
     </div>
@@ -100,9 +135,9 @@ export default function ResumeModernElegant({ resume, workList, educationList, f
 }
 
 // Section Component
-function Section({ title, children }) {
+function Section({ title, children, id }) {
   return (
-    <div style={{ marginBottom: '18px' }}>
+    <div id={id} style={{ marginBottom: '18px' }}>
       <h3 style={{
         fontSize: '15px',
         fontWeight: 'bold',

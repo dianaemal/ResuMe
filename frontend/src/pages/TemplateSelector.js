@@ -25,7 +25,7 @@ function TemplatePreview({ id }) {
     } else if (id === 'template2') {
         // Timeline
         return (
-            <div className="preview-timeline">
+            <div className="preview-timeline" >
                 <div className="timeline-sidebar">
                     <div className="timeline-dot"></div>
                     <div className="timeline-dot timeline-dot2"></div>
@@ -79,6 +79,7 @@ function TemplateSelector() {
     const location = useLocation();
     const navigate = useNavigate();
     const resumeId = location.state?.id || null;
+    const page = location.state?.page || null;
     const [selectedTemplate, setSelectedTemplate] = useState('template1');
     const [resumeData, setResumeData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -112,31 +113,31 @@ function TemplateSelector() {
             id: 'template1',
             name: 'Sidebar',
             description: 'Two-column layout with a left sidebar for contact, education, and skills.',
-            preview: 'Two-column with bold left sidebar for contact and skills.'
+            
         },
         {
             id: 'template2',
             name: 'Timeline',
             description: 'Timeline style with a colored sidebar and clear sectioning.',
-            preview: 'Timeline layout with colored sidebar and clear sectioning.'
+            
         },
         {
             id: 'template3',
             name: 'Modern Sidebar',
             description: 'Modern two-column layout with blue accents and clean lines.',
-            preview: 'Modern two-column with blue sidebar and clean lines.'
+            
         },
         {
             id: 'template4',
             name: 'Modern Single Column',
             description: 'Clean, modern, single-column layout with all sections stacked.',
-            preview: 'Single-column, modern, all sections stacked vertically.'
+            
         },
         {
             id: 'template5',
             name: 'Modern Elegant',
             description: 'Elegant, single-column with a colored header and gradient accent.',
-            preview: 'Elegant single-column with colored header and gradient accent.'
+            
         }
     ];
 
@@ -157,7 +158,11 @@ function TemplateSelector() {
                 title: resumeData.title,
                 id: resumeId
             });
-            navigate('/contact-info/', { state: { id: resumeId } });
+            if (page === 'title') {
+                navigate('/contact-info/', { state: { id: resumeId } });
+            } else {
+                navigate('/resume', { state: { id: resumeId } });
+            }
         } catch (error) {
             console.error('Error updating template:', error);
             // Even if update fails, navigate to resume page
@@ -166,11 +171,12 @@ function TemplateSelector() {
     };
 
     const handleSkip = () => {
-        if (resumeId) {
-            navigate('/resume', { state: { id: resumeId } });
+        if (page === 'title') {
+            navigate('/contact-info/', { state: { id: resumeId } });
         } else {
-            navigate('/resume');
+            navigate('/resume', { state: { id: resumeId } });
         }
+       
     };
 
     if (isLoading) {
@@ -178,6 +184,7 @@ function TemplateSelector() {
     }
 
     return (
+        <>
         <div className="template-selector">
             <div className="template-header">
                 <h1>Choose Your Resume Template</h1>
@@ -191,13 +198,13 @@ function TemplateSelector() {
                         className={`template-card ${selectedTemplate === template.id ? 'selected' : ''}`}
                         onClick={() => handleTemplateSelect(template.id)}
                     >
-                        <div className={`template-preview ${template.id}`}>
+                       <div className={`template-preview ${template.id}`}>
                             <TemplatePreview id={template.id} />
                         </div>
                         <div className="template-info">
                             <h3>{template.name}</h3>
                             <p>{template.description}</p>
-                            <span className="preview-text">{template.preview}</span>
+                            
                         </div>
                     </div>
                 ))}
@@ -211,7 +218,10 @@ function TemplateSelector() {
                     Use This Template
                 </button>
             </div>
+            
         </div>
+        <footer style={{textAlign: 'center', marginTop: '20px'}}>© 2025 ResuMe. All rights reserved.</footer>
+        </>
     );
 }
 

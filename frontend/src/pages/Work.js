@@ -1,5 +1,5 @@
-import react from "react";
-import { useState, useEffect } from 'react';
+import React from "react";
+import { useState } from 'react';
 import { useLocation,useNavigate } from 'react-router-dom';
 import axiosInstance from "../axios";
 import ResumePreview from "./ResumePreview";
@@ -10,26 +10,42 @@ function Work(){
     const resumeId = location.state?.id || null;
     const[workExperience, setWork] = useState(
         {
-            position: "",
-            employer: "",
-            location: "",
-            start_month: "",
-            start_year: "",
-            end_month: "",
-            end_year: "",
+            position: null,
+            employer: null,
+            location: null,
+            start_month: null,
+            start_year: null,
+            end_month: null,
+            end_year: null,
             still_working: false,
-            description: ""
+            description: null
         }
     )
+    
     const handleSubmit = async ()=>{
-        const response = await axiosInstance.post(`/api/resumes/${resumeId}/work`, workExperience)
-        if (response.status === 200 || response.status === 201){
-            const data = response.data
-            const workId = data.id;
-            console.log(response.data)
-            navigate('/work-description', {state: {id: resumeId, work: workId}})
+        // Check if all required fields are null/empty
+        const hasData = workExperience.position || workExperience.employer || 
+                       workExperience.location || workExperience.start_month || 
+                       workExperience.start_year || workExperience.end_month || 
+                       workExperience.end_year;
+        
+        if (!hasData) {
+            // If no data, just navigate to next page
+            navigate('/work-experience', {state: {id: resumeId}})
+            return;
         }
 
+        try {
+            const response = await axiosInstance.post(`/api/resumes/${resumeId}/work`, workExperience)
+            if (response.status === 200 || response.status === 201){
+                const data = response.data
+                const workId = data.id;
+                console.log(response.data)
+                navigate('/work-description', {state: {id: resumeId, work: workId}})
+            }
+        } catch (error) {
+            console.error("Error creating work experience:", error);
+        }
 
         /*const response = await fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/work`, {
             method: "POST",
@@ -56,10 +72,13 @@ function Work(){
     }
     const handleChange = (e) =>{
         const {name, value, type, checked} = e.target;
+        
+        // Handle empty values as null
+        const finalValue = type === "checkbox" ? checked : (value === "" ? null : value);
+        
         setWork((prev) =>({
             ...prev,
-            [name]: type === "checkbox"? checked : value,
-
+            [name]: finalValue,
         }))
     }
     
@@ -85,7 +104,7 @@ function Work(){
                             <input type="text"
                                 id="position"
                                 name="position"
-                                value={workExperience.position}
+                                value={workExperience.position || ""}
                                 onChange={handleChange}
                             ></input>
                         </div>
@@ -94,7 +113,7 @@ function Work(){
                             <input type="text"
                                 id="employer"
                                 name="employer"
-                                value={workExperience.employer}
+                                value={workExperience.employer || ""}
                                 onChange={handleChange}
                             ></input>
                         </div>
@@ -106,7 +125,7 @@ function Work(){
                         type="text"
                             name="location"
                             id="location"
-                            value={workExperience.location}
+                            value={workExperience.location || ""}
                             onChange={handleChange}
                         ></input>
                     </div>
@@ -115,19 +134,18 @@ function Work(){
                         
                         <div className="select-selected">
                             <label htmlFor="s_month">Start Month</label><br/>
-                            <select  name="start_month" id="s_month" value={workExperience.start_month}  onChange={handleChange}>
+                            <select  name="start_month" id="s_month" value={workExperience.start_month || ""}  onChange={handleChange}>
                                 <option value="">--Select--</option>
 
                                 {months.map((month, index)=>(
                                     <option key={index} value={month}>{month}</option>
                                 ))}
                             </select>
-                        
                         </div>
                         <div className="select-selected">
                        
                             <label htmlFor="s_year">Start Year</label><br/>
-                            <select id="s_year" name="start_year" value={workExperience.start_year}  onChange={handleChange}>
+                            <select id="s_year" name="start_year" value={workExperience.start_year || ""}  onChange={handleChange}>
                                 <option value="">--Select--</option>
                                 {years.map((year, index)=>(
                                     <option key={index} value={year}>{year}</option>
@@ -139,7 +157,7 @@ function Work(){
                     <div className="flexRow1">
                         <div className="select-selected">
                             <label htmlFor="e_month">End Month</label><br/>
-                            <select name="end_month" id="e_month" value={workExperience.end_month}
+                            <select name="end_month" id="e_month" value={workExperience.end_month || ""}
                                 disabled = {workExperience.still_working}
                                 onChange={handleChange}>
                                 <option value="">--Select--</option>
@@ -152,7 +170,7 @@ function Work(){
                       
                         <div className="select-selected">
                             <label htmlFor="e_year">End Year</label><br/>
-                            <select id="e_year" name="end_year" value={workExperience.end_year}
+                            <select id="e_year" name="end_year" value={workExperience.end_year || ""}
                                 disabled = {workExperience.still_working} 
                                 onChange={handleChange}
                             >
@@ -182,7 +200,7 @@ function Work(){
                 </form>
                 
             </div>
-            <div className='container4' style={{marginTop: "0", background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"}}>
+            <div className='container4' >
                 <ResumePreview prop={{...workExperience, identity: 'work', id:resumeId}} />
             </div>
         </div>

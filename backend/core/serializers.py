@@ -44,7 +44,7 @@ class WorkExperienceSerializer(serializers.ModelSerializer):
 class ExperienceDesSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExperienceDescription
-        fields = '__all__'
+        fields = ['description']
 
 class Educationserializer(serializers.ModelSerializer):
     class Meta:

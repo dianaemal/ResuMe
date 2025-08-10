@@ -13,6 +13,7 @@ function HomePage() {
     
    
   return (
+    <div class="body">
     <div className="home-page">
       <Container>
         <Row className="text-center hero-section">
@@ -46,6 +47,8 @@ function HomePage() {
         </Row>
       </Container>
     </div>
+     <footer style={{textAlign: 'center', marginTop: '25px', marginBottom: 'auto'}}>© 2025 ResuMe. All rights reserved.</footer>
+     </div>
   );
 }
 

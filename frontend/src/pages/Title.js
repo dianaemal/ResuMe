@@ -2,23 +2,29 @@ import React from "react";
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
 import axiosInstance from "../axios";
-import '../CSS/FormStyles.css';
+import '../CSS/Title.css';
 
 function Title(){
     const location = useLocation();
     const resumeId = location.state?.id || null;
-    
-    const accessToken = localStorage.getItem('access_token')
+    const page = location.state?.page || null;
     
     const token = localStorage.getItem('access_token');
-    const decodedToken = JSON.parse(atob(token.split('.')[1]));
-    const isExpired = decodedToken.exp * 1000 < Date.now();
+    let isExpired = false;
+    try {
+        if (token) {
+            const decodedToken = JSON.parse(atob(token.split('.')[1]));
+            isExpired = decodedToken.exp * 1000 < Date.now();
+        }
+    } catch (e) {
+        // If token is invalid, treat as expired
+        isExpired = true;
+    }
 
     console.log("Token expired:", isExpired);   
     const [resumeTitle, setTitle] = useState("");
     const [errorMsg, setError] = useState("");
     const [validation, setvalidation] = useState(false);
-    //const [flag, setFlag] = useState(false);
     
     const navigate = useNavigate();
     
@@ -29,17 +35,10 @@ function Title(){
                 setTitle(response.data.title || "")
             })
             .catch((error) => console.error('Error fetching resume:', error))
-            
-            /*fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}`)
-            .then((response)=> response.json())
-            .then((data) => {
-                setTitle(data.title || "")
-            })
-            .catch((error) => console.error('Error fetching resume:', error));*/
         }
 
 
-    }, [resumeId]);  // The effect runs when `resumeTitle` changes
+    }, [resumeId]);
     
     const creatTitle = async () => {
         const api = resumeId ? `/api/resumes/${resumeId}` : `/api/resumes/`
@@ -50,11 +49,14 @@ function Title(){
             const data = response.data
             console.log("Created resume:", data); // check structure
 
+            if (page === 'dashboard'){
+                navigate('/dashboard');
+            }
             // Redirect to template selector for new resumes, or contact-info for existing ones
-            if (resumeId) {
-                navigate(`/template-selector/`, {state: {id: data.id}});
+            else if (resumeId) {
+                navigate(`/contact-info/`, {state: {id: data.id, page: 'title'}});
             } else {
-                navigate(`/template-selector/`, {state: {id: data.id}});
+                navigate(`/template-selector`, {state: {id: data.id, page: 'title'}});
             }
             console.log(data.id)
         }
@@ -64,9 +66,8 @@ function Title(){
     }
 
     return(
-        <div className="gridContainer">
-            <div className="progression"></div>
-            <div className="container3">
+        <div className="title-card-container">
+            <div className="title-card">
                 <h3 className="h3">Name Your Resume</h3>
                 <p className="contact-description">Give your resume a clear, professional title. This helps you organize and find it later.</p>
                 <form className="form" onSubmit={(e) => {
@@ -77,8 +78,6 @@ function Title(){
                         return;
                     }
                     setError("");
-                    //setFlag(true);
-                    //console.log(flag);
                     
                     creatTitle();
                 }}>
@@ -97,12 +96,12 @@ function Title(){
                     {!validation && errorMsg && <span style={{color: 'red', fontSize: '0.9rem'}}>{errorMsg}</span>}
                     <div className="buttonContainer">
                         <div></div>
-                        <button className="button2" type="submit"><span>Next</span></button>
+                        <button className="button2" type="submit"><span>Save</span></button>
                     </div>
                 </form>
             </div>
-            <div className="container4" style={{marginTop: "0", background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"}}>
-            </div>
+            <div className="title-card-container">
+            </div>          
         </div>
     )
 }

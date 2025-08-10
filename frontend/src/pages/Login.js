@@ -13,6 +13,7 @@ import styles from "../CSS/Login.css"
 export default function LogIn(){
     const navigate = useNavigate()
     const { setAuthenticated } = useContext(AuthContext)
+    const [message, setMessage] = useState("")
 
     const LogInData = Object.freeze({
         email: "",
@@ -29,6 +30,10 @@ export default function LogIn(){
             [name]: value.trim(),
 
         }))
+        // Clear error message when user starts typing
+        if (message) {
+            setMessage("");
+        }
     }
 
     const handleSubmit = (e) =>{
@@ -46,21 +51,20 @@ export default function LogIn(){
             axiosInstance.defaults.headers['Authorization'] = 
             'JWT ' + localStorage.getItem('access_token');
             setAuthenticated(true)
-            const token = localStorage.getItem('access_token')
-            const decode = jwtDecode(token)
-            console.log(decode)
-            
             navigate('/dashboard');
-            
-            
-           
-
             }
             
         })
         .catch((err) => {
-            console.error("Login failed", err);
-            // You can show an error message to the user here
+            console.log('Login error:', err);
+            if (err.response && err.response.data) {
+                console.log(err.response.data)
+                const messages = Object.values(err.response.data).flat();
+                setMessage(messages);
+               
+
+            }
+
         });
         
 
@@ -101,8 +105,10 @@ export default function LogIn(){
                     className="login-input"
                     ></input>
                 </div>
-                    <Link className="text" to="">Forgot password?</Link>
+                    <Link className="text" to="/password-forget">Forgot password?</Link>
+                    {message && <div className="error-message">{message}</div>}
                     <button className="login-btn" type="submit">LOGIN</button>
+                  
                     <div className="text">Don't have an account? <Link to="/register">Sign Up</Link></div>
                 </form>
             </div>

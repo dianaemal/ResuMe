@@ -29,6 +29,19 @@ export default function TemplateModernSidebar({ resume, workList, educationList,
     );
   }
 
+  // Check if we have any contact info to display
+  const hasContactInfo = resume.contactInfo && (
+    resume.contactInfo.phone_number || 
+    resume.contactInfo.email || 
+    resume.contactInfo.address
+  );
+
+  // Check if we have name to display
+  const hasName = resume.contactInfo && (
+    resume.contactInfo.f_name || 
+    resume.contactInfo.l_name
+  );
+
   return (
     <div className="resume-template" ref={forwardedRef} style={{
       width: '8.5in',
@@ -41,72 +54,92 @@ export default function TemplateModernSidebar({ resume, workList, educationList,
       fontSize: '15px',
       lineHeight: '1.6',
       border: '2px solid #ddd',
+      overflow: 'hidden',
     }}>
       
-      {/* Header */}
-      <header style={{ marginBottom: '15px' }}>
-        <h1 style={{
-          fontSize: '30px',
-          fontWeight: 'bold',
-          color: '#1c1c84',
-          marginBottom: '0px',
-          textTransform: 'uppercase',
-        }}>
-          {resume.contactInfo?.f_name || 'First'} {resume.contactInfo?.l_name || 'Last'}
-        </h1>
-        <p style={{ marginBottom: '20px', marginTop: '0' }}>
-          {resume.contactInfo?.email || 'email@example.com'} | {resume.contactInfo?.phone_number || '000-000-0000'} | {resume.contactInfo?.address || 'Address'}
-        </p>
-       
-        <hr style={{ marginTop: '30px', border: '5px solid #1c1c84' }} />
-      </header>
+      {/* Header - only show if we have name or contact info */}
+      {(hasName || hasContactInfo) && (
+        <header style={{ marginBottom: '15px' }}>
+          {/* Name - only show if we have a name */}
+          {hasName && (
+            <h1 style={{
+              fontSize: '30px',
+              fontWeight: 'bold',
+              color: '#1c1c84',
+              marginBottom: '0px',
+              textTransform: 'uppercase',
+            }}>
+              {[resume.contactInfo.f_name, resume.contactInfo.l_name].filter(Boolean).join(' ')}
+            </h1>
+          )}
+          
+          {/* Contact info - only show if we have contact info */}
+          {hasContactInfo && (
+            <p style={{ marginBottom: '20px', marginTop: '0' }}>
+              {[
+                resume.contactInfo.email,
+                resume.contactInfo.phone_number,
+                resume.contactInfo.address
+              ].filter(Boolean).join(' | ')}
+            </p>
+          )}
+         
+          <hr style={{ marginTop: '30px', border: '5px solid #1c1c84' }} />
+        </header>
+      )}
 
-      {/* Summary */}
+      {/* Summary - only show if we have summary */}
       {resume.summary?.summary && (
         <div>
-        <Section title="SUMMARY">
-        <div dangerouslySetInnerHTML={{ __html: resume.summary.summary }} />
+        <Section title="SUMMARY" id="summary">
+          <div className="no-list-indent" dangerouslySetInnerHTML={{ __html: resume.summary.summary }} />
         </Section>
        
         </div>
       )}
 
-      {/* Work Experience */}
-      <Section title="WORK EXPERIENCE">
-        {workList.map((job, idx) => (
-          <div key={idx} style={{ marginBottom: '18px' }}>
-            <div style={{ fontWeight: 'bold' }}>
-              {job.position}
-              <span style={{ float: 'right', fontWeight: 'normal', color: '#555', fontSize: '14px', textDecoration: 'none' }}>
-                {job.start_month} {job.start_year} - {job.end_month} {job.end_year || (job.is_current ? 'Present' : '')}
-              </span>
-              <div style={{ fontSize: '14px', color: '#666' }}>{job.employer}</div>
+      {/* Work Experience - only show if we have work experience */}
+      {workList && workList.length > 0 && (
+        <Section title="WORK EXPERIENCE" id="experience">
+          {workList.map((job, idx) => (
+            <div key={idx} style={{ marginBottom: '18px' }}>
+              <div style={{ fontWeight: 'bold' }}>
+                {job.position}
+                <span style={{ float: 'right', fontWeight: 'normal', color: '#555', fontSize: '14px', textDecoration: 'none' }}>
+                  {job.start_month} {job.start_year} - {job.end_month} {job.end_year || (job.is_current ? 'Present' : '')}
+                </span>
+                <div style={{ fontSize: '14px', color: '#666' }}>{job.employer}</div>
+              </div>
+              {job.description?.description && (
+                <div style={{ marginTop: '5px', paddingLeft: '20px' }}>
+                  <div className="no-list-indent" dangerouslySetInnerHTML={{ __html: job.description.description }} />
+                </div>
+              )}
             </div>
-            <div style={{ marginTop: '5px', paddingLeft: '20px' }}>
-              <div dangerouslySetInnerHTML={{ __html: job.description?.description }} />
-            </div>
-          </div>
-        ))}
-      </Section>
+          ))}
+        </Section>
+      )}
 
-      {/* Education */}
-      <Section title="EDUCATION">
-        {educationList.map((edu, idx) => (
-          <div key={idx} style={{ marginBottom: '12px' }}>
-            <strong>{edu.degree}</strong>
-            <div style={{ fontSize: '13px' }}>
-              {edu.school_name}
-              {edu.location && `, ${edu.location}`} | {edu.start_year} - {edu.graduation_year}
+      {/* Education - only show if we have education data */}
+      {educationList && educationList.length > 0 && (
+        <Section title="EDUCATION" id="education">
+          {educationList.map((edu, idx) => (
+            <div key={idx} style={{ marginBottom: '12px' }}>
+              <strong>{edu.degree}</strong>
+              <div style={{ fontSize: '13px' }}>
+                {edu.school_name}
+                {edu.location && `, ${edu.location}`} | {edu.start_year} - {edu.graduation_year}
+              </div>
+              
             </div>
-            
-          </div>
-        ))}
-      </Section>
+          ))}
+        </Section>
+      )}
 
-      {/* Skills */}
+      {/* Skills - only show if we have skills */}
       {resume.skills?.skills && (
-        <Section style={{ borderBottom: 'none' }} title="KEY SKILLS">
-          {renderSkills(resume.skills.skills)}
+        <Section style={{ borderBottom: 'none' }} title="KEY SKILLS" id="skills">
+          <div className="no-list-indent">{renderSkills(resume.skills.skills)}</div>
         </Section>
       )}
     </div>
@@ -114,9 +147,9 @@ export default function TemplateModernSidebar({ resume, workList, educationList,
 }
 
 // Reusable Section Component
-function Section({ title, children }) {
+function Section({ title, children, id }) {
   return (
-    <div style={{ marginBottom: '15px', display: 'flex', flexDirection: 'row', gap: '20px', borderBottom: '1px solid #1c1c84'}}>
+    <div id={id} style={{ marginBottom: '15px', display: 'flex', flexDirection: 'row', gap: '20px', borderBottom: '1px solid #1c1c84'}}>
       <h3 style={{
         fontSize: '14px',
         fontWeight: 'bold',

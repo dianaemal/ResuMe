@@ -1,9 +1,23 @@
 import React from 'react';
 
-export default function TeTemplateTimeline({ resume, workList, educationList, forwardedRef }) {
+export default function TemplateTimeline({ resume, workList, educationList, forwardedRef }) {
+  // Check if we have any contact info to display
+  const hasContactInfo = resume.contactInfo && (
+    resume.contactInfo.phone_number || 
+    resume.contactInfo.email || 
+    resume.contactInfo.city || 
+    resume.contactInfo.website
+  );
+
+  // Check if we have name to display
+  const hasName = resume.contactInfo && (
+    resume.contactInfo.f_name || 
+    resume.contactInfo.l_name
+  );
+
   return (
     <div className="resume-template" ref={forwardedRef} style={{
-        margin: '0.4in',
+       // margin: '0.4in',
         width: '8.5in',
         height: '11in',
         padding: '0.4in',
@@ -12,83 +26,96 @@ export default function TeTemplateTimeline({ resume, workList, educationList, fo
         color: '#333',
         display: 'flex',
         flexDirection: 'column',
-        border: '1px solid #ddd',
+        border: '2px solid #ddd',
+        overflow: 'hidden',
     }}>
-      {/* Name */}
-      <h1 style={{
-        fontSize: '40px',
-        fontWeight: 700,
-        letterSpacing: '6px',
-        textAlign: 'center',
-       
-        marginTop: '25px',
-        color: '#222',
-      }}>
-        {(resume.contactInfo?.f_name || 'First') + ' ' + (resume.contactInfo?.l_name || 'Last')}
-      </h1>
+      {/* Name - only show if we have a name */}
+      {hasName && (
+        <h1 style={{
+          fontSize: '40px',
+          fontWeight: 700,
+          letterSpacing: '6px',
+          textAlign: 'center',
+         
+          marginTop: '25px',
+          color: '#222',
+        }}>
+          {[resume.contactInfo.f_name, resume.contactInfo.l_name].filter(Boolean).join(' ')}
+        </h1>
+      )}
 
       {/* Two Column Layout */}
       <div style={{ display: 'flex', gap: '25px', marginTop: '12mm'}}>
         {/* Left Sidebar */}
         <div style={{ height: '100%', width: '38%', backgroundColor: '#F9DFD9', padding:'5mm'}}>
-          {/* Contact */}
-          <Section title="Contact">
-            {resume.contactInfo?.phone_number && <div>📞 {resume.contactInfo.phone_number}</div>}
-            {resume.contactInfo?.email &&  <div>✉️ {resume.contactInfo.email}</div>}
-            {resume.contactInfo?.city && <div>📍 {resume.contactInfo.city}</div>}
-            {resume.contactInfo?.website && <div>🌐 {resume.contactInfo.website}</div>}
-          </Section>
+          {/* Contact - only show if we have contact info */}
+          {hasContactInfo && (
+            <Section title="Contact" id="contact">
+              {resume.contactInfo.phone_number && <div>📞 {resume.contactInfo.phone_number}</div>}
+              {resume.contactInfo.email && <div>✉️ {resume.contactInfo.email}</div>}
+              {resume.contactInfo.city && <div>📍 {resume.contactInfo.city}</div>}
+              {resume.contactInfo.website && <div>🌐 {resume.contactInfo.website}</div>}
+            </Section>
+          )}
 
-          {/* Education */}
-          <Section title="Education">
-            {educationList?.map((edu, idx) => (
-              <div key={idx} style={{ marginBottom: '10px' }}>
-                <div><strong>{edu.start_year} - {edu.graduation_year}</strong></div>
-                <div style={{ fontWeight: 'bold' }}>{edu.school_name}</div>
-                <div>{edu.degree} {edu.study_feild ? `in ${edu.study_feild}` : ''}</div>
-                {edu.gpa && <div style={{ fontSize: '13px', color: '#777' }}>GPA: {edu.gpa}</div>}
-              </div>
-            ))}
-          </Section>
+          {/* Education - only show if we have education data */}
+          {educationList && educationList.length > 0 && (
+            <Section title="Education" id="education">
+              {educationList.map((edu, idx) => (
+                <div key={idx} style={{ marginBottom: '10px' }}>
+                  
+                  <div style={{ fontWeight: 'bold' }}>{edu.school_name}</div>
+                  <div>{edu.degree} {edu.study_feild ? `in ${edu.study_feild}` : ''}</div>
+                  <div><strong>{edu.start_year} - {edu.graduation_year}</strong></div>
+                 
+                </div>
+              ))}
+            </Section>
+          )}
 
-          {/* Skills */}
-          <Section title="Skills">
-            <div  dangerouslySetInnerHTML={{ __html: resume.skills?.skills}}/>
-            
-          </Section>
+          {/* Skills - only show if we have skills */}
+          {resume.skills?.skills && (
+            <Section title="Skills" id="skills">
+              <div className="no-list-indent" dangerouslySetInnerHTML={{ __html: resume.skills.skills}}/>
+            </Section>
+          )}
+
+          {/* References - always show */}
           <Section title="References">
             <div>Available upon request</div>
           </Section>
-
-          
-          
         </div>
 
         {/* Right Content */}
         <div style={{marginTop: '5mm', width: '62%'}} >
-          {/* Profile Summary */}
-          <Section title="Summary">
-            <div dangerouslySetInnerHTML={{ __html: resume.summary?.summary}}/>
-            
-          </Section>
+          {/* Profile Summary - only show if we have summary */}
+          {resume.summary?.summary && (
+            <Section title="Summary" id="summary">
+              <div className="no-list-indent" dangerouslySetInnerHTML={{ __html: resume.summary.summary}}/>
+            </Section>
+          )}
 
-          {/* Work Experience */}
-          <Section title="Work Experience">
-            {workList.map((work, idx) => (
-              <div key={idx} style={{ marginBottom: '25px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold' }}>
-                  <div>{work.employer}</div>
-                  <div style={{ fontSize: '14px', color: '#666' }}>
-                    {work.start_year} - {work.end_year || (work.is_current ? 'Present' : '')}
+          {/* Work Experience - only show if we have work experience */}
+          {workList && workList.length > 0 && (
+            <Section title="Work Experience" id="experience">
+              {workList.map((work, idx) => (
+                <div key={idx} style={{ marginBottom: '25px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold' }}>
+                    <div>{work.employer}</div>
+                    <div style={{ fontSize: '14px', color: '#666' }}>
+                      {work.start_year} - {work.end_year || (work.is_current ? 'Present' : '')}
+                    </div>
                   </div>
+                  <div style={{ color: '#667eea', fontWeight: '600' }}>{work.position}</div>
+                  {work.description?.description && (
+                    <div style={{ marginLeft:'0mm', marginTop: '6px', fontSize: '15px', lineHeight: 1.5 }}>
+                      <div className="no-list-indent" dangerouslySetInnerHTML={{ __html: work.description.description }}/>
+                    </div>
+                  )}
                 </div>
-                <div style={{ color: '#667eea', fontWeight: '600' }}>{work.position}</div>
-                <div style={{ marginLeft:'0mm', marginTop: '6px', fontSize: '15px', lineHeight: 1.5 }}>
-                <div dangerouslySetInnerHTML={{ __html: work.description?.description }}/>
-                </div>
-              </div>
-            ))}
-          </Section>
+              ))}
+            </Section>
+          )}
         </div>
       </div>
     </div>
@@ -96,9 +123,9 @@ export default function TeTemplateTimeline({ resume, workList, educationList, fo
 }
 
 // Simple reusable section title + content
-function Section({ title, children }) {
+function Section({ title, children, id }) {
   return (
-    <div style={{ marginBottom: '50px' }}>
+    <div id={id} style={{ marginBottom: '50px' }}>
       <h3 style={{
         fontSize: '15px',
         textTransform: 'uppercase',

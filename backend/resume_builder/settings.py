@@ -46,9 +46,12 @@ REST_FRAMEWORK = {
 from datetime import timedelta
 SIMPLE_JWT = {
    'AUTH_HEADER_TYPES': ('JWT',),
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=200),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=2),
 }
+# Make sure that djoser creates a react url not django one:
+DOMAIN = 'localhost:3000'
+SITE_NAME = 'ResumeBuilder'
 DJOSER = {
     "LOGIN_FIELD": 'email',
     'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
@@ -56,7 +59,7 @@ DJOSER = {
     'SEND_CONFIRMATION_EMAIL':False,
     'SEND_ACTIVATION_EMAIL': False, 
     'SET_PASSWORD_RETYPE':True,
-    'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
+    'PASSWORD_RESET_CONFIRM_URL':'password-reset-confirm/{uid}/{token}',  # <-- React route
     'USERNAME_RESET_CONFIRM_URL': 'email/reset/confirm/{uid}/{token}',
     'ACTIVATION_URL': None,
     'SERIALIZERS': {
@@ -109,7 +112,8 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+#EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True

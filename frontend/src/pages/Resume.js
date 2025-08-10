@@ -2,23 +2,45 @@ import react from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import '../CSS/Resume.css'; 
+import '../CSS/ResumeSidebar.css';
 import axiosInstance from "../axios";
+import { jwtDecode }  from "jwt-decode";
 import ResumeTemplateRenderer from './ResumeTemplateRenderer';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Footer from "../components/Footer";
+import { faUser, faGraduationCap, faBriefcase, faLightbulb, faFileAlt, faEdit, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 function Resume(){
     const location = useLocation();
     const navigate = useNavigate()
     const resumeId = location.state?.id || null;
     const resumeRef = useRef(null);
+    
     console.log(resumeId)
 
-    const[infoHover, setInfoHover] = useState(false)
+    const token = localStorage.getItem('access_token')
+    let decodedUserId = null;
+    try {
+        if (token) {
+            const decode = jwtDecode(token)
+            decodedUserId = decode.user_id
+        }
+    } catch (e) {
+        console.warn('Invalid token, redirecting to login');
+        navigate('/login');
+    }
+    
+ 
+
+    //const[infoHover, setInfoHover] = useState(false)
     const [resumeData, setData] = useState(null);
     const [template, setTemplate] = useState('template1');
+    const [user, setUser] = useState("")
     const [isSaving, setIsSaving] = useState(false);
-
+    //const [activeSection, setActiveSection] = useState('contact');
+   
     useEffect(()=>{
         if (!resumeId) return;
 
@@ -33,6 +55,7 @@ function Resume(){
             axiosInstance.get(`/api/resumes/${resumeId}`)
             .then((res)=>{
                 setTemplate(res.data.template || 'template1');
+                setUser(res.data.user)
             })
             .catch((err)=> console.error("Error fetching template data:", err));
        
@@ -51,6 +74,32 @@ function Resume(){
             setTemplate(newTemplate);
         } catch (error) {
             console.error('Error updating template:', error);
+        }
+    };
+    console.log(resumeData)
+
+    const navigateToSection = (sectionId) => {
+       // setActiveSection(sectionId);
+        
+        // Navigate to the appropriate editing page based on section
+        switch (sectionId) {
+            case 'contact':
+                navigate('/contact-info/', { state: { id: resumeId } });
+                break;
+            case 'summary':
+                navigate('/summary', { state: { id: resumeId } });
+                break;
+            case 'education':
+                navigate('/education', { state: { id: resumeId } });
+                break;
+            case 'experience':
+                navigate('/work-experience', { state: { id: resumeId } });
+                break;
+            case 'skills':
+                navigate('/skills', { state: { id: resumeId } });
+                break;
+            default:
+                break;
         }
     };
 
@@ -115,68 +164,118 @@ function Resume(){
     if (!resumeData) {
         return <p>Loading resume...</p>;
     }
+
+    // Define available sections based on resume data
+    const sections = [
+        { id: 'contact', label: 'Contact Info', icon: faUser },
+        { id: 'summary', label: 'Summary',  icon: faFileAlt },
+        { id: 'education', label: 'Education', icon: faGraduationCap },
+        { id: 'experience', label: 'Experience', icon: faBriefcase },
+        { id: 'skills', label: 'Skills', icon: faLightbulb }
+    ];
+
+    const isOwner = user === decodedUserId;
+
     return(
-       <div>
-        <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-            <button 
-                onClick={handleTemplateChange}
-                style={{
-                    padding: '10px 20px',
-                    backgroundColor: '#667eea',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '5px',
-                    cursor: 'pointer',
-                    fontSize: '14px',
-                    fontWeight: '500',
-                    marginRight: '10px'
-                }}
-            >
-                Change Template
-            </button>
-            <button 
-                onClick={saveToComputer}
-                disabled={isSaving}
-                style={{
-                    padding: '10px 20px',
-                    backgroundColor: isSaving ? '#9ca3af' : '#10b981',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '5px',
-                    cursor: isSaving ? 'not-allowed' : 'pointer',
-                    fontSize: '14px',
-                    fontWeight: '500',
-                    marginRight: '10px'
-                }}
-            >
-                {isSaving ? 'Saving...' : 'Save to Computer'}
-            </button>
-            <select 
-                value={template}
-                onChange={(e) => handleTemplateUpdate(e.target.value)}
-                style={{
-                    padding: '8px 12px',
-                    border: '1px solid #ddd',
-                    borderRadius: '5px',
-                    fontSize: '14px'
-                }}
-            >
-                <option value="template1">Sidebar</option>
-                <option value="template2">Timeline</option>
-                <option value="template3">Modern Sidebar</option>
-                <option value="template4">Modern Single Column</option>
-                <option value="template5">Modern Elegant</option>
-            </select>
+       <div className="resume-page-container">
+        {/* Sidebar Navigation */} 
+        {isOwner && 
+        <div className="resume-sidebar">
+            <div className="sidebar-header">
+                <h3>Edit Sections</h3>
+            </div>
+            <nav className="sidebar-nav">
+                {sections.map((section) => (
+                    <button
+                        key={section.id}
+                        className={`sidebar-nav-item`}
+                        onClick={() => navigateToSection(section.id)}
+                    >
+                        <FontAwesomeIcon icon={section.icon} className="sidebar-icon" />
+                        <span>{section.label}</span>
+                        <FontAwesomeIcon icon={faEdit} className="edit-icon" />
+                    </button>
+                ))}
+            </nav>
+            <div className="sidebar-footer">
+                <button
+                    className="sidebar-nav-item back-button"
+                    onClick={() => navigate('/dashboard')}
+                >
+                    <FontAwesomeIcon icon={faArrowLeft} className="sidebar-icon" />
+                    <span>Back to Dashboard</span>
+                </button>
+            </div>
+        </div> }
+
+        {/* Main Content */}
+        <div className="resume-main-content" style={{marginLeft: !isOwner && "30px"}}>
+        { isOwner && 
+            <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+               
+            
+                <button 
+                    onClick={handleTemplateChange}
+                    style={{
+                        padding: '10px 20px',
+                        backgroundColor: '#667eea',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '5px',
+                        cursor: 'pointer',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        marginRight: '10px'
+                    }}
+                >
+                    Change Template
+                </button>
+                <button 
+                    onClick={saveToComputer}
+                    disabled={isSaving}
+                    style={{
+                        padding: '10px 20px',
+                        backgroundColor: isSaving ? '#9ca3af' : '#10b981',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '5px',
+                        cursor: isSaving ? 'not-allowed' : 'pointer',
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        marginRight: '10px'
+                    }}
+                >
+                    {isSaving ? 'Saving...' : 'Save to Computer'}
+                </button>
+                <select 
+                    value={template}
+                    onChange={(e) => handleTemplateUpdate(e.target.value)}
+                    style={{
+                        padding: '8px 12px',
+                        border: '1px solid #ddd',
+                        borderRadius: '5px',
+                        fontSize: '14px'
+                    }}
+                >
+                    <option value="template1">Sidebar</option>
+                    <option value="template2">Timeline</option>
+                    <option value="template3">Modern Sidebar</option>
+                    <option value="template4">Modern Single Column</option>
+                    <option value="template5">Modern Elegant</option>
+                </select>
+            </div>}
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <ResumeTemplateRenderer
+                    resume={resumeData}
+                    template={template}
+                    workList={resumeData.workExperience || []}
+                    educationList={resumeData.education || []}
+                    forwardedRef={resumeRef}
+                />
+            </div>
+            <Footer/>
         </div>
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <ResumeTemplateRenderer
-                resume={resumeData}
-                template={template}
-                workList={resumeData.workExperience || []}
-                educationList={resumeData.education || []}
-                forwardedRef={resumeRef}
-            />
-        </div>
+       
         </div>
     )
 }

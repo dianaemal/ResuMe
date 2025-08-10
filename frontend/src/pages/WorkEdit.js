@@ -1,4 +1,4 @@
-import react from "react";
+import React from "react";
 import { useState, useEffect } from 'react';
 import { useLocation,useNavigate } from 'react-router-dom';
 import axiosInstance from "../axios";
@@ -13,21 +13,21 @@ function WorkEdit(){
 
     const[workExperience, setWork] = useState(
         {
-            position: "",
-            employer: "",
-            location: "",
-            start_month: "",
-            start_year: "",
-            end_month: "",
-            end_year: "",
+            position: null,
+            employer: null,
+            location: null,
+            start_month: null,
+            start_year: null,
+            end_month: null,
+            end_year: null,
             still_working: false,
-            description: ""
+            description: null
         }
     )
     useEffect(()=>{
-        if(resumeId){
+        if(resumeId && workId){
 
-            axiosInstance(`/api/resumes/${resumeId}/work/${workId}`)
+            axiosInstance.get(`/api/resumes/${resumeId}/work/${workId}`)
             .then((res)=>{
                 if (res.status === 200 || res.status === 201){
                     const data = res.data
@@ -41,10 +41,13 @@ function WorkEdit(){
                             end_month: data.end_month,
                             end_year: data.end_year,
                             still_working: data.still_working,
-                            description: data.description || ""
+                            description: data.description || null
                         })
                     }
                 }
+            })
+            .catch((err) => {
+                console.error("Error fetching work experience:", err);
             })
 
             /*fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/work/${workId}`)
@@ -74,11 +77,15 @@ function WorkEdit(){
     }, [resumeId, workId])
 
     const handleSubmit = async ()=>{
-        const response = await axiosInstance.put(`/api/resumes/${resumeId}/work/${workId}`, workExperience)
-        if (response.status === 200 || response.status === 201){
-            const data = response.data
-            const workId = data.id;
-            navigate('/edit-description', {state: {id: resumeId, work: workId}})
+        try {
+            const response = await axiosInstance.put(`/api/resumes/${resumeId}/work/${workId}`, workExperience)
+            if (response.status === 200 || response.status === 201){
+                const data = response.data
+                const workId = data.id;
+                navigate('/work-experience', {state: {id: resumeId}})
+            }
+        } catch (error) {
+            console.error("Error updating work experience:", error);
         }
 
         /*const response = await fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/work/${workId}`, {
@@ -94,7 +101,7 @@ function WorkEdit(){
             const workId = data.id;
             navigate('/edit-description', {state: {id: resumeId, work: workId}})
             
-        }*/
+       }*/
     }
     const navigate = useNavigate();
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -107,10 +114,13 @@ function WorkEdit(){
     }
     const handleChange = (e) =>{
         const {name, value, type, checked} = e.target;
+        
+        // Handle empty values as null
+        const finalValue = type === "checkbox" ? checked : (value === "" ? null : value);
+        
         setWork((prev) =>({
             ...prev,
-            [name]: type === "checkbox"? checked : value,
-
+            [name]: finalValue,
         }))
     }
     
@@ -136,7 +146,7 @@ function WorkEdit(){
                             <input type="text"
                                 id="position"
                                 name="position"
-                                value={workExperience.position}
+                                value={workExperience.position || ""}
                                 onChange={handleChange}
                             ></input>
                         </div>
@@ -145,7 +155,7 @@ function WorkEdit(){
                             <input type="text"
                                 id="employer"
                                 name="employer"
-                                value={workExperience.employer}
+                                value={workExperience.employer || ""}
                                 onChange={handleChange}
                             ></input>
                         </div>
@@ -157,7 +167,7 @@ function WorkEdit(){
                         type="text"
                             name="location"
                             id="location"
-                            value={workExperience.location}
+                            value={workExperience.location || ""}
                             onChange={handleChange}
                         ></input>
                     </div>
@@ -166,19 +176,18 @@ function WorkEdit(){
                         
                         <div className="select-selected">
                             <label htmlFor="s_month">Start Month</label><br/>
-                            <select  name="start_month" id="s_month" value={workExperience.start_month}  onChange={handleChange}>
+                            <select  name="start_month" id="s_month" value={workExperience.start_month || ""}  onChange={handleChange}>
                                 <option value="">--Select--</option>
 
                                 {months.map((month, index)=>(
                                     <option key={index} value={month}>{month}</option>
                                 ))}
                             </select>
-                        
                         </div>
                         <div className="select-selected">
                        
                             <label htmlFor="s_year">Start Year</label><br/>
-                            <select id="s_year" name="start_year" value={workExperience.start_year}  onChange={handleChange}>
+                            <select id="s_year" name="start_year" value={workExperience.start_year || ""}  onChange={handleChange}>
                                 <option value="">--Select--</option>
                                 {years.map((year, index)=>(
                                     <option key={index} value={year}>{year}</option>
@@ -190,7 +199,7 @@ function WorkEdit(){
                     <div className="flexRow1">
                         <div className="select-selected">
                             <label htmlFor="e_month">End Month</label><br/>
-                            <select name="end_month" id="e_month" value={workExperience.end_month}
+                            <select name="end_month" id="e_month" value={workExperience.end_month || ""}
                                 disabled = {workExperience.still_working}
                                 onChange={handleChange}>
                                 <option value="">--Select--</option>
@@ -203,7 +212,7 @@ function WorkEdit(){
                       
                         <div className="select-selected">
                             <label htmlFor="e_year">End Year</label><br/>
-                            <select id="e_year" name="end_year" value={workExperience.end_year}
+                            <select id="e_year" name="end_year" value={workExperience.end_year || ""}
                                 disabled = {workExperience.still_working} 
                                 onChange={handleChange}
                             >
@@ -233,7 +242,8 @@ function WorkEdit(){
                 </form>
                 
             </div>
-            <div className="container4" style={{marginTop: "0", background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"}}>
+            <div className="container4" >
+                <h3 className='h3' style={{textAlign: 'center', fontSize: '20px', textDecoration: 'underline'}}>Preview</h3>
                 <ResumePreview prop={{...workExperience, identity: 'work', workId:workId, id:resumeId}}/>
             </div>
         </div>

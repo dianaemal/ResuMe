@@ -1,7 +1,9 @@
 .template-selector {
     max-width: 1200px;
+    
     margin: 0 auto;
-    padding: 40px 20px;
+    padding: 90px 20px;
+   
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
@@ -50,8 +52,20 @@
 
 .template-card.selected {
     border-color: #667eea;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    transition: background 0.3s, border-color 0.3s;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+/* Ensure selected state overrides hover state */
+.template-card.selected:hover {
+    border-color: #667eea;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
 .template-card.selected::before {
@@ -71,14 +85,20 @@
     font-size: 16px;
 }
 
+
 /* Remove old unused preview styles */
 .template-preview.template1,
 .template-preview.template2,
 .template-preview.template3,
 .template-preview.template4,
 .template-preview.template5 {
-  all: unset;
+    background: none;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    
 }
+
 
 /* Modern, consistent preview area */
 .template-preview {
@@ -96,10 +116,12 @@
   position: relative;
 }
 
+
 .template-card.selected .template-preview {
-  background: #fff;
-  box-shadow: 0 4px 16px rgba(102,126,234,0.13);
-}
+    background: #fff;
+    box-shadow: 0 4px 16px rgba(102,126,234,0.13);
+    transition: color 0s ease;
+  }
 
 /* Make all preview containers fill the preview area */
 .preview-sidebar,
@@ -120,6 +142,7 @@
 .preview-single-column,
 .preview-elegant {
   justify-content: center;
+  width: 100%;
 }
 
 /* Remove hardcoded font-family from preview containers unless intentional */
@@ -149,8 +172,9 @@
 /* Keep the rest of the preview block styles as previously defined for each template */
 
 .template-info h3, .template-info p, .template-info .preview-text {
-    color: #222 !important;
-    transition: color 0.2s;
+    color: #222;
+    margin-top: 15px;
+    transition: color 0.3s ease;
 }
 
 .preview-sidebar, .preview-timeline, .preview-modern-sidebar, .preview-single-column, .preview-elegant {
@@ -162,9 +186,10 @@
     color: #222 !important;
 }
 
-/* If you want the selected card to have a slightly different text color, use a subtle shade, not white */
+/* Selected card text should be white */
 .template-card.selected .template-info h3, .template-card.selected .template-info p, .template-card.selected .template-info .preview-text {
-    color: #222 !important;
+    color: white !important;
+    transition: color 0s ease;
 }
 
 .template-actions {
@@ -465,3 +490,4 @@
 }
 .elegant-exp { width: 80%; }
 .elegant-exp2 { width: 60%; } 
+

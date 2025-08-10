@@ -71,10 +71,10 @@ class ContactInfo(models.Model):
     resume = models.OneToOneField(Resume, on_delete=models.CASCADE, default=None, null=True)
     f_name = models.CharField(max_length=255)
     l_name = models.CharField(max_length=255, default="")
-    email = models.EmailField(null=True)
+    email = models.EmailField(default="")
     phone_number = models.CharField(max_length=15, null=True)
-    city = models.CharField(max_length=100)
-    province = models.CharField(max_length=100)
+    city = models.CharField(max_length=100, null=True)
+    province = models.CharField(max_length=100, null=True)
     postal_code = models.CharField(max_length=10, null=True)
 
     def __str__(self):
@@ -102,9 +102,9 @@ class ExperienceDescription(models.Model):
 
 class Education(models.Model):
     resume = models.ForeignKey(Resume, on_delete=models.CASCADE, default=None, null=True)
-    school_name = models.CharField(max_length=100)
+    school_name = models.CharField(max_length=100, null=True)
     location = models.CharField(max_length=100, null=True)
-    degree = models.CharField(max_length=100)
+    degree = models.CharField(max_length=100, null=True)
     study_feild = models.CharField(max_length=100, null=True)
     start_month = models.CharField(max_length= 20, null=True)
     start_year = models.CharField(max_length=20, null=True)
@@ -117,7 +117,7 @@ class Education(models.Model):
     
 class Languages(models.Model):
     resume = models.ForeignKey(Resume, on_delete=models.CASCADE, default=None, null=True)
-    language = models.CharField(max_length=100)
+    language = models.CharField(max_length=100, null=True)
     proficiency = models.CharField(max_length=100, null=True)
 
     def __str__(self):
@@ -133,7 +133,7 @@ class Skills(models.Model):
 
 class Summary(models.Model):
     resume = models.ForeignKey(Resume, on_delete=models.CASCADE, default=None, null=True)
-    summary = models.TextField()
+    summary = models.TextField(null=True)
 
     def __str__(self):
         return f"{self.summary[:50]}..."

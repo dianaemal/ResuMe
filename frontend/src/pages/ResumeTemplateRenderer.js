@@ -12,7 +12,7 @@ export default function ResumeTemplateRenderer({ resume, template, workList, edu
     case 'template1':
       return <TemplateSidebar resume={resume} workList={workList} educationList={educationList} forwardedRef={forwardedRef} />;
     case 'template2':
-      return <TemplateTimeline resume={resume} workList={workList} educationList={educationList} forwardedRef={forwardedRef} />;
+       return <TemplateTimeline resume={resume} workList={workList} educationList={educationList} forwardedRef={forwardedRef} />;
     case 'template3':
       return <TemplateModernSidebar resume={resume} workList={workList} educationList={educationList} forwardedRef={forwardedRef} />;
     case 'template4':

@@ -1,30 +1,50 @@
 import React, { useContext } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import axiosInstance from '../axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faEdit } from '@fortawesome/free-solid-svg-icons';
 import "../CSS/FormStyles.css"
 import SideBar from './SideBar';
 import { ResumeContext } from "../ResumeContext";
+import ClipLoader from 'react-spinners/ClipLoader';
+import Footer from '../components/Footer';
 function EducationView(){
     const location = useLocation();
     const resumeId = location.state?.id || null;
     const [educationList, setEducationList] = useState([]);
-    const {complete, setComplete} = useContext(ResumeContext)
+    const [loading, setLoading] = useState(true)
+    const {setComplete} = useContext(ResumeContext)
+    const [flag, setFlag] = useState(false)
 
-   
+
+
    
     useEffect(() =>{
         if (resumeId) {
+            //setLoading(true)
             axiosInstance.get(`/api/resumes/${resumeId}/education`)
                 .then((res) => {
                     
                     if (res.status === 200 || res.status === 201) {
-                        if (res.data) {
-                           
+                        
+                        const data = res.data || [];
+
+                        setEducationList(data);
+    
+                        if (data.length !== 0) {
+                            // If there's data, wait 3s before showing it
                             
-                            setEducationList(res.data);
+                            const delay = setTimeout(() => {
+                                setLoading(false);
+                            }, 600);
+    
+                            return () => clearTimeout(delay);
+                        } else {
+                            const delay = setTimeout(() => {
+                                setLoading(false);
+                            }, 300);
+                            return () => clearTimeout(delay);
                         }
                     }
                 })
@@ -50,24 +70,30 @@ function EducationView(){
             })
             .catch((err)=> console.error("Error fetching education data:", err));*/
         
-      
-    let flag = false
+    
     const handleEdit = (educationId) =>{
         navigate('/edit-education', {state: {id: resumeId, E_id : educationId}});
         
     }
     const handleDelete = (educationId) =>{
-        axiosInstance.delete(`/api/resumes/${resumeId}/education/${educationId}`)
-        .then((res) => {
-            if (res.status === 200 || res.status === 204) {
-                setEducationList((prev) => {
-                    if (prev.length === 1) {
-                        flag = true;
+        if (window.confirm('Are you sure you want to delete this education?')) {
+            try{
+                axiosInstance.delete(`/api/resumes/${resumeId}/education/${educationId}`)
+                .then((res)=>{
+                    if (res.status === 200 || res.status === 204){
+                        setFlag(true)
+                       
+                        setEducationList((prev)=>{
+                            return prev.filter((edu)=> edu.id !== educationId)
+                        })
                     }
-                    return prev.filter((edu) => edu.id !== educationId);
-                }); 
+                })
+            } catch (error) {
+                console.error("Error deleting education:", error);
             }
-        });
+        }
+    }
+    
       
        /* fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/education/${educationId}`, {
             method: 'DELETE'
@@ -77,41 +103,52 @@ function EducationView(){
                 setEducationList((prev)=> prev.filter((edu)=> edu.id !== educationId));
             }
         })*/
-    }
-    /* since this page doest have a resume preview, we will have to update the complete object seperatly:*/
-    useEffect(() => {
-        if (educationList.length > 0) {
-            setComplete(prev => {
-                if (!prev.education) {
-                    return { ...prev, education: true };
+    
+    
+            useEffect(() => {
+                if (resumeId) {
+                  axiosInstance.get(`/api/resumes/${resumeId}/all`)
+                    .then(res => {
+                      const data = res.data;
+                      setComplete({
+                        contactInfo: !!data.contactInfo,
+                        education: data.education && data.education.length > 0,
+                        workExperience: data.workExperience && data.workExperience.length > 0,
+                        skills: !!data.skills,
+                        summary: !!data.summary
+                      });
+                      setFlag(false)
+                    })
+                    .catch((err) => {
+                      // fallback: mark only education as complete if fetch fails
+                      setComplete(prev => ({ ...prev, education: true }));
+                      console.error("Error fetching all resume data:", err);
+                    });
                 }
-                return prev;
-            });
-        } else {
-            setComplete(prev => {
-                if (prev.education) {
-                    return { ...prev, education: false };
-                }
-                return prev;
-            });
-        }
-    }, [educationList]);
-   
+              }, [resumeId, setComplete, flag])
+
 
     
    
-   
+    
     
     const navigate = useNavigate();
+    const formatDateRange = (startMonth, startYear, endMonth, endYear) => {
+        const start = startMonth && startYear ? `${startMonth}, ${startYear}` : '';
+        const end = endMonth && endYear ? `${endMonth}, ${endYear}` : '';
+        return start && end ? `${start} - ${end}` : start || end;
+      };
    
     return (
+       
         <div className='gridContainer education-view-grid'
         
         >
           <div className='progression'> <SideBar /></div>
-          <div className='container3'
+          <div className='container3' 
              style={
-                {  marginTop: '0',
+                { 
+                    marginLeft: '0',
                     height: '100%',
                    
 
@@ -121,21 +158,38 @@ function EducationView(){
           >
             <h3 className='h3' style={{textAlign: 'left'}}>Education Summary</h3>
             <div className='contact-description' style={{textAlign: 'left', marginLeft: '0', maxWidth: '100%'}}>Enter your education experience so far, even if you are a current student or did not graduate.</div>
-
-              {educationList && educationList.map((education) => (
-                <div 
-                    className="education-card"
-                    style={
-                        {
-                            border: '3px solid  #667eea  ',
-                            borderRadius: '10px',
-                            marginTop: "20px",
-                            padding: '25px',
-                            backgroundColor: 'white'
-                            
-                        }
-                    }
+            {loading ? (
+                    <div
+                    style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    flexDirection: 'column',
+                    justifyItems: 'center',
+                    gap: '10px',
+                    marginTop: '20%'
+                    }}
+                >
+                    <ClipLoader color="#667eea" size={80} />
+                    <div style={{ color: '#667eea', fontWeight: 'bold' }}>Loading...</div>
+                </div>
+            ): (
+                <>
                 
+            
+                {educationList && educationList.map((education) => (
+                    <div 
+                        className="education-card"
+                        style={
+                            {
+                                border: '3px solid  #667eea  ',
+                                borderRadius: '10px',
+                                marginTop: "20px",
+                                padding: '25px',
+                                backgroundColor: 'white'
+                                
+                            }
+                        }
+                    
                 key={education.id}>
                     <div
                         style={{
@@ -152,10 +206,15 @@ function EducationView(){
                             }
                         >
                             <h5>{education.school_name}</h5>
-                            <p>{education.degree} in {education.study_feild}</p>
+                            <p>{education.degree} {education.study_feild && education.degree && "in" } {education.study_feild}</p>
                             <p>{education.location}</p>
-                            <p><small>{education.start_month}, {education.start_year} - {education.graduation_month}, {education.graduation_year}</small></p>
-                       
+                            <p><small>{formatDateRange(
+                                education.start_month,
+                                education.start_year,
+                                education.graduation_month,
+                                education.graduation_year
+                                )}</small></p>
+                                                    
                         </div>
                         <div style={{marginLeft: "auto",
                            
@@ -199,9 +258,16 @@ function EducationView(){
              >
               <span>Next</span> &rarr;
               </button>
-            </div>
-          </div>
+              </div>
+                </>
+                )}
+         
+             </div>
+
+          
         </div>
-      )
+     
+     
+    )
     }
 export default EducationView

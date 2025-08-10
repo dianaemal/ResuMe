@@ -1,4 +1,4 @@
-import react, { useContext } from 'react';
+import React, { useContext } from 'react';
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axiosInstance from '../axios';
@@ -7,6 +7,7 @@ import { faTrash, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { ClipLoader } from 'react-spinners';
 import SideBar from './SideBar';
 import { ResumeContext } from '../ResumeContext';
+import Footer from '../components/Footer';
 import '../CSS/FormStyles.css';
 
 function WorkView() {
@@ -14,32 +15,37 @@ function WorkView() {
     const resumeId = location.state?.id || null;
     const [workExperiences, setWork] = useState([]);
     const [loading, setLoading] = useState(true)
-     const {complete, setComplete} = useContext(ResumeContext)
-    useEffect(() => {
-        // Set a 3-second timer
-        
-        const timer = setTimeout(() => {
-          setLoading(false);
-        }, 600);
+     const {setComplete} = useContext(ResumeContext)
+
     
-        // Cleanup
-        return () => clearTimeout(timer);
-      }, []);
+
+    
     useEffect(()=>{
         if (resumeId){
 
             axiosInstance.get(`/api/resumes/${resumeId}/work`)
             .then((res)=>{
                 if (res.status === 200 || res.status === 201){
-                    setWork(res.data)
+                    console.log(res)
+                    const data = res.data || [];
+                    setWork(data);
                     
-                   
+                    if (data.length !== 0){
+                        
+                        const delay = setTimeout(() => {
+                            setLoading(false);
+                        }, 600);
+                        return () => clearTimeout(delay);
+                    } else {
+                        const delay = setTimeout(() => {
+                            setLoading(false);
+                        }, 300);
+                        return () => clearTimeout(delay);
+                    }
                 }
-                if (res.data.length === 0){
-                    setLoading(false)
-                }
+               
             })
-            .catch((err)=>console.error("Error fetching education data:", err)) 
+            .catch((err)=>console.error("Error fetching work data:", err)) 
         
 
             /*fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/work`)
@@ -63,36 +69,75 @@ function WorkView() {
     const navigate = useNavigate();
    
 
-   useEffect(()=>{
-        if(workExperiences.length > 0){
-            setComplete((prev)=>{
-                if(!complete.workExperience){
-                    return {...prev, workExperience: true}
-                }
-                return prev
+    useEffect(() => {
+        if (resumeId) {
+          axiosInstance.get(`/api/resumes/${resumeId}/all`)
+            .then(res => {
+              const data = res.data;
+              setComplete({
+                contactInfo: !!data.contactInfo,
+                education: data.education && data.education.length > 0,
+                workExperience: data.workExperience && data.workExperience.length > 0,
+                skills: !!data.skills,
+                summary: !!data.summary
+              });
+             
             })
+            .catch((err) => {
+              // fallback: mark only work as complete if fetch fails
+              setComplete(prev => ({ ...prev, workExperience: true }));
+              console.error("Error fetching all resume data:", err);
+            });
         }
-        else{
-            setComplete((prev)=>{
-                if(complete.workExperience){
-                    return {...prev, workExperience: false}
-                }
-                return prev
-            })
-        }
-   }, [workExperiences])
+      }, [resumeId, setComplete])
+
+
    
-       
+    const handleDelete = (id) =>{
+        if (window.confirm('Are you sure you want to delete this work experience?')) {
+            try{
+                axiosInstance.delete(`/api/resumes/${resumeId}/work/${id}`)
+                .then((res)=>{
+                    if (res.status === 200 || res.status === 204){
+                        setWork((prev)=>{
+                            return prev.filter((work)=> work.id !== id)
+        
+                        })
+                    }
+                })
+            } catch (error) {
+                console.error("Error deleting work experience:", error);
+            }
+        }
+
+    }
+
+    const formatDateRange = (startMonth, startYear, endMonth, endYear, stillWorking) => {
+        const start = startMonth && startYear ? `${startMonth} ${startYear}` : '';
+        const end = stillWorking ? 'Current' : (endMonth && endYear ? `${endMonth} ${endYear}` : '');
+        
+        if (start && end) {
+            return `${start} - ${end}`;
+        } else if (start) {
+            return stillWorking ? `${start} - Current` : start;
+        } else if (end) {
+            return end;
+        }
+        return '';
+    };
    
     
     return (
+        <>
+
         
        <div className='gridContainer work-view-grid'
             >
             <div className='progression'> <SideBar/></div>
             <div className='container3'
                 style={
-                    {  marginTop: '0',
+                    {  
+                        marginLeft: '0',
                         height: '100%',
                         backgroundColor: 'white',
                         overflow: 'scroll'
@@ -145,11 +190,26 @@ function WorkView() {
                                 }
                             }
                         >
-                            <h5>{experience.position}, {experience.employer}</h5>
-                            <p>{experience.location} | {experience.start_month} {experience.start_year} - 
-                            {experience.still_working ? "Current" : `${experience.end_month} ${experience.end_year}`}</p>
+                            <h5>
+                                {experience.position && experience.employer ? 
+                                    `${experience.position}, ${experience.employer}` :
+                                    experience.position || experience.employer || 'Position/Employer'
+                                }
+                            </h5>
+                            <p>
+                                {[
+                                    experience.location,
+                                    formatDateRange(
+                                        experience.start_month,
+                                        experience.start_year,
+                                        experience.end_month,
+                                        experience.end_year,
+                                        experience.still_working
+                                    )
+                                ].filter(Boolean).join(' | ')}
+                            </p>
                             <div>
-                                {experience.description && (
+                                {experience.description && experience.description.description && (
                                     <div dangerouslySetInnerHTML={{ __html: experience.description.description }}/>
                                 )}
                                 <div style={{marginTop: '1px',
@@ -164,7 +224,12 @@ function WorkView() {
                                         }}
                                         
                                     onClick={()=>{
-                                        if(experience.description){
+                                        // Check if description exists and has content
+                                        const hasDescription = experience.description //&&
+                                                              //experience.description.description && 
+                                                             //experience.description.description.trim() !== '';
+                                        
+                                        if(hasDescription){
                                             navigate("/edit-description", {
                                                 state: {
                                                   id: resumeId,
@@ -180,22 +245,23 @@ function WorkView() {
                                     }} 
                                     
                                     
-                                    ><FontAwesomeIcon icon={faEdit}/><span className='button-underline-span' style={{marginLeft: '5px'}}>{experience.description? "Edit" : 'Add'} description</span></button>
+                                    ><FontAwesomeIcon icon={faEdit}/><span className='button-underline-span' style={{marginLeft: '5px'}}>
+                                        {(experience.description && experience.description.description && experience.description.description.trim() !== '') ? "Edit" : 'Add'} description
+                                    </span></button>
                                </div>
                             </div>
                         </div>
-                        <div style={{marginLeft: "auto",
+                        <div style={{marginLeft: 'auto', display: 'flex', flexDirection: 'row', gap: '10px', height: '40px'}}>
 
                            
-                        }}>
+                        
                             <button className='edit-button' onClick={()=> navigate("/edit-workExperience", {state: {id: resumeId, work: experience.id}})}><FontAwesomeIcon icon={faEdit}/></button>
                             
-                            <button className='delete-button'><FontAwesomeIcon icon={faTrash}/></button>
+                            <button className='delete-button' onClick={()=> handleDelete(experience.id)}><FontAwesomeIcon icon={faTrash}/></button>
                         </div>
                     </div>
                 </div>
-            
-            ))}
+                ))}
                 <div
                 style={{
                     border: '3px dashed #764ba2',
@@ -230,6 +296,8 @@ function WorkView() {
                 )}
              </div>
         </div>
+  
+        </>
     )
 }
 

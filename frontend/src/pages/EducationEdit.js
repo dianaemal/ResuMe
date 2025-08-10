@@ -1,31 +1,51 @@
 import React from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
 import ResumePreview from './ResumePreview'
-import { useState, useEffect, useContext} from 'react';
+import { useState, useEffect} from 'react';
 import axiosInstance from '../axios';
-import { ResumeContext } from '../ResumeContext';
 import SideBar from './SideBar';
 import "../CSS/FormStyles.css";
+import Footer from '../components/Footer';
 
 function EducationEdit(){
     const location = useLocation();
     const resumeId = location.state.id ;
     const educationId = location.state.E_id;
+    const [error, setError] = useState(false)
+    const [otherDegree, setOtherDegree] = useState(false)
     //console.log(idObject)
-    const {resume, updateResume} = useContext(ResumeContext)
     const [education, setEducation] = useState({
-        school_name : "",
-        location : "",
-        degree : "",
-        study_feild: "",
-        start_month : "",
-        start_year : "",
-        graduation_month : "",
-        graduation_year : ""
+        school_name : null,
+        location : null,
+        degree : null,
+        study_feild: null,
+        start_month : null,
+        start_year : null,
+        graduation_month : null,
+        graduation_year : null
 
     })
-     const [otherDegree, setOtherDegree] = useState(false)
 
+const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const years = []
+for (let i = 0; i < 46; i++){
+    let year = 2025 - i
+    years.push(`${year}`)
+}
+const degrees = [
+    "High school diploma",
+    "Associate of Arts",
+    "Associate of Science",
+    "Bachelor of Science",
+    "Bachelor of Arts",
+    "BBA",
+    "Master of Arts",
+    "Master of Science",
+    "MBA",
+    "M.D.",
+    "Ph.D.",
+    "No degree",
+  ];
 
 useEffect(() =>{
     if(resumeId){
@@ -43,10 +63,11 @@ useEffect(() =>{
                     graduation_month : data.graduation_month,
                     graduation_year : data.graduation_year
                 })
-                if (!degrees.includes(data.degree)){
-                    setOtherDegree(true)
+                if (data.degree && !degrees.includes(data.degree)) {
+                    setOtherDegree(true);
+                } else {
+                    setOtherDegree(false);
                 }
-                
             }
         })
         .catch((err)=> console.error(err))
@@ -76,13 +97,14 @@ useEffect(() =>{
     }
 }, [resumeId, educationId]);
 
-useEffect(()=>{
-    
-},[education])
-console.log(otherDegree)
 
 
 const handleSubmit = async () =>{
+    console.log(`hey ${education.degree}`)
+    if (otherDegree && (!education.degree || education.degree.trim() === '')){
+        setError(true)
+        return
+    }
 
     const response = await axiosInstance.put(`/api/resumes/${resumeId}/education/${educationId}`, education)
     if (response.status === 200 || response.status === 201){
@@ -102,50 +124,71 @@ const handleSubmit = async () =>{
 }
 
 
-const handleChange = (e) =>{
-    const {name, value} = e.target;
-        if (name === 'degree' && value === "  "){
-            setOtherDegree(true)
+const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    // Clear error when editing degree field
+    if (name === 'degree') {
+        setError(false);
+
+        // If user selects "custom"
+        if (value === 'custom') {
+            setOtherDegree(true);
+            setEducation((prev) => ({
+                ...prev,
+                degree: ''
+            }));
+            return;
         }
-        else if(degrees.includes(value)){
-            setOtherDegree(false)
+
+        // If it's a known degree like "High school diploma"
+        if (value === 'High school diploma') {
+            setOtherDegree(false);
+            setEducation((prev) => ({
+                ...prev,
+                degree: value,
+                study_feild: null // clear field of study if not applicable
+            }));
+            return
+            
         }
-        setEducation((prev) =>({
+
+        // If it's any known degree
+        if (degrees.includes(value)) {
+            setOtherDegree(false);
+            setEducation((prev) => ({
+                ...prev,
+                degree: value
+            }));
+            return;
+        }
+    }
+
+    // Handle custom degree input field
+    if (otherDegree && name === 'degree') {
+        setEducation((prev) => ({
             ...prev,
-            [name]: value
+            degree: value
+        }));
+        return;
+    }
 
-        }))
-        console.log(value)
-}
+    // For all other fields
+    const finalValue = value === '' ? null : value;
+    setEducation((prev) => ({
+        ...prev,
+        [name]: finalValue
+    }));
+};
 
-const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-const years = []
-for (let i = 0; i < 46; i++){
-    let year = 2025 - i
-    years.push(`${year}`)
-}
-const degrees = [
-    "High school diploma",
-    "Associate of Arts",
-    "Associate of Science",
-    "Bachelor of Science",
-    "Bachelor of Arts",
-    "BBA",
-    "Master of Arts",
-    "Master of Science",
-    "MBA",
-    "M.D.",
-    "Ph.D.",
-    "No degree",
-  ];
 
 const navigate = useNavigate();
 
 return(
-    
-    <div className='gridContainer'>
+    <>
+    <div className='gridContainer' >
         <div className='progression'><SideBar/></div>
-        <div className='container3' style={{height: '100%', marginTop: '0'}}>
+        <div className='container3' >
             <h3 className='h3'>Edit Education Information</h3>
             <p className="contact-description">Update your educational background with accurate information about your degree, field of study, and graduation details.</p>
             <form className="form" onSubmit={(e) =>{
@@ -178,42 +221,52 @@ return(
                     <div >
                         <div className="select-selected">
                             <label htmlFor="degree" >Degree</label><br/>
-                            <select id="degree" name="degree" value={education.degree}  onChange={handleChange}>
-                                <option value="">{ otherDegree? 'Enter another Degree' : '__ Select__'}</option>
+                            <select 
+                                id="degree" 
+                                name="degree" 
+                                value={otherDegree ? 'custom' : (education.degree || '')}  
+                                onChange={handleChange}
+                            >
+                                <option value="">--Select a Degree--</option>
                                 {degrees.map((degree, index) =>(
                                     <option key={index} value={degree}>{degree}</option>
-                                        
                                 ))}
-                                <option value="  ">Enter another Degree</option>
+                                <option value="custom">Enter another Degree</option>
                             </select>
                         </div>
                         {otherDegree && (
                             <div style={{marginTop: '25px'}}>
-                                <label htmlFor="another">Enter another Degree</label><br/>
-                                <input id="another"
+                                <label htmlFor="customDegree">Enter another Degree</label><br/>
+                                <input 
+                                    id="customDegree"
                                     name="degree"
-                                    value={education.degree}
+                                    placeholder="e.g. Bachelor of Engineering"
+                                    style={{border: error ? "2px solid red" : undefined}}
+                                    value={education.degree ||''}
                                     onChange={handleChange}
-                                    />
+                                />
+                                {error && (
+                                    <span style={{color: 'red', fontSize: '13px', display: 'block', marginTop: '5px'}}>
+                                        Please enter a degree
+                                    </span>
+                                )}
                             </div>
-                                
-                                
-                            )}
-                        </div>
-
-                        <div>
-
-                            <label htmlFor="FOS">Feild of Study</label><br/>
-                            <input type="text"
-                                name='study_feild' 
-                                id="FOS"
-                                placeholder='e.g. Computer Science'
-                                value={education.study_feild}
-                                onChange={handleChange}
-                                disabled = {education.degree === 'High school diploma'}
-                            /> 
-                        </div>
+                        )}
                     </div>
+
+                    <div>
+
+                        <label htmlFor="FOS">Feild of Study</label><br/>
+                        <input type="text"
+                            name='study_feild' 
+                            id="FOS"
+                            placeholder='e.g. Computer Science'
+                            value={education.study_feild}
+                            onChange={handleChange}
+                            disabled = {education.degree === 'High school diploma'}
+                        /> 
+                    </div>
+                </div>
                     <div className='flexRow1'>
                         <div className="select-selected">
                             <label htmlFor="s_month">Start Month</label><br/>
@@ -265,11 +318,14 @@ return(
                         <button  className="button2" type="submit"><span>Save</span> &rarr;</button>
                     </div>
                 </form>
+                <Footer/>
             </div>
-            <div className="container4" style={{marginTop: "0", background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", height: "80%%"}}>
+            <div className="container4" >
                 <ResumePreview prop={{...education, eduId: educationId, identity: 'edu', id:resumeId}}/>
             </div>
         </div>
+  
+        </>
         
     
     

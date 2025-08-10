@@ -5,9 +5,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.http import Http404
 from django.contrib.auth import get_user_model 
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import Resume, ContactInfo, WorkExperience, ExperienceDescription, Education, Languages,Summary,Skills
 from .serializers import ResumeSerializer, ContactInfoSerializer, Educationserializer, ExperienceDesSerializer, WorkExperienceSerializer, LanguagesSerializer, SkillsSerializer, SummarySerializer
+import json
+import requests
 
 
 class ResumeList(APIView):
@@ -348,6 +350,7 @@ class AllResumeData(APIView):
             
 
         resume_data ={
+            
             "contactInfo": contactSerializer,
             "workExperience": workSerializer,
             "education": educationSerializer,
@@ -358,8 +361,58 @@ class AllResumeData(APIView):
         return Response(resume_data)
 
         
-        
+  
+class ChatWithGPT(APIView):
+    permission_classes = [AllowAny]
+  
+    Groq_API_Key= "REMOVED"
+    def post(self, request):
+        try:
+            # Use DRF's request.data for JSON body
+            user_message = request.data.get('message', '')
+         
+            if not user_message:
+                return JsonResponse({'error': 'Message is required'}, status=400)
 
+            response = requests.post(
+                "https://api.groq.com/openai/v1/chat/completions",
+                headers={
+                    'Authorization': f'Bearer {self.Groq_API_Key}',
+                    'Content-Type': 'application/json'
+                },
+               data=json.dumps({
+                    "model": "meta-llama/llama-4-scout-17b-16e-instruct",  # You can also try llama3-70b-8192 or mixtral-8x7b-32768
+                    "messages": [
+                   {
+                        "role": "user",
+                        "content": user_message
+                    }
+                ],
+                    "temperature": 0.7,
+                    "max_tokens": 300
+            }))
+            
+           
+            # Check if the request was successful
+            if response.status_code != 200:
+                return JsonResponse({'error': f'HuggingFace API error: {response.status_code}'}, status=500)
+
+            response_data = response.json()
+
+            # Groq returns a list of dicts with 'choices'
+            print(response_data)
+            print(response_data['choices'][0]['message']['content'])
+            print(response.status_code)
+           
+            get_reply = response_data['choices'][0]['message']['content']
+            return JsonResponse({'reply': get_reply})
+            
+
+        except Exception as e:
+            
+            return JsonResponse({'error': str(e)}, status=500)
+
+   
 
 
 

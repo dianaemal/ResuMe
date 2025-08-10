@@ -1,104 +1,78 @@
-import React, { useEffect } from "react";
-import {useState, useContext} from 'react';
+    
+import React, { useContext } from "react";
+import { useLocation, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPhone, faEnvelope, faGraduationCap, faBriefcase, faLightbulb, faIdBadge } from '@fortawesome/free-solid-svg-icons';
-import ProgressBar from "@ramonak/react-progress-bar";
+import { faPhone, faGraduationCap, faBriefcase, faLightbulb, faIdBadge, faCheck } from '@fortawesome/free-solid-svg-icons';
+import ProgressSidebarStyles from '../components/ProgressSidebar.css';
 import { ResumeContext } from "../ResumeContext";
-import "../CSS/FormStyles.css"
-import { Link } from "react-router-dom";
+import Footer from "../components/Footer";
 
-export default function SideBar({prop}){
+
+export default function SideBar() {
+    const { complete } = useContext(ResumeContext);
+  
+    const sections = [
+        { key: 'contactInfo', label: 'Contact', icon: faPhone },
+        { key: 'education', label: 'Education', icon: faGraduationCap },
+        { key: 'workExperience', label: 'Work', icon: faBriefcase },
+        { key: 'skills', label: 'Skills', icon: faLightbulb },
+        { key: 'summary', label: 'Summary', icon: faIdBadge }
+    ];
+    // Find the first incomplete section as the current step
+    const currentStep = sections.findIndex(section => !complete[section.key]);
+
+    return (
+        <>
+        <nav className="progress-sidebar"  >
+            
+            <ul className="progress-sidebar-list"  >
+                {sections.map((section, idx) => {
+                    const isCompleted = complete[section.key];
+                    const isCurrent = idx === currentStep || (currentStep === -1 && idx === sections.length - 1);
+                    return (
+                        <li
+                       
+                        style={{marginTop: '0px', marginBottom: '0px', lineHeight: '0px'}}
+                            key={section.key}
+                            className={`progress-sidebar-step${isCompleted ? ' completed' : ''}${isCurrent ? ' current' : ''}`}
+                        >
+                            <div className="progress-sidebar-circle-wrapper">
+                            
+                            {idx !== 0 && <div className="progress-sidebar-connector" style={{marginBottom: '0px'}} />}
+                           
+                                <span className="progress-sidebar-circle">
+                                    {isCompleted ? (
+                                        <FontAwesomeIcon icon={faCheck} />
+                                    ) : (
+                                        idx + 1
+                                    )}
+                                </span>
+                                {idx !== sections.length - 1 && <div className="progress-sidebar-connector" style={{marginBottom: '0px'}} />}
+                              
+                               
+                            </div>
+                            <span className="progress-sidebar-label" >
+                                <FontAwesomeIcon icon={section.icon} style={{ marginRight: '20px' }} />
+                                {section.label}
+                            </span>
+                        </li>
+                    );
+                })}
+            </ul>
+           
+             
+           {/* <div className="back-but ton siderbar-button" onClick={()=> navigator} > Go to Resume</div>*/}
+            <div className="progress-sidebar-footer">
+                <Footer />
+            </div>
+            
+        </nav>
+
+       
+        
+        
    
-    
-    const {complete, setComplete} = useContext(ResumeContext)
-
-   
-   
-
-     
-    const totall = Object.keys(complete).length
-    console.log(totall)
-    const trueValues = Object.values(complete).filter(value => value === true)
-    const length = trueValues.length
-    const progress =Math.floor(( length / totall )* 100)
-    
-    
-
-     
-    return(
-        <div className="side_container">
-              <div >
-                    {complete.contactInfo || prop ? 
-                    (<Link className="link">
-                    <FontAwesomeIcon style={{color: 'orange'}} className="icons " icon={faPhone} /> Contact Information
-                    </Link>) : 
-                    (<div>
-                         <FontAwesomeIcon  className="icons " icon={faPhone} /> Contact Information
-                    </div>)
-                    
-               }
-                    
-              </div>
-              <div>
-               {complete.education || prop? 
-                   (<Link to="/"
-                    className="link"
-                   >
-                   <FontAwesomeIcon style={{color: 'orange'}} className="icons" icon={faGraduationCap} /> Education
-                    </Link>):
-                    (<div>
-                        <FontAwesomeIcon className="icons" icon={faGraduationCap} /> Education
-                         </div>)
-                    }
-               </div>
-               <div>
-                    {complete.workExperience? 
-                    <Link className="link">
-                   <FontAwesomeIcon style={{color: 'orange'}} className="icons" icon={faBriefcase} /> Work History
-                   </Link>:
-                  ( <div>
-                         <FontAwesomeIcon className="icons" icon={faBriefcase} /> Work History
-
-                  </div>)
-
-                    }
-              </div>
-              <div>
-               {complete.skills? 
-               (<Link className="link">
-                   <FontAwesomeIcon style={{color: 'orange'}} className="icons" icon={faLightbulb} /> Skills
-                   </Link>):
-                   (<div>
-
-                    <FontAwesomeIcon className="icons" icon={faLightbulb} /> Skills
-
-                   </div>)
-               }
-              </div>
-              <div>
-               {complete.summary? 
-               (<Link className="link">
-          
-                   <FontAwesomeIcon style={{color: 'orange'}} className="icons" icon={faIdBadge} /> Summary
-                   </Link>):
-                   (<div>
-
-                  
-                    <FontAwesomeIcon className="icons" icon={faIdBadge} /> Summary
-                  
-                   </div>)
-
-               }
-              </div>
-              <div style={{ marginTop: '40px' }}>
-                   <ProgressBar
-
-                        completed={progress}
-                        bgColor="orange"
-                        height="12px"
-                        labelAlignment="outside" />
-              </div>
-       </div>
-      
-    )
+   </>
+       
+    );
 }

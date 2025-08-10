@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../axios";
 import { jwtDecode }  from "jwt-decode";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash, faEye, faPen } from '@fortawesome/free-solid-svg-icons';
+import Footer from '../components/Footer';
 import '../CSS/Dashboard.css';
 
 export default function Dashboard(){
@@ -17,9 +20,9 @@ export default function Dashboard(){
         axiosInstance.get(`api/resumes/`)
         .then((res)=>{
             if (res.status === 200 || res.status === 201){
-                console.log(res.data)
                 setAll(res.data)
                 setIsLoading(false);
+             
             }
         })
         .catch((err) => {
@@ -39,37 +42,48 @@ export default function Dashboard(){
     const handleDeleteResume = async (resumeId) => {
         if (window.confirm('Are you sure you want to delete this resume?')) {
             try {
-                await axiosInstance.delete(`/api/resumes/${resumeId}`);
+                await axiosInstance.delete(`/api/resumes/${resumeId}`)
+                .then((res)=>{
+                    if (res.status === 200 || res.status === 204){
+                        setAll((prev)=>{
+                            return prev.filter((resume)=> resume.id !== resumeId)
+                        })
+                    }
+                })
                 // Refresh the resume list
-                const res = await axiosInstance.get(`api/resumes/`);
-                if (res.status === 200 || res.status === 201) {
-                    console.log(res.data)
-                    setAll(res.data);
-                }
+                //const res = await axiosInstance.get(`api/resumes/`);
+                //if (res.status === 200 || res.status === 201) {
+                    //console.log(res.data)
+                    //setAll(res.data);
+                //}
             } catch (error) {
                 console.error('Error deleting resume:', error);
             }
         }
     };
 
+    const handleEditResume = (resumeId) => {
+        navigate('/title', { state: { id: resumeId, page: 'dashboard' } });
+    };
+
     const getTemplateDisplayName = (template) => {
         const templateNames = {
-            'template1': 'Classic',
-            'template2': 'Modern', 
-            'template3': 'Professional',
-            'template4': 'Creative',
-            'template5': 'Minimalist'
+            'template1': 'Sidebar',
+            'template2': 'Timeline', 
+            'template3': 'Modern Sidebar',
+            'template4': 'Modern Single Column',
+            'template5': 'Modern Elegant'
         };
         return templateNames[template] || 'Classic';
     };
 
     const getTemplateColor = (template) => {
         const colors = {
-            'template1': '#3498db',
+            'template1': '#667eea',
             'template2': '#667eea',
-            'template3': '#34495e',
-            'template4': '#666',
-            'template5': '#1a1a1a'
+            'template3': '#667eea',
+            'template4': '#667eea',
+            'template5': '#667eea'
         };
         return colors[template] || '#3498db';
     };
@@ -84,6 +98,7 @@ export default function Dashboard(){
     }
 
     return (
+        <>
         <div className="dashboard-container">
             <div className="dashboard-header">
                 <div className="dashboard-welcome">
@@ -155,8 +170,18 @@ export default function Dashboard(){
                                 className="resume-card"
                             >
                                 <div className="resume-card-header">
-                                    <div className="resume-info">
-                                        <h3>{resume.title}</h3>
+                                    <div className="resume-info" >
+                                        {resume.user === decode.user_id ? (
+                                        <div className="edit-btn" onClick={() => handleEditResume(resume.id)}>  
+                                            <h3 style={{color: '#667eea'}}>{resume.title} <FontAwesomeIcon icon={faPen}   style={{marginLeft: '5px', fontSize: '15px'}}/></h3>
+                                            
+                                           
+                                                
+                                            
+                                        </div>) : (
+                                           <h3 style={{color: '#667eea'}}>{resume.title}</h3>
+                                        )}
+
                                         <div className="resume-meta">
                                             <span 
                                                 className="template-badge"
@@ -164,42 +189,29 @@ export default function Dashboard(){
                                             >
                                                 {getTemplateDisplayName(resume.template)}
                                             </span>
-                                            <span className="resume-date">
+                                            <div className="resume-date">
                                                 Created: {resume.date_added && !isNaN(new Date(resume.date_added)) 
                                                     ? new Date(resume.date_added).toLocaleDateString() 
                                                     : 'N/A'}
-                                            </span>
-                                            <span className="resume-date" style={{marginLeft: '10px'}}>
+                                            </div>
+                                            <div className="resume-date">
                                                 Last Updated: {resume.date_updated && !isNaN(new Date(resume.date_updated))
                                                     ? new Date(resume.date_updated).toLocaleDateString()
                                                     : 'N/A'}
-                                            </span>
+                                            </div>
                                         </div>
                                     </div>
-                                    {resume.user === decode.user_id && (
+                                   
                                         <div className="resume-actions">
-                                            <button 
-                                                className="action-btn view-btn"
-                                                onClick={() => handleViewResume(resume.id)}
-                                                title="View Resume"
-                                            >
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                                    <circle cx="12" cy="12" r="3"></circle>
-                                                </svg>
-                                            </button>
-                                            <button 
-                                                className="action-btn delete-btn"
-                                                onClick={() => handleDeleteResume(resume.id)}
-                                                title="Delete Resume"
-                                            >
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                                    <polyline points="3,6 5,6 21,6"></polyline>
-                                                    <path d="M19,6v14a2,2 0 0,1 -2,2H7a2,2 0 0,1 -2,-2V6m3,0V4a2,2 0 0,1 2,-2h4a2,2 0 0,1 2,2v2"></path>
-                                                </svg>
-                                            </button>
+                                            <button className="view-btn" onClick={() => handleViewResume(resume.id)}>
+                                                <FontAwesomeIcon icon={faEye} />
+                                                </button>
+                                                {resume.user === decode.user_id && ( <button className="delete-btn" onClick={() => handleDeleteResume(resume.id)}>
+                                                <FontAwesomeIcon icon={faTrash} />
+                                            </button>)}
+                                            
                                         </div>
-                                    )}
+                                    
                                 </div>
                                 <div className="resume-card-footer">
                                     <div className="resume-stats">
@@ -232,6 +244,10 @@ export default function Dashboard(){
                     </div>
                 )}
             </div>
+           
         </div>
+        <footer style={{textAlign: 'center', marginTop: '20px'}}>© 2025 ResuMe. All rights reserved.</footer>
+        
+         </>
     )
 }
