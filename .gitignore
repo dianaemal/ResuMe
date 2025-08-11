@@ -1,1 +1,3 @@
 backend/venv/
+.env
+CHANGES_SUMMARY.txt

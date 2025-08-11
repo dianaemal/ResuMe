@@ -10,6 +10,7 @@ from .models import Resume, ContactInfo, WorkExperience, ExperienceDescription, 
 from .serializers import ResumeSerializer, ContactInfoSerializer, Educationserializer, ExperienceDesSerializer, WorkExperienceSerializer, LanguagesSerializer, SkillsSerializer, SummarySerializer
 import json
 import requests
+import os
 
 
 class ResumeList(APIView):
@@ -365,9 +366,13 @@ class AllResumeData(APIView):
 class ChatWithGPT(APIView):
     permission_classes = [AllowAny]
   
-    Groq_API_Key= "REMOVED"
     def post(self, request):
         try:
+            # Get API key from environment variable
+            groq_api_key = os.getenv('GROQ_API_KEY')
+            if not groq_api_key:
+                return JsonResponse({'error': 'Groq API key not configured'}, status=500)
+            
             # Use DRF's request.data for JSON body
             user_message = request.data.get('message', '')
          
@@ -377,7 +382,7 @@ class ChatWithGPT(APIView):
             response = requests.post(
                 "https://api.groq.com/openai/v1/chat/completions",
                 headers={
-                    'Authorization': f'Bearer {self.Groq_API_Key}',
+                    'Authorization': f'Bearer {groq_api_key}',
                     'Content-Type': 'application/json'
                 },
                data=json.dumps({
@@ -395,7 +400,7 @@ class ChatWithGPT(APIView):
            
             # Check if the request was successful
             if response.status_code != 200:
-                return JsonResponse({'error': f'HuggingFace API error: {response.status_code}'}, status=500)
+                return JsonResponse({'error': f'Groq API error: {response.status_code}'}, status=500)
 
             response_data = response.json()
 
