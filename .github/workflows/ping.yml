@@ -12,4 +12,4 @@ jobs:
     steps:
       - name: Ping backend (root)
         run: |
-          curl -I https://resume-p2u2.onrender.com | head -n 1
+          curl -I https://resume-p2u2.onrender.com/health/ | head -n 1
