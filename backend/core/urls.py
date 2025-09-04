@@ -1,7 +1,11 @@
 from django.urls import path
 from . import views
+from django.http import JsonResponse
 
+def health(request):
+    return JsonResponse({"status": "ok"})
 urlpatterns = [
+    path("health/", health),
     path('api/resumes/', views.ResumeList.as_view()),
     path('api/resumes/<int:pk>', views.ResumeDetails.as_view()),
     path('api/resumes/<int:pk>/contact-info', views.ContactDetails.as_view()),
@@ -13,8 +17,5 @@ urlpatterns = [
     path('api/resumes/<int:pk>/skills', views.SkillsDetails.as_view()),
     path('api/resumes/<int:pk>/summary', views.SummaryDetails.as_view()),
     path('api/resumes/<int:pk>/all', views.AllResumeData.as_view()),
-    path('api/resumes/chat/', views.ChatWithGPT.as_view())
-
-    
-    
+    path('api/resumes/chat/', views.ChatWithGPT.as_view())    
 ]
