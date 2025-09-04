@@ -51,7 +51,7 @@ from datetime import timedelta
 SIMPLE_JWT = {
    'AUTH_HEADER_TYPES': ('JWT',),
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
-    'REFRESH_TOKEN_LIFETIME': timedelta(minutes=10),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=10),
 }
 # Make sure that djoser creates a react url not django one:
 DOMAIN = 'localhost:3000'
