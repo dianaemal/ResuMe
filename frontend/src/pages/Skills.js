@@ -20,9 +20,12 @@ function Skills(){
     const navigate = useNavigate();
     const [skills, setSkills] = useState("")
     const [skillsExit, setExist] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const [errorMessage, setErrorMessage] = useState(null);
     const [jobSearch, setJobSearch] = useState("");
     const [isSearching, setIsSearching] = useState(false);
     const {resume, setResume} = useContext(ResumeContext)
+    
     const handleSubmit = async ()=>{
         console.log(skills);
         const response = skillsExit? await axiosInstance.put(`/api/resumes/${resumeId}/skills`,{skills: skills} )
@@ -42,9 +45,12 @@ function Skills(){
             navigate('/summary', {state: {id:resumeId}})
         }*/
     }
-    useEffect(()=>{
+    
+    const fetchSkills = () => {
+        setIsLoading(true);
+        setErrorMessage(null);
+        
         if (resumeId){
-
             axiosInstance.get(`/api/resumes/${resumeId}/skills`)
             .then((res)=>{
                 if(res.status === 200 || res.status === 201){
@@ -52,33 +58,40 @@ function Skills(){
                         setExist(true)
                         setSkills(res.data.skills)
                     }
-                    
-
+                    setIsLoading(false);
                 }
             })
             .catch((error) =>{
+                setIsLoading(false);
+                if (error.code === 'ERR_NETWORK') {
+                    setErrorMessage("Network error: Please check your internet connection and try again.");
+                } else if (error.code === 'ECONNABORTED') {
+                    setErrorMessage("Request timed out: The server is taking too long to respond. Please try again later.");
+                } else if (error.response) {
+                    if (error.response.status === 404) {
+                        // 404 is expected for new resumes - no skills exist yet
+                        setErrorMessage(null);
+                        setExist(false);
+                    } else {
+                        setErrorMessage(`Failed to process your request: (status ${error.response.status}). Please try again later.`);
+                    }
+                } else if (error.message) {
+                    setErrorMessage(error.message);
+                } else {
+                    setErrorMessage("An unexpected error occurred. Please try again.");
+                }
                 setExist(false)
                 console.error('Error fetching resume:', error)
             });
-
-
-           /* fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/skills`)
-           .then((res)=>{
-                if (res.ok){
-                    setExist(true);
-                    console.log(skillsExit)
-                    return res.json();
-               }
-                setExist(false);
-            })
-            .then((data)=>{
-                if(data){
-                    setSkills(data.skills)
-                }
-            })
-            .catch((error) => console.error('Error fetching resume:', error));*/
+        } else {
+            setIsLoading(false);
         }
+    }
+    
+    useEffect(()=>{
+        fetchSkills();
     }, [resumeId])
+    
     useEffect(()=>{
         setResume((prev)=>({
             ...prev,
@@ -126,6 +139,37 @@ function Skills(){
         }
     };
 
+    if (isLoading) {
+        return (
+            <div className="gridContainer">
+                <div className="progression">
+                    <SideBar prop={{page: 'skills'}}/>
+                </div>
+                <div className="container3">
+                    <div className="dashboard-loading" style={{height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+                        <div className="loading-spinner"></div>
+                        <p>Loading skills information...</p>
+                    </div>
+                </div>
+                <div className="container4" onClick={()=> navigate('/resume', {state: {id: resumeId}})}>
+                    <ResumePreview prop={{id:resumeId}}/>
+                </div>
+            </div>
+        );
+    }
+
+    if (errorMessage) {
+        return (
+            
+            <div className="dashboard-loading" style={{height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+                <div className="loading-spinner" style={{opacity: 0.4}}></div>
+                <p style={{color: '#e11d48', fontWeight: 600}}>Unable to load</p>
+                <p style={{fontSize: '14px', color: '#6b7280', marginTop: '6px'}}>{errorMessage}</p>
+                <button className="create-first-btn" onClick={fetchSkills} style={{marginTop: '12px'}}>Try Again</button>
+            </div>
+               
+        );
+    }
 
     return (
         <div className="gridContainer">
@@ -231,12 +275,12 @@ function Skills(){
              </div>
 
             <div className="buttonContainer">
-                <button className="button2" type="button" onClick={ () => navigate("/work", {state: {id:resumeId}})}> &larr; <span>Back</span></button>
+                <button className="button2" type="button" onClick={ () => navigate("/work-experience", {state: {id:resumeId}})}> &larr; <span>Back</span></button>
                 <button className="button2" type="submit"><span>Next</span> &rarr;</button>
             </div>
         </form>
             </div>
-            <div className="container4" >
+            <div className="container4" onClick={()=> navigate('/resume', {state: {id: resumeId}})}>
                 <ResumePreview prop={{id:resumeId}}/>
             </div>
         </div>

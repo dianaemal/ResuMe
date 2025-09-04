@@ -25,19 +25,43 @@ function Title(){
     const [resumeTitle, setTitle] = useState("");
     const [errorMsg, setError] = useState("");
     const [validation, setvalidation] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const [errorMessage, setErrorMessage] = useState(null);
     
     const navigate = useNavigate();
     
-    useEffect(() => {
+    const fetchTitle = () => {
+        setIsLoading(true);
+        setErrorMessage(null);
+        
         if(resumeId){
             axiosInstance.get(`/api/resumes/${resumeId}`)
             .then((response)=>{
                 setTitle(response.data.title || "")
+                setIsLoading(false);
             })
-            .catch((error) => console.error('Error fetching resume:', error))
+            .catch((error) => {
+                setIsLoading(false);
+                if (error.code === 'ERR_NETWORK') {
+                    setErrorMessage("Network error: Please check your internet connection and try again.");
+                } else if (error.code === 'ECONNABORTED') {
+                    setErrorMessage("Request timed out: The server is taking too long to respond. Please try again later.");
+                } else if (error.response) {
+                    setErrorMessage(`Failed to process your request: (status ${error.response.status}). Please try again later.`);
+                } else if (error.message) {
+                    setErrorMessage(error.message);
+                } else {
+                    setErrorMessage("An unexpected error occurred. Please try again.");
+                }
+                console.error('Error fetching resume:', error)
+            })
+        } else {
+            setIsLoading(false);
         }
-
-
+    }
+    
+    useEffect(() => {
+        fetchTitle();
     }, [resumeId]);
     
     const creatTitle = async () => {
@@ -63,6 +87,34 @@ function Title(){
         catch(error){
             console.error('Error creating/updating resume:', error);
         }
+    }
+
+    if (isLoading) {
+        return (
+            <div className="title-card-container">
+                <div className="title-card">
+                    <div className="dashboard-loading" style={{height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+                        <div className="loading-spinner"></div>
+                        <p>Loading resume information...</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    if (errorMessage) {
+        return (
+            <div className="title-card-container">
+                <div className="title-card">
+                    <div className="dashboard-loading" style={{height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+                        <div className="loading-spinner" style={{opacity: 0.4}}></div>
+                        <p style={{color: '#e11d48', fontWeight: 600}}>Unable to load</p>
+                        <p style={{fontSize: '14px', color: '#6b7280', marginTop: '6px'}}>{errorMessage}</p>
+                        <button className="create-first-btn" onClick={fetchTitle} style={{marginTop: '12px'}}>Try Again</button>
+                    </div>
+                </div>
+            </div>
+        );
     }
 
     return(

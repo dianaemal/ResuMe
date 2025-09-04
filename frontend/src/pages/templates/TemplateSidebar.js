@@ -83,7 +83,7 @@ export default function TemplateModernSidebar({ resume, workList, educationList,
         {/* Skills - only show if we have skills */}
         {resume.skills?.skills && (
           <Section title="Skills" id="skills">
-           <div dangerouslySetInnerHTML={{ __html: resume.skills.skills}}/>
+           <div  dangerouslySetInnerHTML={{ __html: resume.skills.skills}}/>
           </Section>
         )}
 
@@ -112,10 +112,10 @@ export default function TemplateModernSidebar({ resume, workList, educationList,
                   {job.position} <div style={{ color: '#616A6B' }}> {job.employer}</div>
                 </div>
                 <div style={{ fontSize: '13px', color: '#666' }}>
-                  {job.location && `${job.location} | `}{job.start_month || ''} {job.start_year} - {job.end_month || ''} {job.end_year || (job.is_current ? 'Present' : '')}
+                  {job.location && `${job.location} | `}{job.end_month ? `${job.end_month}, ` : ''}{job.end_year || (job.still_working ? 'Present' : '')}
                 </div>
                 {job.description?.description && (
-                  <div style={{ marginTop: '10px', paddingLeft: '0px', lineHeight: 1.6, fontSize: '14px' }}>
+                  <div style={{ marginTop: '10px', lineHeight: 1.6, fontSize: '14px', marginLeft: '3mm' }}>
                     <div className="no-list-indent" dangerouslySetInnerHTML={{ __html: job.description.description}}/>
                   </div>
                 )}

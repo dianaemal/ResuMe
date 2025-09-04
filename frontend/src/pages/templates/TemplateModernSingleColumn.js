@@ -87,12 +87,12 @@ export default function ResumeModernElegant({ resume, workList, educationList, f
               <div style={{ fontSize: '14px', color: '#666', fontStyle: 'italic' }}>
                 {job.employer}
                 <span style={{ float: 'right',  color: '#555', fontSize: '14px', textDecoration: 'none'}}>
-                  {job.start_month}, {job.start_year} - {job.end_month}, {job.end_year || (job.is_current ? 'Present' : '')}
+                  {job.start_month}, {job.start_year} - {job.end_month ? `${job.end_month}, ` : ''}{job.end_year || (job.still_working ? 'Present' : '')}
                 </span>
               </div>
               {job.description?.description && (
                 <div style={{ paddingLeft: '14px', marginTop: '4px' }}>
-                  <div className="no-list-indent" dangerouslySetInnerHTML={{ __html: job.description.description }} />
+                  <div className='no-list-indent' dangerouslySetInnerHTML={{ __html: job.description.description }} />
                 </div>
               )}
             </div>
@@ -127,7 +127,7 @@ export default function ResumeModernElegant({ resume, workList, educationList, f
       {/* Skills - only show if we have skills */}
       {resume.skills?.skills && (
         <Section title="KEY SKILLS" id="skills">
-          <div className="no-list-indent">{renderSkills(resume.skills.skills)}</div>
+          <div >{renderSkills(resume.skills.skills)}</div>
         </Section>
       )}
     </div>

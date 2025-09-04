@@ -24,9 +24,14 @@ function WorkEdit(){
             description: null
         }
     )
-    useEffect(()=>{
+    const [isLoading, setIsLoading] = useState(true);
+    const [errorMessage, setErrorMessage] = useState(null);
+    
+    const fetchWork = () => {
+        setIsLoading(true);
+        setErrorMessage(null);
+        
         if(resumeId && workId){
-
             axiosInstance.get(`/api/resumes/${resumeId}/work/${workId}`)
             .then((res)=>{
                 if (res.status === 200 || res.status === 201){
@@ -44,36 +49,31 @@ function WorkEdit(){
                             description: data.description || null
                         })
                     }
+                    setIsLoading(false);
                 }
             })
             .catch((err) => {
+                setIsLoading(false);
+                if (err.code === 'ERR_NETWORK') {
+                    setErrorMessage("Network error: Please check your internet connection and try again.");
+                } else if (err.code === 'ECONNABORTED') {
+                    setErrorMessage("Request timed out: The server is taking too long to respond. Please try again later.");
+                } else if (err.response) {
+                    setErrorMessage(`Failed to process your request: (status ${err.response.status}). Please try again later.`);
+                } else if (err.message) {
+                    setErrorMessage(err.message);
+                } else {
+                    setErrorMessage("An unexpected error occurred. Please try again.");
+                }
                 console.error("Error fetching work experience:", err);
             })
-
-            /*fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/work/${workId}`)
-            .then((res)=>{
-                if (res.ok){
-                    
-                    return res.json();
-                }
-            })
-            .then((data)=>{
-                
-                if (data){
-                    setWork({
-                        position: data.position,
-                        employer: data.employer,
-                        location: data.location,
-                        start_month: data.start_month,
-                        start_year: data.start_year,
-                        end_month: data.end_month,
-                        end_year: data.end_year,
-                        still_working: data.still_working
-                    })
-                }
-            })*/
+        } else {
+            setIsLoading(false);
         }
-       
+    }
+    
+    useEffect(()=>{
+        fetchWork();
     }, [resumeId, workId])
 
     const handleSubmit = async ()=>{
@@ -124,8 +124,39 @@ function WorkEdit(){
         }))
     }
     
-  
+    if (isLoading) {
+        return (
+            <div className="gridContainer">
+                <div className="progression">
+                    <SideBar prop={{page: 'work'}}/>
+                </div>
+                <div className="container3" style={{height: '100%'}}>
+                    <div className="dashboard-loading" style={{height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+                        <div className="loading-spinner"></div>
+                        <p>Loading work experience...</p>
+                    </div>
+                </div>
+                <div className="container4" onClick={()=> navigate('/resume', {state: {id: resumeId}})}>
+                    <h3 className='h3' style={{textAlign: 'center', fontSize: '20px', textDecoration: 'underline'}}>Preview</h3>
+                    <ResumePreview prop={{...workExperience, identity: 'work', workId:workId, id:resumeId}}/>
+                </div>
+            </div>
+        );
+    }
 
+    if (errorMessage) {
+        return (
+            
+            <div className="dashboard-loading" style={{height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+                <div className="loading-spinner" style={{opacity: 0.4}}></div>
+                <p style={{color: '#e11d48', fontWeight: 600}}>Unable to load</p>
+                <p style={{fontSize: '14px', color: '#6b7280', marginTop: '6px'}}>{errorMessage}</p>
+                <button className="create-first-btn" onClick={fetchWork} style={{marginTop: '12px'}}>Try Again</button>
+            </div>
+                   
+               
+        );
+    }
 
     return(
         <div className="gridContainer">
@@ -236,13 +267,13 @@ function WorkEdit(){
                         </div>
                       
                     <div className='buttonContainer'>
-                        <button className="button2" type="button" onClick={() => navigate('/work', {state: {id: resumeId}})}> &larr; <span>Back</span></button>
+                        <button className="button2" type="button" onClick={() => navigate('/work-experience', {state: {id: resumeId}})}> &larr; <span>Back</span></button>
                         <button  className="button2" type="submit"><span>Next</span> &rarr;</button>
                     </div>
                 </form>
                 
             </div>
-            <div className="container4" >
+            <div className="container4" onClick={()=> navigate('/resume', {state: {id: resumeId}})}>
                 <h3 className='h3' style={{textAlign: 'center', fontSize: '20px', textDecoration: 'underline'}}>Preview</h3>
                 <ResumePreview prop={{...workExperience, identity: 'work', workId:workId, id:resumeId}}/>
             </div>

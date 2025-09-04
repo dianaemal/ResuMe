@@ -103,11 +103,11 @@
     font-weight: 500;
 }
 .passwordVisible{
-    position: absolute;
-    right: 30px;
-    top: 37%;                            
-    cursor: pointer;
-    color: #888;
+    position: absolute !important;
+    right: 25px !important;
+    top: 37% ;                            
+    cursor: pointer !important;
+    color: #888 !important;
 }
 
 @media (max-width: 600px) {

@@ -130,7 +130,7 @@ export default function TemplateModernElegant({ resume, workList, educationList,
                   {job.location && <span style={rightSide}>{job.location}</span>}
                 </div>
                 {job.description?.description && (
-                  <div className="no-list-indent" style={sectionText} dangerouslySetInnerHTML={{ __html: job.description.description }} />
+                  <div style={sectionText} dangerouslySetInnerHTML={{ __html: job.description.description }} />
                 )}
               </div>
             ))}
@@ -160,7 +160,7 @@ export default function TemplateModernElegant({ resume, workList, educationList,
          {resume.skills?.skills && (
           <div style={{ marginBottom: '30px' }}>
             <h2 style={sectionTitle}>Skills</h2>
-            <div className="no-list-indent" style={{ fontSize: '14px' }}>{renderSkills(resume.skills.skills)}</div>
+            <div  style={{ fontSize: '14px' }}>{renderSkills(resume.skills.skills)}</div>
           </div>
         )}
       </div>

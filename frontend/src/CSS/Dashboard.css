@@ -318,6 +318,16 @@
     min-height: 60vh;
     gap: 20px;
 }
+.dashboard-error{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    gap: 20px;
+    text-align: center;
+    color: red;
+}
 
 .loading-spinner {
     width: 40px;

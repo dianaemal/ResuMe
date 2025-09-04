@@ -17,6 +17,8 @@ function Resume(){
     const navigate = useNavigate()
     const resumeId = location.state?.id || null;
     const resumeRef = useRef(null);
+    const [loading, setLoading] = useState(true);
+    const [errorMessage, setErrorMessage] = useState(null);
     
     console.log(resumeId)
 
@@ -41,25 +43,45 @@ function Resume(){
     const [isSaving, setIsSaving] = useState(false);
     //const [activeSection, setActiveSection] = useState('contact');
    
-    useEffect(()=>{
+    const fetchAll = () => {
         if (!resumeId) return;
+        setLoading(true);
+        setErrorMessage(null);
+        
+        // Fetch resume data        
+        axiosInstance.get(`/api/resumes/${resumeId}/all`)
+        .then((res)=>{
+            setData(res.data);
+            setLoading(false);
+            console.log(res.data)
+        })
+        .catch((err)=> {
+            setLoading(false);
+            if (err.code === 'ERR_NETWORK') {
+                setErrorMessage("Network error: Please check your internet connection and try again.");
+            } else if (err.code === 'ECONNABORTED') {
+                setErrorMessage("Request timed out: The server is taking too long to respond. Please try again later.");
+            } else if (err.response) {
+                setErrorMessage(`Failed to process your request: (status ${err.response.status}). Please try again later.`);
+            } else if (err.message) {
+                setErrorMessage(err.message);
+            } else {
+                setErrorMessage("An unexpected error occurred. Please try again.");
+            }
+            console.error("Error fetching education data:", err)
+        });
+        
+        // Fetch template data
+        axiosInstance.get(`/api/resumes/${resumeId}`)
+        .then((res)=>{
+            setTemplate(res.data.template || 'template1');
+            setUser(res.data.user)
+        })
+        .catch((err)=> console.error("Error fetching template data:", err));
+    }
 
-            axiosInstance.get(`/api/resumes/${resumeId}/all`)
-            .then((res)=>{
-                setData(res.data);
-                console.log(res.data)
-            })
-            .catch((err)=> console.error("Error fetching education data:", err));
-
-            // Fetch template data
-            axiosInstance.get(`/api/resumes/${resumeId}`)
-            .then((res)=>{
-                setTemplate(res.data.template || 'template1');
-                setUser(res.data.user)
-            })
-            .catch((err)=> console.error("Error fetching template data:", err));
-       
-
+    useEffect(()=>{
+        fetchAll();
     }, [resumeId])
 
     const handleTemplateChange = () => {
@@ -161,8 +183,24 @@ function Resume(){
         }
     };
 
-    if (!resumeData) {
-        return <p>Loading resume...</p>;
+    if (loading) {
+        return (
+            <div className="dashboard-loading">
+                <div className="loading-spinner"></div>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+
+    if (errorMessage) {
+        return (
+            <div className="dashboard-loading">
+                <div className="loading-spinner" style={{opacity: 0.4}}></div>
+                <p style={{color: '#e11d48', fontWeight: 600}}>Unable to load</p>
+                <p style={{fontSize: '14px', color: '#6b7280', marginTop: '6px'}}>{errorMessage}</p>
+                <button className="create-first-btn" onClick={fetchAll} style={{marginTop: '12px'}}>Try Again</button>
+            </div>
+        );
     }
 
     // Define available sections based on resume data

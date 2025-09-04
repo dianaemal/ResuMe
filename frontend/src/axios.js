@@ -1,9 +1,11 @@
 import axios from 'axios';
 
 const baseURL = process.env.REACT_APP_API_BASE_URL || "http://127.0.0.1:8000";
+console.log("API base URL is:", baseURL);
+
 const axiosInstance = axios.create({
     baseURL: baseURL,
-    timeout: 5000,
+    timeout: 30000, // Increased timeout to 15 seconds for better user experience
     headers: {
         Authorization: localStorage.getItem('access_token')
             ? 'JWT ' + localStorage.getItem('access_token')
@@ -17,12 +19,14 @@ const axiosInstance = axios.create({
 // It will get caught in an infinite loop 
 const refreshAxios = axios.create({
     baseURL: baseURL,
-    timeout: 5000,
+    timeout: 30000, // 10 seconds for refresh token requests
     headers: {
         'Content-Type' : 'application/json',
          accept :  'application/json'
     }
 });
+
+
 
 
 axiosInstance.interceptors.response.use(
@@ -72,14 +76,19 @@ axiosInstance.interceptors.response.use(
                     // Only redirect if it's not a login request
                     if (!isLoginRequest) {
                         window.location.href = '/login';
+                        return;
                     }
                 
             }}
             else {
                 // No refresh token available, redirect to login only if not a login request
                 console.error('No refresh token available');
+                localStorage.removeItem('access_token')
+                localStorage.removeItem('refresh_token')
+                
                 if (!isLoginRequest) {
                     window.location.href = '/login';
+                    return;
                 }
             }
 

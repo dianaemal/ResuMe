@@ -13,6 +13,8 @@ function ContactInfo (){
 
     const {resume, setResume, setComplete} = useContext(ResumeContext)
     const [error, setError] = useState({})
+    const [errorMessage, setErrorMessage] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
    
     const [contactInfo, setInfo] = useState({
         f_name: null,
@@ -58,12 +60,15 @@ function ContactInfo (){
         
         
     }
-    useEffect(()=>{
+    const fetchContact = () => {
+        setIsLoading(true);
+        setErrorMessage(null);
        
         if(resumeId){
             axiosInstance.get(`/api/resumes/${resumeId}/contact-info`)
             .then((response)=>{
                 if (response.status === 200 || response.status === 201){
+                    setErrorMessage(null);
                     setContactExists(true);
                     const data = response.data
                     if (data){
@@ -77,43 +82,46 @@ function ContactInfo (){
                             postal_code: data.postal_code
                         });
                     }
-
+                    setIsLoading(false);
                 }
 
             })
-            .catch((error) => {
+            .catch((err) => {
+                setIsLoading(false);
+                if (err.code === 'ERR_NETWORK') {
+                    setErrorMessage("Network error: Please check your internet connection and try again.");
+                } else if (err.code === 'ECONNABORTED') {
+                    setErrorMessage("Request timed out: The server is taking too long to respond. Please try again later.");
+                } else if (err.response) {
+                    if (err.response.status === 404) {
+                        // 404 is expected for new resumes - no contact info exists yet
+                        setErrorMessage(null);
+                        setContactExists(false);
+                    } else {
+                        setErrorMessage(`Failed to process your request: (status ${err.response.status}). Please try again later.`);
+                    }
+                } else if (err.message) {
+                    setErrorMessage(err.message);
+                } else {
+                    setErrorMessage("An unexpected error occurred. Please try again.");
+                }
+
                 console.error("Failed to fetch contact info:", error);
-                setContactExists(false);
+                if (err.response && err.response.status !== 404) {
+                    setContactExists(false);
+                }
             });
-            
-            /*fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/contact-info`)
-            .then((response) =>{
-                if (response.ok) {
-                    setContactExists(true); // Mark that contact info exists
-                    return response.json();
-                }
-                setContactExists(false);
-            })
-            
-
-            .then((data) => {
-                if(data){
-                    setInfo({
-                        f_name: data.f_name,
-                        l_name: data.l_name,
-                        phone_number: data.phone_number,
-                        email: data.email,
-                        city: data.city,
-                        province: data.province,
-                        postal_code: data.postal_code
-                    });
-                }
-               
-            });*/
+        } else {
+            setIsLoading(false);
         }
        
-    }, [resumeId])
+    }
     console.log(error)
+    useEffect(() => {
+        fetchContact();
+    }, [resumeId]);
+   
+    
    
     const handleSubmit = async () =>{
         
@@ -168,8 +176,36 @@ function ContactInfo (){
         }*/
     }
 
+    if (isLoading) {
+        return (
+            <div className='gridContainer' style={{height: '80vh'}}>
+                <div className='progression'>
+                    <SideBar />
+                </div>
+                <div className='container3'>
+                    <div className="dashboard-loading" style={{height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+                        <div className="loading-spinner"></div>
+                        <p>Loading contact information...</p>
+                    </div>
+                </div>
+                <div className='container4' style={{height: '580x'}} onClick={()=> navigate('/resume', {state: {id: resumeId}})}>
+                    <ResumePreview prop={{...contactInfo, id: resumeId}} />
+                </div>
+            </div>
+        );
+    }
 
-
+    if (errorMessage) {
+        return (
+            <div className="dashboard-loading">
+                <div className="loading-spinner" style={{opacity: 0.4}}></div>
+                <p style={{color: '#e11d48', fontWeight: 600}}>Unable to load</p>
+                <p style={{fontSize: '14px', color: '#6b7280', marginTop: '6px'}}>{errorMessage}</p>
+                <button className="create-first-btn" onClick={fetchContact} style={{marginTop: '12px'}}>Try Again</button>
+            </div>
+        );
+    }
+   
 
     
 

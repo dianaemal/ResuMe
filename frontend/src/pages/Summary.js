@@ -20,6 +20,8 @@ function Summary(){
     const {resume, setResume} = useContext(ResumeContext)
     const [summary, setSummary] = useState(null)
     const [summaryExit, setExist] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const [errorMessage, setErrorMessage] = useState(null);
 
     const [jobSearch, setJobSearch] = useState('');
     const [isSearching, setIsSearching] = useState(false);
@@ -42,9 +44,12 @@ function Summary(){
             navigate('/resume', {state: {id:resumeId}})
         }*/
     }
-    useEffect(()=>{
+    
+    const fetchSummary = () => {
+        setIsLoading(true);
+        setErrorMessage(null);
+        
         if (resumeId){
-
             axiosInstance.get(`/api/resumes/${resumeId}/summary`)
             .then((res)=>{
                 if(res.status === 200 || res.status === 201){
@@ -52,30 +57,40 @@ function Summary(){
                         setExist(true)
                         setSummary(res.data.summary)
                     }
-                    
-
+                    setIsLoading(false);
                 }
             })
             .catch((error) =>{
+                setIsLoading(false);
+                if (error.code === 'ERR_NETWORK') {
+                    setErrorMessage("Network error: Please check your internet connection and try again.");
+                } else if (error.code === 'ECONNABORTED') {
+                    setErrorMessage("Request timed out: The server is taking too long to respond. Please try again later.");
+                } else if (error.response) {
+                    if (error.response.status === 404) {
+                        // 404 is expected for new resumes - no summary exists yet
+                        setErrorMessage(null);
+                        setExist(false);
+                    } else {
+                        setErrorMessage(`Failed to process your request: (status ${error.response.status}). Please try again later.`);
+                    }
+                } else if (error.message) {
+                    setErrorMessage(error.message);
+                } else {
+                    setErrorMessage("An unexpected error occurred. Please try again.");
+                }
                 setExist(false)
                 console.error('Error fetching resume:', error)
             });
-            /*fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/summary`)
-            .then((res)=>{
-                if (res.ok){
-                    setExist(true);
-                    return res.json();
-                }
-                setExist(false);
-            })
-            .then((data)=>{
-                if(data){
-                    setSummary(data.summary)
-                }
-            })
-            .catch((error) => console.error('Error fetching resume:', error));*/
+        } else {
+            setIsLoading(false);
         }
+    }
+    
+    useEffect(()=>{
+        fetchSummary();
     }, [resumeId])
+    
     useEffect(()=>{
         setResume((prev)=>({
             ...prev,
@@ -116,6 +131,38 @@ function Summary(){
         }
     }
 
+    if (isLoading) {
+        return (
+            <div className="gridContainer">
+                <div className="progression">
+                    <SideBar prop={{page: 'summary'}}/>
+                </div>
+                <div className="container3">
+                    <div className="dashboard-loading" style={{height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+                        <div className="loading-spinner"></div>
+                        <p>Loading summary information...</p>
+                    </div>
+                </div>
+                 <div className="container4" onClick={()=> navigate('/resume', {state: {id: resumeId}})}>
+                    <ResumePreview prop={{id:resumeId}}/>
+                </div>
+                
+            </div>
+        );
+    }
+
+    if (errorMessage) {
+        return (
+           
+            <div className="dashboard-loading" style={{height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+                <div className="loading-spinner" style={{opacity: 0.4}}></div>
+                <p style={{color: '#e11d48', fontWeight: 600}}>Unable to load</p>
+                <p style={{fontSize: '14px', color: '#6b7280', marginTop: '6px'}}>{errorMessage}</p>
+                <button className="create-first-btn" onClick={fetchSummary} style={{marginTop: '12px'}}>Try Again</button>
+            </div>
+                   
+        )
+    }
 
     return (
         <div className="gridContainer">
@@ -224,7 +271,7 @@ function Summary(){
             </div>
         </form>
             </div>
-            <div className="container4" >
+            <div className="container4" onClick={()=> navigate('/resume', {state: {id: resumeId}})} >
                 <ResumePreview prop={{id:resumeId}}/>
             </div>
         </div>

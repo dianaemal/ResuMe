@@ -4,31 +4,50 @@ import axiosInstance from "../axios";
 import { jwtDecode }  from "jwt-decode";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faEye, faPen } from '@fortawesome/free-solid-svg-icons';
-import Footer from '../components/Footer';
+
 import '../CSS/Dashboard.css';
 
 export default function Dashboard(){
     const navigate = useNavigate()
     const [allResumes, setAll] = useState([])
     const [isLoading, setIsLoading] = useState(true)
+    const [errorMessage, setErrorMessage] = useState("")
+    
     const token = localStorage.getItem('access_token')
     const decode = jwtDecode(token)
     console.log(decode)
 
-    useEffect(()=>{
+    const fetchResumes = () => {
         setIsLoading(true);
+        setErrorMessage("");
+
         axiosInstance.get(`api/resumes/`)
         .then((res)=>{
             if (res.status === 200 || res.status === 201){
                 setAll(res.data)
                 setIsLoading(false);
-             
+                setErrorMessage("");
             }
         })
         .catch((err) => {
             console.error('Error fetching resumes:', err);
             setIsLoading(false);
-        })
+            if (err.code === 'ERR_NETWORK') {
+                setErrorMessage("Network error: Please check your internet connection and try again.");
+            } else if (err.code === 'ECONNABORTED') {
+                setErrorMessage("Request timed out: The server is taking too long to respond. Please try again later.");
+            } else if (err.response) {
+                setErrorMessage(`Failed to load resumes (status ${err.response.status}). Please try again later.`);
+            } else if (err.message) {
+                setErrorMessage(err.message);
+            } else {
+                setErrorMessage("An unexpected error occurred. Please try again.");
+            }
+        });
+    };
+
+    useEffect(()=>{
+        fetchResumes();
     }, [])
 
     const handleCreateResume = () => {
@@ -50,12 +69,6 @@ export default function Dashboard(){
                         })
                     }
                 })
-                // Refresh the resume list
-                //const res = await axiosInstance.get(`api/resumes/`);
-                //if (res.status === 200 || res.status === 201) {
-                    //console.log(res.data)
-                    //setAll(res.data);
-                //}
             } catch (error) {
                 console.error('Error deleting resume:', error);
             }
@@ -92,11 +105,22 @@ export default function Dashboard(){
         return (
             <div className="dashboard-loading">
                 <div className="loading-spinner"></div>
-                <p>Loading your resumes...</p>
+                <p>Loading your dashboard...</p>
             </div>
         );
     }
 
+    if (errorMessage) {
+        return (
+            <div className="dashboard-loading">
+                <div className="loading-spinner" style={{opacity: 0.4}}></div>
+                <p style={{color: '#e11d48', fontWeight: 600}}>Unable to load dashboard</p>
+                <p style={{fontSize: '14px', color: '#6b7280', marginTop: '6px'}}>{errorMessage}</p>
+                <button className="create-first-btn" onClick={fetchResumes} style={{marginTop: '12px'}}>Try Again</button>
+            </div>
+        );
+    }
+   
     return (
         <>
         <div className="dashboard-container">
@@ -224,7 +248,7 @@ export default function Dashboard(){
                                         </span>
                                         <span className="stat">
                                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                                <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                                                <path d="M22 10v6M2 10l10-5 10 5-10 5-10-5z"></path>
                                                 <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
                                             </svg>
                                             Education

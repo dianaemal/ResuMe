@@ -13,6 +13,8 @@ function EducationEdit(){
     const educationId = location.state.E_id;
     const [error, setError] = useState(false)
     const [otherDegree, setOtherDegree] = useState(false)
+    const [isLoading, setIsLoading] = useState(true);
+    const [errorMessage, setErrorMessage] = useState(null);
     //console.log(idObject)
     const [education, setEducation] = useState({
         school_name : null,
@@ -47,7 +49,10 @@ const degrees = [
     "No degree",
   ];
 
-useEffect(() =>{
+const fetchEducation = () => {
+    setIsLoading(true);
+    setErrorMessage(null);
+    
     if(resumeId){
         axiosInstance.get(`/api/resumes/${resumeId}/education/${educationId}`)
         .then((res)=>{
@@ -68,33 +73,31 @@ useEffect(() =>{
                 } else {
                     setOtherDegree(false);
                 }
+                setIsLoading(false);
             }
         })
-        .catch((err)=> console.error(err))
-        /*fetch(`http://127.0.0.1:8000/api/resumes/${resumeId}/education/${educationId}`)
-        .then((res)=>{
-            if(res.ok){
-               
-                return res.json();
+        .catch((err)=> {
+            setIsLoading(false);
+            if (err.code === 'ERR_NETWORK') {
+                setErrorMessage("Network error: Please check your internet connection and try again.");
+            } else if (err.code === 'ECONNABORTED') {
+                setErrorMessage("Request timed out: The server is taking too long to respond. Please try again later.");
+            } else if (err.response) {
+                setErrorMessage(`Failed to process your request: (status ${err.response.status}). Please try again later.`);
+            } else if (err.message) {
+                setErrorMessage(err.message);
+            } else {
+                setErrorMessage("An unexpected error occurred. Please try again.");
             }
-           
+            console.error(err)
         })
-        .then((data)=>{
-            if(data){
-                console.log(data);
-                setEducation({
-                    school_name : data.school_name,
-                    location : data.location,
-                    degree : data.degree,
-                    study_feild: data.study_feild,
-                    start_month : data.start_month,
-                    start_year : data.start_year,
-                    graduation_month : data.graduation_month,
-                    graduation_year : data.graduation_year
-                })
-            }
-        })*/
+    } else {
+        setIsLoading(false);
     }
+}
+
+useEffect(() =>{
+    fetchEducation();
 }, [resumeId, educationId]);
 
 
@@ -183,6 +186,36 @@ const handleChange = (e) => {
 
 
 const navigate = useNavigate();
+
+if (isLoading) {
+    return (
+        <div className='gridContainer' >
+            <div className='progression'><SideBar/></div>
+            <div className='container3' >
+                <div className="dashboard-loading" style={{height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+                    <div className="loading-spinner"></div>
+                    <p>Loading education information...</p>
+                </div>
+            </div>
+            <div className="container4"onClick={()=> navigate('/resume', {state: {id: resumeId}})} >
+                <ResumePreview prop={{...education, eduId: educationId, identity: 'edu', id:resumeId}}/>
+            </div>
+        </div>
+    );
+}
+
+if (errorMessage) {
+    return (
+       
+        <div className="dashboard-loading" style={{height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+            <div className="loading-spinner" style={{opacity: 0.4}}></div>
+            <p style={{color: '#e11d48', fontWeight: 600}}>Unable to load</p>
+            <p style={{fontSize: '14px', color: '#6b7280', marginTop: '6px'}}>{errorMessage}</p>
+            <button className="create-first-btn" onClick={fetchEducation} style={{marginTop: '12px'}}>Try Again</button>
+        </div>
+         
+    );
+}
 
 return(
     <>
@@ -320,7 +353,7 @@ return(
                 </form>
                 <Footer/>
             </div>
-            <div className="container4" >
+            <div className="container4"onClick={()=> navigate('/resume', {state: {id: resumeId}})} >
                 <ResumePreview prop={{...education, eduId: educationId, identity: 'edu', id:resumeId}}/>
             </div>
         </div>

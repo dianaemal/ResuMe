@@ -262,7 +262,7 @@ function Education(){
                 </div>
             </form>
         </div>
-        <div className='container4' >
+        <div className='container4' onClick={()=> navigate('/resume', {state: {id: resumeId}})}>
             <ResumePreview prop={{...education, identity: 'edu', id:resumeId}}/>
         </div>
     </div>

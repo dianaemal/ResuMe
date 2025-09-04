@@ -533,6 +533,127 @@
   }
 }
 
+/* Mobile scaling for resume templates */
+@media (max-width: 768px) {
+  .resume-template {
+    transform: scale(0.5) !important;
+    transform-origin: top center !important;
+    width: 200% !important;
+    margin-left: -50% !important;
+    margin-right: -50% !important;
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+  }
+  
+  .template1, .template2, .template3, .template4, .template5 {
+    transform: scale(0.5) !important;
+    transform-origin: top center !important;
+    width: 200% !important;
+    margin-left: -50% !important;
+    margin-right: -50% !important;
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+  }
+  
+  /* Container adjustments to remove white space */
+  .resume-main-content {
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    padding-bottom: 20px !important;
+  }
+  
+  /* Override any fixed heights */
+  .container_2 {
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .resume-template {
+    transform: scale(0.4) !important;
+    transform-origin: top center !important;
+    width: 250% !important;
+    margin-left: -75% !important;
+    margin-right: -75% !important;
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+  }
+  
+  .template1, .template2, .template3, .template4, .template5 {
+    transform: scale(0.4) !important;
+    transform-origin: top center !important;
+    width: 250% !important;
+    margin-left: -75% !important;
+    margin-right: -75% !important;
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+  }
+  
+  /* Container adjustments to remove white space */
+  .resume-main-content {
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    padding-bottom: 15px !important;
+  }
+  
+  /* Override any fixed heights */
+  .container_2 {
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+
+  
+   
+  .resume-template {
+    transform: scale(0.4) !important;
+    transform-origin: top center  !important;
+    width: 285% !important;
+    margin-left: -92.5% !important;
+    margin-right: -92.5% !important;
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+  }
+  
+  .template1, .template2, .template3, .template4, .template5 {
+    transform: scale(0.4) !important;
+    transform-origin: top center !important;
+    width: 285% !important;
+    margin-left: -92.5% !important;
+    margin-right: -92.5% !important;
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+  }
+  
+  /* Container adjustments to remove white space */
+  .resume-main-content {
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    padding-bottom: 10px !important;
+  }
+  
+  /* Override any fixed heights */
+  .container_2 {
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+  }
+}
+
 /* Utility: remove list indentation inside rendered HTML */
 .no-list-indent ul,
 .no-list-indent ol {

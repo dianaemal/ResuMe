@@ -106,7 +106,7 @@ export default function TemplateModernSidebar({ resume, workList, educationList,
               <div style={{ fontWeight: 'bold' }}>
                 {job.position}
                 <span style={{ float: 'right', fontWeight: 'normal', color: '#555', fontSize: '14px', textDecoration: 'none' }}>
-                  {job.start_month} {job.start_year} - {job.end_month} {job.end_year || (job.is_current ? 'Present' : '')}
+                  {job.start_month} {job.start_year} - {job.end_month ? `${job.end_month}, ` : ''}{job.end_year || (job.still_working ? 'Present' : '')}
                 </span>
                 <div style={{ fontSize: '14px', color: '#666' }}>{job.employer}</div>
               </div>

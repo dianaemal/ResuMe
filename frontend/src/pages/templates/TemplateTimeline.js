@@ -76,7 +76,7 @@ export default function TemplateTimeline({ resume, workList, educationList, forw
           {/* Skills - only show if we have skills */}
           {resume.skills?.skills && (
             <Section title="Skills" id="skills">
-              <div className="no-list-indent" dangerouslySetInnerHTML={{ __html: resume.skills.skills}}/>
+              <div  style={{marginLeft:'3mm'}} className="no-list-indent" dangerouslySetInnerHTML={{ __html: resume.skills.skills}}/>
             </Section>
           )}
 
@@ -103,12 +103,12 @@ export default function TemplateTimeline({ resume, workList, educationList, forw
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold' }}>
                     <div>{work.employer}</div>
                     <div style={{ fontSize: '14px', color: '#666' }}>
-                      {work.start_year} - {work.end_year || (work.is_current ? 'Present' : '')}
+                      {work.start_year} - {work.end_year || (work.still_working ? 'Present' : '')}
                     </div>
                   </div>
                   <div style={{ color: '#667eea', fontWeight: '600' }}>{work.position}</div>
                   {work.description?.description && (
-                    <div style={{ marginLeft:'0mm', marginTop: '6px', fontSize: '15px', lineHeight: 1.5 }}>
+                    <div style={{ marginLeft:'3mm', marginTop: '6px', fontSize: '15px', lineHeight: 1.5 }}>
                       <div className="no-list-indent" dangerouslySetInnerHTML={{ __html: work.description.description }}/>
                     </div>
                   )}

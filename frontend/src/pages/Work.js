@@ -200,7 +200,7 @@ function Work(){
                 </form>
                 
             </div>
-            <div className='container4' >
+            <div className='container4'onClick={()=> navigate('/resume', {state: {id: resumeId}})} >
                 <ResumePreview prop={{...workExperience, identity: 'work', id:resumeId}} />
             </div>
         </div>

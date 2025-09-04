@@ -83,11 +83,13 @@ function TemplateSelector() {
     const [selectedTemplate, setSelectedTemplate] = useState('template1');
     const [resumeData, setResumeData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [errorMessage, setErrorMessage] = useState(null);
 
-    useEffect(() => {
+    const fetchResumeData = () => {
         console.log('TemplateSelector: resumeId =', resumeId);
         if (resumeId) {
             setIsLoading(true);
+            setErrorMessage(null);
             console.log('TemplateSelector: Fetching resume data...');
             axiosInstance.get(`/api/resumes/${resumeId}`)
                 .then((res) => {
@@ -97,15 +99,29 @@ function TemplateSelector() {
                     setIsLoading(false);
                 })
                 .catch((err) => {
-                    console.error("TemplateSelector: Error fetching resume", err);
-                    // Even if the API call fails, we can still show the template selector
                     setIsLoading(false);
+                    if (err.code === 'ERR_NETWORK') {
+                        setErrorMessage("Network error: Please check your internet connection and try again.");
+                    } else if (err.code === 'ECONNABORTED') {
+                        setErrorMessage("Request timed out: The server is taking too long to respond. Please try again later.");
+                    } else if (err.response) {
+                        setErrorMessage(`Failed to process your request: (status ${err.response.status}). Please try again later.`);
+                    } else if (err.message) {
+                        setErrorMessage(err.message);
+                    } else {
+                        setErrorMessage("An unexpected error occurred. Please try again.");
+                    }
+                    console.error("TemplateSelector: Error fetching resume", err);
                 });
         } else {
             // No resumeId, but we can still show template selector
             console.log('TemplateSelector: No resumeId, showing template selector anyway');
             setIsLoading(false);
         }
+    };
+
+    useEffect(() => {
+        fetchResumeData();
     }, [resumeId]);
 
     const templates = [
@@ -180,7 +196,23 @@ function TemplateSelector() {
     };
 
     if (isLoading) {
-        return <div className="loading">Loading...</div>;
+        return (
+            <div className="dashboard-loading">
+                <div className="loading-spinner"></div>
+                <p>Loading...</p>
+            </div>
+        );
+    }
+
+    if (errorMessage) {
+        return (
+            <div className="dashboard-loading">
+                <div className="loading-spinner" style={{opacity: 0.4}}></div>
+                <p style={{color: '#e11d48', fontWeight: 600}}>Unable to load</p>
+                <p style={{fontSize: '14px', color: '#6b7280', marginTop: '6px'}}>{errorMessage}</p>
+                <button className="create-first-btn" onClick={fetchResumeData} style={{marginTop: '12px'}}>Try Again</button>
+            </div>
+        );
     }
 
     return (

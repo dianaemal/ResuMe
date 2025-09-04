@@ -221,7 +221,7 @@ function WorkDescription(){
             </div>
         </form>
             </div>
-            <div className="container4" >
+            <div className="container4" onClick={()=> navigate('/resume', {state: {id: resumeId}})} >
                 <ResumePreview prop={{description: workDescription, identity: 'exp', workId: workId, id:resumeId}}/>
             </div>
         </div>
